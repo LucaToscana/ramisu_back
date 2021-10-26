@@ -45,4 +45,12 @@ public class Product {
     @Column (name = "year_product")
     private String yearOfProduction;
 
+    @Column (name = "id_tags")
+    private int idTags;
+
+    @Column (name = "id_universes", nullable = false)
+    private int idUniverses;
+
+    @Column (name = "id_categories", nullable = false)
+    private int idCategories;
 }

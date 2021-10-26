@@ -27,6 +27,9 @@ public class ProductDTO implements Serializable {
     private float promotion;
     private int stock;
     private String yearOfProduction;
+    private int idTags;
+    private int idUniverses;
+    private int idCategories;
 
 
     public ProductDTO(Product product) {
@@ -39,6 +42,9 @@ public class ProductDTO implements Serializable {
         this.promotion = product.getPromotion();
         this.stock = product.getStock();
         this.yearOfProduction = product.getYearOfProduction();
+        this.idTags = product.getIdTags();
+        this.idUniverses = product.getIdUniverses();
+        this.idCategories = product.getIdCategories();
     }
 
     @Override
@@ -52,6 +58,9 @@ public class ProductDTO implements Serializable {
                 ", promotion='" + getPromotion() + "'" +
                 ", stock='" + getStock() + "'" +
                 ", year of production='" + getYearOfProduction() + "'" +
+                ", id_tags='" + getIdTags() + "'" +
+                ", id_universes='" + getIdUniverses() + "'" +
+                ", id_categories='" + getIdCategories() + "'" +
                 "}";
     }
 }
