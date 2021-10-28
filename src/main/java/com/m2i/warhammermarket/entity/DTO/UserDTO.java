@@ -1,18 +1,17 @@
 package com.m2i.warhammermarket.entity.DTO;
 
 import com.m2i.warhammermarket.entity.DAO.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class UserDTO implements Serializable {
 
     private Long id;
@@ -20,6 +19,7 @@ public class UserDTO implements Serializable {
     private Date dateOfCreation;
     private boolean active;
     private String token;
+    private List<String> authorities;
 
     public UserDTO(User user) {
 

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.HashSet;
 
 @Getter
 @Setter
@@ -37,5 +38,6 @@ public class User {
 
     @Column (name = "token", nullable = true)
     private String token;
+
 
 }

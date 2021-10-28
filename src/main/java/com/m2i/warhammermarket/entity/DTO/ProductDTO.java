@@ -1,7 +1,6 @@
 package com.m2i.warhammermarket.entity.DTO;
 
-import com.m2i.warhammermarket.entity.DAO.Product;
-import com.m2i.warhammermarket.entity.DAO.User;
+import com.m2i.warhammermarket.entity.DAO.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +26,8 @@ public class ProductDTO implements Serializable {
     private float promotion;
     private int stock;
     private String yearOfProduction;
-    private int idTags;
-    private int idUniverses;
-    private int idCategories;
+    private Universe universe;
+    private Categorie categorie;
 
 
     public ProductDTO(Product product) {
@@ -42,9 +40,8 @@ public class ProductDTO implements Serializable {
         this.promotion = product.getPromotion();
         this.stock = product.getStock();
         this.yearOfProduction = product.getYearOfProduction();
-        this.idTags = product.getIdTags();
-        this.idUniverses = product.getIdUniverses();
-        this.idCategories = product.getIdCategories();
+        this.universe = product.getUniverse();
+        this.categorie = product.getCategorie();
     }
 
     @Override
@@ -58,9 +55,8 @@ public class ProductDTO implements Serializable {
                 ", promotion='" + getPromotion() + "'" +
                 ", stock='" + getStock() + "'" +
                 ", year of production='" + getYearOfProduction() + "'" +
-                ", id_tags='" + getIdTags() + "'" +
-                ", id_universes='" + getIdUniverses() + "'" +
-                ", id_categories='" + getIdCategories() + "'" +
+                ", universe='" + getUniverse() + "'" +
+                ", id_categories='" + getCategorie() + "'" +
                 "}";
     }
 }

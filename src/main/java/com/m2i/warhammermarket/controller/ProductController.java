@@ -24,13 +24,13 @@ public class ProductController {
     private ProductService productService;
 
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/public/products/{id}")
     public ResponseEntity<Optional<ProductDTO>> getProduct(@PathVariable Long id) {
         Optional<ProductDTO> productDTO = this.productService.findOne(id);
         return ResponseEntity.ok().body(productDTO);
     }
 
-    @GetMapping("/products")
+    @GetMapping("/public/products")
     public ResponseEntity<List<ProductDTO>> getAllProduct(Pageable pageable) {
         Page<ProductDTO> page = this.productService.findAll(pageable);
         return ResponseEntity.ok().body(page.getContent());
