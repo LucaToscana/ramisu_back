@@ -21,7 +21,7 @@ public class ProductController {
     private ProductService productService;
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/public/products/{id}")
+    @GetMapping("/public/product/{id}")
     public ResponseEntity<Optional<ProductDTO>> getProduct(@PathVariable Long id) {
         Optional<ProductDTO> productDTO = this.productService.findOne(id);
         return ResponseEntity.ok().body(productDTO);
