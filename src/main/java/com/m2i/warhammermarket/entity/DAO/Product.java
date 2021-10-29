@@ -1,14 +1,14 @@
 package com.m2i.warhammermarket.entity.DAO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ManyToAny;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -18,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table (name = "Products")
-public class Product {
+public class Product implements Serializable {
 
     @Id
     @Column (name = "id", nullable = false)
@@ -45,4 +45,12 @@ public class Product {
     @Column (name = "year_product")
     private String yearOfProduction;
 
+
+    @ManyToOne
+    @JoinColumn (name = "id_universes")
+    private Universe universe;
+
+    @ManyToOne
+    @JoinColumn (name = "id_categories")
+    private Categorie categorie;
 }
