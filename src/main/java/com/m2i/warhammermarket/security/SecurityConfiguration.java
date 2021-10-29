@@ -79,7 +79,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
 //                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)//On ajout notre filtre (en premier !) puis celui de SpringSecurity
                 .authorizeRequests()
-                .antMatchers("/public/**").permitAll() //On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")
+                .antMatchers("/api/public/**").permitAll() //On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")
                 .anyRequest().authenticated() //on définie que toutes les routes ne correspondant pas aux routes du dessus sont sécurisé par authentification
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //on spécifie à SpringSecurity de ne pas créer de HttpSession

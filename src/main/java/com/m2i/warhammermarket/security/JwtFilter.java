@@ -1,5 +1,6 @@
 package com.m2i.warhammermarket.security;
 
+import com.m2i.warhammermarket.service.implement.JwtUserDetailService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +26,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    //private JwtUserDetailService jwtUserDetailService;
+    private JwtUserDetailService jwtUserDetailService;
 
     /**
      * Filter: on intercepte les Requêtes, et on vérifie le token
@@ -42,24 +43,24 @@ public class JwtFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-//        //On récupére le token (null sinon)
-//        String token = resolveToken(request);
-//        //On vérifie que le token existe bien, donc non null
-//        if(StringUtils.isNotBlank(token)) {
-//            String username = jwtUtil.getSubject(token);
-//            //On vérifie que le token a bien un username et que l'Authentication n'est pas déjà fait
-//            if(StringUtils.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-//                UserDetails userDetails = jwtUserDetailService.loadUserByUsername(username);
-//                //On vérifie la validité du token selon la méthode de JwtUtil créé précédemment
-//                if(jwtUtil.isTokenValid(token, userDetails)) {
-//                    //On crée l'authentication et on la set
-//                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//                    SecurityContextHolder.getContext().setAuthentication(auth);
-//                }
-//            }
-//        }
-//        //On renvoit toujours la requete et la réponse
-//        chain.doFilter(request, response);
+        //On récupére le token (null sinon)
+        String token = resolveToken(request);
+        //On vérifie que le token existe bien, donc non null
+        if(StringUtils.isNotBlank(token)) {
+            String username = jwtUtil.getSubject(token);
+            //On vérifie que le token a bien un username et que l'Authentication n'est pas déjà fait
+            if(StringUtils.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = jwtUserDetailService.loadUserByUsername(username);
+                //On vérifie la validité du token selon la méthode de JwtUtil créé précédemment
+                if(jwtUtil.isTokenValid(token, userDetails)) {
+                    //On crée l'authentication et on la set
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            }
+        }
+        //On renvoit toujours la requete et la réponse
+        chain.doFilter(request, response);
     }
 
     /**
