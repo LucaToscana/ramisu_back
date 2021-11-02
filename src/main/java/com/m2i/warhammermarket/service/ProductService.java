@@ -5,6 +5,7 @@ import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
@@ -22,4 +23,5 @@ public interface ProductService {
 
     void delete(Long id);
 
+    List<ProductDTO> getProductsSort(String field, String type);
 }

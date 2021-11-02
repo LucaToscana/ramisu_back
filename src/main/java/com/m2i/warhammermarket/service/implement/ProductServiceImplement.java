@@ -1,20 +1,18 @@
 package com.m2i.warhammermarket.service.implement;
 
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
-import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.repository.ProductRepository;
-import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.service.ProductService;
-import com.m2i.warhammermarket.service.UserService;
 import com.m2i.warhammermarket.service.mapper.ProductMapper;
-import com.m2i.warhammermarket.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -45,6 +43,18 @@ public class ProductServiceImplement implements ProductService {
 
     @Override
     public void delete(Long id) {
+
+    }
+
+    @Override
+    public List<ProductDTO> getProductsSort(String field, String type) {
+        if(field.equalsIgnoreCase("label") && type.equalsIgnoreCase("desc"))
+            return productRepository.getProductsSortByLabelDesc().stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
+        else if(field.equalsIgnoreCase("price") && type.equalsIgnoreCase("asc"))
+            return productRepository.getProductsSortByPriceAsc().stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
+        else if (field.equalsIgnoreCase("price") && type.equalsIgnoreCase("desc"))
+            return productRepository.getProductsSortByPriceDesc().stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
+        return productRepository.getProductsSortByLabelAsc().stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
 
     }
 }

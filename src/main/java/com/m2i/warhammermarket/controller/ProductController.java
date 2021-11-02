@@ -28,6 +28,12 @@ public class ProductController {
     }
 
     @CrossOrigin(origins = "*")
+    @GetMapping("/public/products/{field}/{type}")
+    public ResponseEntity<List<ProductDTO>> getProductsSort(@PathVariable String field, @PathVariable String type){
+        return ResponseEntity.ok().body(productService.getProductsSort(field, type));
+    }
+
+    @CrossOrigin(origins = "*")
     @GetMapping("/public/products")
     public ResponseEntity<List<ProductDTO>> getAllProduct(Pageable pageable) {
         Page<ProductDTO> page = this.productService.findAll(pageable);
