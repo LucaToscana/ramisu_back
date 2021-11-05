@@ -1,16 +1,13 @@
 package com.m2i.warhammermarket.entity.DAO;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -52,5 +49,5 @@ public class Product implements Serializable {
 
     @ManyToOne
     @JoinColumn (name = "id_categories")
-    private Categorie categorie;
+    private Category categorie;
 }

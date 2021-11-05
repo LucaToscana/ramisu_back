@@ -27,11 +27,22 @@ public class ProductController {
         return ResponseEntity.ok().body(productDTO);
     }
 
+    /**
+     * Que fait la méthode
+     * @param pageable
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @GetMapping("/public/products")
     public ResponseEntity<List<ProductDTO>> getAllProduct(Pageable pageable) {
         Page<ProductDTO> page = this.productService.findAll(pageable);
         return ResponseEntity.ok().body(page.getContent());
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/public/products/count")
+    public ResponseEntity<Integer> ProductCount() {
+        return ResponseEntity.ok().body(productService.productCounter());
     }
 
 }

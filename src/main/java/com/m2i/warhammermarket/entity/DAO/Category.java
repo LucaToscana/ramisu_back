@@ -17,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Table(name = "Categories")
-public class Categorie implements Serializable {
+public class Category implements Serializable {
 
     @Id
     @Column(name = "id", nullable = false)

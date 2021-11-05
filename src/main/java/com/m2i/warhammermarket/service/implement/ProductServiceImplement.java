@@ -47,4 +47,9 @@ public class ProductServiceImplement implements ProductService {
     public void delete(Long id) {
 
     }
+
+    @Override
+    public Integer productCounter() {
+        return productRepository.countProduct();
+    }
 }
