@@ -21,7 +21,7 @@ public class ProductController {
     private ProductService productService;
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/public/products/{id}")
+    @GetMapping("/public/product/{id}")
     public ResponseEntity<Optional<ProductDTO>> getProduct(@PathVariable Long id) {
         Optional<ProductDTO> productDTO = this.productService.findOne(id);
         return ResponseEntity.ok().body(productDTO);
@@ -32,6 +32,12 @@ public class ProductController {
      * @param pageable
      * @return
      */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/public/products/{field}/{type}")
+    public ResponseEntity<List<ProductDTO>> getProductsSort(@PathVariable String field, @PathVariable String type){
+        return ResponseEntity.ok().body(productService.getProductsSort(field, type));
+    }
+
     @CrossOrigin(origins = "*")
     @GetMapping("/public/products")
     public ResponseEntity<List<ProductDTO>> getAllProduct(Pageable pageable) {
