@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class AuthorityDAO implements GrantedAuthority {
+public class Authority implements GrantedAuthority {
 
     @Id
     @Column(length = 20)

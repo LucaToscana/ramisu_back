@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserSecurity {
+public class UserSecurityDTO {
     private String username;
     private String password;
     private List<String> authorities = new ArrayList<>();
