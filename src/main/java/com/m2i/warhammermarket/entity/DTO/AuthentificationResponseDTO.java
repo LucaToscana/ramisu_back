@@ -9,5 +9,5 @@ import lombok.*;
 @ToString
 public class AuthentificationResponseDTO {
     private String token;
-    private String username;
+    private String mail;
 }

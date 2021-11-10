@@ -9,13 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "authority")
+@Table(name = "roles")
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Authority implements GrantedAuthority {
+public class AuthorityDAO implements GrantedAuthority {
 
     @Id
     @Column(length = 20)

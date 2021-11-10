@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Entity
 @Table (name = "Products")
-public class Product implements Serializable {
+public class ProductDAO implements Serializable {
 
     @Id
     @Column (name = "id", nullable = false)
@@ -45,9 +45,9 @@ public class Product implements Serializable {
 
     @ManyToOne
     @JoinColumn (name = "id_universes")
-    private Universe universe;
+    private UniverseDAO universeDAO;
 
     @ManyToOne
     @JoinColumn (name = "id_categories")
-    private Category categorie;
+    private CategoryDAO categorie;
 }

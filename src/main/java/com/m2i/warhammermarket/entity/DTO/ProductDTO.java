@@ -23,22 +23,22 @@ public class ProductDTO implements Serializable {
     private float promotion;
     private int stock;
     private String yearOfProduction;
-    private Universe universe;
-    private Category categorie;
+    private UniverseDAO universeDAO;
+    private CategoryDAO categorie;
 
 
-    public ProductDTO(Product product) {
+    public ProductDTO(ProductDAO productDAO) {
 
-        this.id = product.getId();
-        this.ean13 = product.getEan13();
-        this.label = product.getLabel();
-        this.price = product.getPrice();
-        this.description = product.getDescription();
-        this.promotion = product.getPromotion();
-        this.stock = product.getStock();
-        this.yearOfProduction = product.getYearOfProduction();
-        this.universe = product.getUniverse();
-        this.categorie = product.getCategorie();
+        this.id = productDAO.getId();
+        this.ean13 = productDAO.getEan13();
+        this.label = productDAO.getLabel();
+        this.price = productDAO.getPrice();
+        this.description = productDAO.getDescription();
+        this.promotion = productDAO.getPromotion();
+        this.stock = productDAO.getStock();
+        this.yearOfProduction = productDAO.getYearOfProduction();
+        this.universeDAO = productDAO.getUniverseDAO();
+        this.categorie = productDAO.getCategorie();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ProductDTO implements Serializable {
                 ", promotion='" + getPromotion() + "'" +
                 ", stock='" + getStock() + "'" +
                 ", year of production='" + getYearOfProduction() + "'" +
-                ", universe='" + getUniverse() + "'" +
+                ", universe='" + getUniverseDAO() + "'" +
                 ", id_categories='" + getCategorie() + "'" +
                 "}";
     }
