@@ -18,7 +18,7 @@ import java.util.HashSet;
 @AllArgsConstructor
 @Entity
 @Table (name = "Users")
-public class User {
+public class UserDAO {
 
     @Id
     @Column (name = "id", nullable = false)

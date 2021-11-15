@@ -26,11 +26,11 @@ public class ProductDTO implements Serializable {
     private float promotion;
     private int stock;
     private String yearOfProduction;
-    private Universe universe;
-    private Categorie categorie;
+    private UniverseDAO universe;
+    private CategoryDAO categorie;
 
 
-    public ProductDTO(Product product) {
+    public ProductDTO(ProductDAO product) {
 
         this.id = product.getId();
         this.ean13 = product.getEan13();

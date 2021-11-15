@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,6 +39,26 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getAllProduct(Pageable pageable) {
         Page<ProductDTO> page = this.productService.findAll(pageable);
         return ResponseEntity.ok().body(page.getContent());
+    }
+    
+    
+    /**
+     * Search X number of products from a field
+     * 
+     * @param field the field of research
+     * @param numberOfResult the number of products wanted
+     * @return a page of X products
+     * 
+     * @author Cecile
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/public/products/random/{field}/{numberOfResult}")
+    public ResponseEntity<List<ProductDTO>> getRandomProducts(@PathVariable String field, @PathVariable int numberOfResult) {
+    	Page<ProductDTO> page = this.productService.findRandomProducts(field, numberOfResult);
+    	if (page == null) {
+    		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    	}
+    	return ResponseEntity.ok().body(page.getContent());
     }
 
 }

@@ -1,7 +1,7 @@
 package com.m2i.warhammermarket.service.mapper;
 
-import com.m2i.warhammermarket.entity.DAO.Product;
-import com.m2i.warhammermarket.entity.DAO.User;
+import com.m2i.warhammermarket.entity.DAO.ProductDAO;
+import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import org.springframework.stereotype.Service;
@@ -13,29 +13,29 @@ import java.util.stream.Collectors;
 @Service
 public class ProductMapper {
 
-    public List<ProductDTO> usersToUsersDTO(List<Product> products) {
+    public List<ProductDTO> usersToUsersDTO(List<ProductDAO> products) {
         return products.stream()
                 .filter(Objects::nonNull)
                 .map(this::productToProductDTO)
                 .collect(Collectors.toList());
     }
 
-    public ProductDTO productToProductDTO(Product product) {
+    public ProductDTO productToProductDTO(ProductDAO product) {
         return new ProductDTO(product);
     }
 
-    public List<Product> productDTOsToProductss(List<ProductDTO> productDTOs) {
+    public List<ProductDAO> productDTOsToProductss(List<ProductDTO> productDTOs) {
         return productDTOs.stream()
                 .filter(Objects::nonNull)
                 .map(this::productDTOToProduct)
                 .collect(Collectors.toList());
     }
 
-    public Product productDTOToProduct(ProductDTO productDTO) {
+    public ProductDAO productDTOToProduct(ProductDTO productDTO) {
         if (productDTO == null) {
             return null;
         } else {
-            Product product = new Product();
+            ProductDAO product = new ProductDAO();
             product.setId(productDTO.getId());
             product.setEan13(productDTO.getEan13());
             product.setLabel(productDTO.getLabel());
@@ -48,11 +48,11 @@ public class ProductMapper {
         }
     }
 
-    public Product productFromId(Long id) {
+    public ProductDAO productFromId(Long id) {
         if (id == null) {
             return null;
         }
-        Product product = new Product();
+        ProductDAO product = new ProductDAO();
         product.setId(id);
         return product;
     }

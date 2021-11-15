@@ -1,6 +1,6 @@
 package com.m2i.warhammermarket.entity.DTO;
 
-import com.m2i.warhammermarket.entity.DAO.User;
+import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -21,7 +21,7 @@ public class UserDTO implements Serializable {
     private String token;
     private List<String> authorities;
 
-    public UserDTO(User user) {
+    public UserDTO(UserDAO user) {
 
         this.id = user.getId();
         this.mail = user.getMail();

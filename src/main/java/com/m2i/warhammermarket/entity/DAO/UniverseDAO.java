@@ -17,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Table(name = "Universes")
-public class Universe implements Serializable {
+public class UniverseDAO implements Serializable {
 
     @Id
     @Column(name = "id", nullable = false)

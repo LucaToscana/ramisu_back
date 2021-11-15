@@ -24,4 +24,16 @@ public interface ProductService {
     void delete(Long id);
 
     List<ProductDTO> getProductsSort(String field, String type);
+    
+    
+    /**
+     * Search X number of products from a field
+     * 
+     * @param field the field of research (
+     * @param numberOfResult the number of products wanted
+     * @return a page of X products
+     * 
+     * @author Cecile
+     */
+    Page<ProductDTO> findRandomProducts(String field, int numberOfResult);
 }

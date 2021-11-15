@@ -18,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table (name = "Products")
-public class Product implements Serializable {
+public class ProductDAO implements Serializable {
 
     @Id
     @Column (name = "id", nullable = false)
@@ -48,9 +48,9 @@ public class Product implements Serializable {
 
     @ManyToOne
     @JoinColumn (name = "id_universes")
-    private Universe universe;
+    private UniverseDAO universe;
 
     @ManyToOne
     @JoinColumn (name = "id_categories")
-    private Categorie categorie;
+    private CategoryDAO categorie;
 }
