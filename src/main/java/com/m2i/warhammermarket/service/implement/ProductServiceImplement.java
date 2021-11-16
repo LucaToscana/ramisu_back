@@ -60,6 +60,11 @@ public class ProductServiceImplement implements ProductService {
 
     }
 
+    @Override
+    public Integer productCounter() {
+        return productRepository.countProduct();
+    }
+
     /**
      * Search X number of products from a field
      * 

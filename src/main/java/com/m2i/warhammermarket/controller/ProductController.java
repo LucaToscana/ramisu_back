@@ -28,6 +28,11 @@ public class ProductController {
         return ResponseEntity.ok().body(productDTO);
     }
 
+    /**
+     * Que fait la méthode
+     * @param pageable
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @GetMapping("/public/products/{field}/{type}")
     public ResponseEntity<List<ProductDTO>> getProductsSort(@PathVariable String field, @PathVariable String type){
@@ -59,6 +64,12 @@ public class ProductController {
     		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     	}
     	return ResponseEntity.ok().body(page.getContent());
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/public/products/count")
+    public ResponseEntity<Integer> ProductCount() {
+        return ResponseEntity.ok().body(productService.productCounter());
     }
 
 }

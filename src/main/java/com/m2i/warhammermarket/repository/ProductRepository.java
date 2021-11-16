@@ -15,6 +15,9 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductDAO, Long> {
 
+    @Query("SELECT COUNT(p) FROM ProductDAO p")
+    Integer countProduct();
+
     @Query("from ProductDAO p order by p.label")
     List<ProductDAO> getProductsSortByLabelAsc();
 
@@ -24,6 +27,8 @@ public interface ProductRepository extends JpaRepository<ProductDAO, Long> {
     @Query("from ProductDAO p order by p.price")
     List<ProductDAO> getProductsSortByPriceAsc();
 
+    @Query("from ProductDAO p order by p.price desc")
+    List<ProductDAO> getProductsSortByPriceDesc();
     @Query("from ProductDAO p order by p.price desc")
     List<ProductDAO> getProductsSortByPriceDesc();
    

@@ -1,16 +1,15 @@
 package com.m2i.warhammermarket.entity.DAO;
 
+import com.nimbusds.jose.shaded.json.annotate.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,8 +35,16 @@ public class UserDAO {
     @Column (name = "active", nullable = false)
     private boolean active;
 
-    @Column (name = "token", nullable = true)
+    @Column (name = "reset_password_token", nullable = true)
     private String token;
 
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "have",
+            joinColumns = { @JoinColumn(name = "id_users", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "name_role", referencedColumnName = "name") }
+    )
+    private Set<AuthorityDAO> authorities = new HashSet<>();
 
 }

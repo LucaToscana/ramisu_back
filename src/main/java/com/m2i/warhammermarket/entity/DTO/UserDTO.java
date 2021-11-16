@@ -30,6 +30,12 @@ public class UserDTO implements Serializable {
         this.token = user.getToken();
     }
 
+    public UserDTO(Long id, String mail, List<String> authorities) {
+        this.id = id;
+        this.mail = mail;
+        this.authorities = authorities;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +

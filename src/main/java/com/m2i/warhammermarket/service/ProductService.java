@@ -23,6 +23,8 @@ public interface ProductService {
 
     void delete(Long id);
 
+    Integer productCounter();
+
     List<ProductDTO> getProductsSort(String field, String type);
     
     
