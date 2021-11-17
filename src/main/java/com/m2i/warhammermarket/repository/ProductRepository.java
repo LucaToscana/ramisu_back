@@ -29,8 +29,6 @@ public interface ProductRepository extends JpaRepository<ProductDAO, Long> {
 
     @Query("from ProductDAO p order by p.price desc")
     List<ProductDAO> getProductsSortByPriceDesc();
-    @Query("from ProductDAO p order by p.price desc")
-    List<ProductDAO> getProductsSortByPriceDesc();
    
     
     /**

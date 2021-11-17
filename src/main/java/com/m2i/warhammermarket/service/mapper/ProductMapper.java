@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProductMapper {
 
-    public List<ProductDTO> usersToUsersDTO(List<ProductDAO> productDAOS) {
+    public List<ProductDTO> productsToProductsDTOList(List<ProductDAO> productDAOS) {
         return productDAOS.stream()
                 .filter(Objects::nonNull)
                 .map(this::productToProductDTO)
@@ -22,7 +22,7 @@ public class ProductMapper {
         return new ProductDTO(productDAO);
     }
 
-    public List<ProductDAO> productDTOsToProductss(List<ProductDTO> productDTOs) {
+    public List<ProductDAO> productDTOsToProducts(List<ProductDTO> productDTOs) {
         return productDTOs.stream()
                 .filter(Objects::nonNull)
                 .map(this::productDTOToProduct)
