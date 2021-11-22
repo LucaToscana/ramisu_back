@@ -1,7 +1,6 @@
 package com.m2i.warhammermarket.service;
 
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
-import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,6 +15,7 @@ public interface ProductService {
      * @return the persisted entity
      */
     ProductDTO save (ProductDTO product);
+
 
     Page<ProductDTO> findAll(Pageable pageable);
 
@@ -38,4 +38,7 @@ public interface ProductService {
      * @author Cecile
      */
     Page<ProductDTO> findRandomProducts(String field, int numberOfResult);
+
+    //List <ProductDTO> searchByCriteria (ProductSearchRequestModel productSearchRequestModel) ;
+
 }
