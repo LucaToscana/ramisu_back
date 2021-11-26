@@ -9,8 +9,17 @@ package com.m2i.warhammermarket.model;
 public class ProductSearchCriteria {
     private String productTag ;
     private String label;
-    private int price ;
-    private String univers;
+    private int price;
+    private String universe;
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public String getProductTag() {
         return productTag;
@@ -36,11 +45,11 @@ public class ProductSearchCriteria {
         this.price = price;
     }
 
-    public String getUnivers() {
-        return univers;
+    public String getUniverse() {
+        return universe;
     }
 
-    public void setUnivers(String univers) {
-        this.univers = univers;
+    public void setUniverse(String universe) {
+        this.universe = universe;
     }
 }

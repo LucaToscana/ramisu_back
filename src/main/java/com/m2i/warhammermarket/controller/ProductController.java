@@ -1,21 +1,17 @@
 package com.m2i.warhammermarket.controller;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.model.ProductSearchCriteria;
+import com.m2i.warhammermarket.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.m2i.warhammermarket.entity.DTO.ProductDTO;
-import com.m2i.warhammermarket.service.ProductService;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -33,7 +29,6 @@ public class ProductController {
 
     /**
      * Que fait la méthode
-     * @param pageable
      * @return
      */
     @CrossOrigin(origins = "*")
@@ -48,8 +43,8 @@ public class ProductController {
         Page<ProductDTO> page = this.productService.findAll(pageable);
         return ResponseEntity.ok().body(page.getContent());
     }
-    
-    
+
+
     /**
      * Search X number of products from a field
      * 
@@ -75,4 +70,17 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.productCounter());
     }
 
+    /**
+     * @param productSearchCriteria model for criterias filters
+     * @return List of products
+     * @author Claire
+     */
+    @CrossOrigin(origins = "*")
+    @PostMapping( "/public/products/search")
+          //  consumes=MediaType.APPLICATION_JSON_VALUE,
+          //  produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestBody ProductSearchCriteria productSearchCriteria) {
+        List<ProductDTO> productsList = productService.searchProductByCriteria(productSearchCriteria);
+        return new ResponseEntity<>( productsList , HttpStatus.OK);
+    }
 }
