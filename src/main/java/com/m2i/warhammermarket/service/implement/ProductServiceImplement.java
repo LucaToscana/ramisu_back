@@ -2,8 +2,10 @@ package com.m2i.warhammermarket.service.implement;
 
 import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
 import com.m2i.warhammermarket.repository.ProductRepository;
+import com.m2i.warhammermarket.repository.ProductRepositoryCriteria;
 import com.m2i.warhammermarket.service.ProductService;
 import com.m2i.warhammermarket.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +30,11 @@ public class ProductServiceImplement implements ProductService {
     @Autowired
     private EntityManager entityManager;
 
+    //Claire
     private ProductSearchCriteria productSearchCriteria;
+    @Autowired
+    private ProductRepositoryCriteria productRepositoryCriteria;
+    //-
 
     public ProductServiceImplement() {
     }
@@ -121,45 +122,16 @@ public class ProductServiceImplement implements ProductService {
 		return productPageDTO;
 	}
 
+
     /**
      * @param productSearchCriteria
      *  This method is used for 'Dynamic Search'.
      *  Means PersonSearchRequestModel has four variables, based on any combination of variables a search will happen.
      * @author Claire
      */
-    @Override
-    public List<ProductDTO> searchProductByCriteria (ProductSearchCriteria productSearchCriteria) {
-
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery <ProductDTO> criteriaQuery = criteriaBuilder.createQuery(ProductDTO.class);
-        Root <ProductDTO> root = criteriaQuery.from(ProductDTO.class);
-
-        String label = productSearchCriteria.getLabel();
-        String productTag = productSearchCriteria.getProductTag();
-        String universe = productSearchCriteria.getUniverse();
-        String category = productSearchCriteria.getCategory();
-        int price = productSearchCriteria.getPrice();
-
-        /*
-         *  Adding search criteria's for query using CriteriaBuilder
-         */
-        List<Predicate> searchCriterias = new ArrayList<>();
-
-        if( (label != "") && (label != null) ) {
-            searchCriterias.add( criteriaBuilder.like( root.get("label"), "%"+label+"%") );
-        }
-        if( (productTag != "") && (productTag != null) ) {
-            searchCriterias.add( criteriaBuilder.like( root.get("productTag"), "%"+productTag+"%") );
-        }
-        if( (universe != "") && (universe != null) ) {
-            searchCriterias.add( criteriaBuilder.like( root.get("universe"), "%"+universe+"%") );
-        }
-        if ( (category != "") && (category != null) )
-        if( price!=0 ) {
-            searchCriterias.add( criteriaBuilder.equal( root.get("price"), price) );
-        }
-        criteriaQuery.select( root ).where( criteriaBuilder.and( searchCriterias.toArray(new Predicate[searchCriterias.size()]) ));
-        return entityManager.createQuery(criteriaQuery).getResultList();
+    public Page<ProductDAO> getProductCriteria(ProductRequestModel productRequestModel,
+                                               ProductSearchCriteria productSearchCriteria){
+        return productRepositoryCriteria.findAllWithFilters(productRequestModel, productSearchCriteria);
     }
 
 }

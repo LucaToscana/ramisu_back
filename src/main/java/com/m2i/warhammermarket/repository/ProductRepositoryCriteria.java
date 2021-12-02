@@ -1,41 +1,111 @@
 package com.m2i.warhammermarket.repository;
 
+import com.m2i.warhammermarket.entity.DAO.ProductDAO;
+import com.m2i.warhammermarket.model.ProductRequestModel;
+import com.m2i.warhammermarket.model.ProductSearchCriteria;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This is a Repository for product research with Criteria
  * @since 1.1
  * @author Claire
  */
-
+@Repository
 public class ProductRepositoryCriteria {
 
-    private final EntityManager entityManager ;
-    private final CriteriaBuilder criteriaBuilder;
+    private final EntityManager em;
+    private final CriteriaBuilder ct;
 
-    public ProductRepositoryCriteria (EntityManager entityManager) {
-        this.entityManager = entityManager;
-        this.criteriaBuilder = entityManager.getCriteriaBuilder();
+    public ProductRepositoryCriteria (EntityManager manager) {
+        this.em = manager;
+        this.ct = manager.getCriteriaBuilder();
     }
 
-   /* public Page<ProductDAO> searchAllWithFilters(ProductRequestModel productRequestModel,
-                                                 ProductRepositoryCriteria productRepositoryCriteria) {
-        CriteriaQuery<ProductDAO> criteriaQuery = criteriaBuilder.createQuery(ProductDAO.class);
-        Root<ProductDAO> productDAORoot = criteriaQuery.from(ProductDAO.class );
-        Predicate predicate = getPredicate (productRepositoryCriteria, productDAORoot);
-        criteriaQuery.where(predicate);
-        setOrder(productRequestMode, criteriaQuery, productDAORoot);
+    public Page<ProductDAO> findAllWithFilters (ProductRequestModel productRM,
+                                                 ProductSearchCriteria searchCriteria) {
+        CriteriaQuery<ProductDAO> ctQuery = ct.createQuery(ProductDAO.class);
+        Root<ProductDAO> productDAORoot = ctQuery.from(ProductDAO.class );
+        Predicate predicate = getPredicate (searchCriteria, productDAORoot);
+        ctQuery.where(predicate);
+        setOrder(productRM, ctQuery, productDAORoot);
 
-        TypedQuery<ProductDAO> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(productRequestModel.getPageNumber() * productRequestModel.getPageSize());
-        typedQuery.setMaxResults(productRequestModel.getPageSize());
+        TypedQuery<ProductDAO> typedQuery = em.createQuery(ctQuery);
+        typedQuery.setFirstResult(productRM.getPageNumber() * productRM.getPageSize());
+        typedQuery.setMaxResults(productRM.getPageSize());
 
-        Pageable pageable = getPageable(productRequestModel);
+        Pageable pageable = getPageable(productRM);
 
         long productCount = getProductCount (predicate);
 
         return new PageImpl<>(typedQuery.getResultList(), pageable, productCount);
-    }*/
+    }
 
+    private Predicate getPredicate(ProductSearchCriteria productSearchCriteria,
+                                   Root<ProductDAO> productDAORoot) {
+        List<Predicate> predicates = new ArrayList<>();
+        if(Objects.nonNull(productSearchCriteria.getProductTag())){
+            predicates.add(
+                    ct.like(productDAORoot.get("productTag"),
+                            "%" + productSearchCriteria.getProductTag() + "%")
+            );
+        }
+        if((productSearchCriteria.getPrice()) != 0){
+            predicates.add(
+                    ct.like(productDAORoot.get("price"),
+                            "%" + productSearchCriteria.getPrice() + "%")
+            );
+        }
+        if(Objects.nonNull(productSearchCriteria.getLabel())) {
+            predicates.add(
+                    ct.like(productDAORoot.get("label"),
+                            "%" + productSearchCriteria.getLabel() + "%")
+            );
+        }
+        if(Objects.nonNull(productSearchCriteria.getUniverse())) {
+            predicates.add(
+                    ct.like(productDAORoot.get("universe"),
+                            "%" + productSearchCriteria.getUniverse() + "%")
+            );
+        }
+        if(Objects.nonNull(productSearchCriteria.getCategory())) {
+            predicates.add(
+                    ct.like(productDAORoot.get("category"),
+                            "%" + productSearchCriteria.getCategory() + "%")
+            );
+        }
+        return ct.and(predicates.toArray(new Predicate[0]));
+    }
+
+    private void setOrder(ProductRequestModel productRM,
+                          CriteriaQuery<ProductDAO> criteriaQuery,
+                          Root<ProductDAO> productDAORoot) {
+        if(productRM.getSortDirection().equals(Sort.Direction.ASC)){
+            criteriaQuery.orderBy(ct.asc(productDAORoot.get(productRM.getSortBy())));
+        } else {
+            criteriaQuery.orderBy(ct.desc(productDAORoot.get(productRM.getSortBy())));
+        }
+    }
+
+    private Pageable getPageable(ProductRequestModel productRequestModel) {
+        Sort sort = Sort.by(productRequestModel.getSortDirection(), productRequestModel.getSortBy());
+        return PageRequest.of(productRequestModel.getPageNumber(),productRequestModel.getPageSize(), sort);
+    }
+
+    private long getProductCount(Predicate predicate) {
+        CriteriaQuery<Long> countQuery = ct.createQuery(Long.class);
+        Root<ProductDAO> countRoot = countQuery.from(ProductDAO.class);
+        countQuery.select(ct.count(countRoot)).where(predicate);
+        return em.createQuery(countQuery).getSingleResult();
+    }
 }

@@ -1,6 +1,8 @@
 package com.m2i.warhammermarket.controller;
 
+import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
 import com.m2i.warhammermarket.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ public class ProductController {
 
     /**
      * Que fait la méthode
-     * @return
+     * @return .
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/public/products/{field}/{type}")
@@ -75,12 +77,12 @@ public class ProductController {
      * @return List of products
      * @author Claire
      */
-    @CrossOrigin(origins = "*")
-    @PostMapping( "/public/products/search")
-          //  consumes=MediaType.APPLICATION_JSON_VALUE,
-          //  produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestBody ProductSearchCriteria productSearchCriteria) {
-        List<ProductDTO> productsList = productService.searchProductByCriteria(productSearchCriteria);
-        return new ResponseEntity<>( productsList , HttpStatus.OK);
+    //@CrossOrigin(origins = "*")
+    //@GetMapping ( "/public/products/search")
+    public ResponseEntity<Page<ProductDAO>> getProduct (ProductRequestModel productRequestModel,
+                                            ProductSearchCriteria productSearchCriteria ){
+        return new ResponseEntity<>(productService.getProductCriteria(productRequestModel, productSearchCriteria),
+                HttpStatus.OK);
     }
-}
+
+  }
