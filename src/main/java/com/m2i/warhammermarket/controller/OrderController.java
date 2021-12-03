@@ -20,9 +20,10 @@ public class OrderController {
     private OrderService orderService;
 
     @CrossOrigin(origins = "*")
-    @Secured(AuthorityConstant.ROLE_USER)
+//    @Secured(AuthorityConstant.ROLE_USER)
     @PostMapping("/user/addorder")
     public ResponseEntity<Boolean> createOrder(@RequestBody List<ProductOrderWrapper> productsOrder){
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
         List<ProductOrderWrapper> productsFilter = productsOrder.stream().filter(c -> c.getQuantite() > 0).collect(Collectors.toList());
         if(productsFilter.size() > 0 && orderService.checkStock(productsFilter)){
             try {
