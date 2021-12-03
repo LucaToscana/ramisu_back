@@ -14,17 +14,15 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "Categories")
-public class CategoryDAO implements Serializable {
-
+@Table(name = "Status")
+public class StatusDAO implements Serializable {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column (name ="ref_code")
+    @Column(name = "ref_code", nullable = false)
     private String refCode;
 
-    @Column (name ="label", nullable = false)
+    @Column(name = "label", nullable = false)
     private String label;
-
 }
