@@ -1,10 +1,7 @@
 package com.m2i.warhammermarket.entity.DAO;
 
 import com.nimbusds.jose.shaded.json.annotate.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,6 +12,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table (name = "Users")
 public class UserDAO {
