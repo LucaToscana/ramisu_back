@@ -2,8 +2,12 @@ package com.m2i.warhammermarket.service.implement;
 
 import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
+import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
+import com.m2i.warhammermarket.repository.AddressRepository;
+import com.m2i.warhammermarket.repository.UserInformationRepository;
 import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.UserService;
@@ -11,6 +15,7 @@ import com.m2i.warhammermarket.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +33,10 @@ public class UserServiceImplement implements UserService {
     private UserMapper userMapper;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AddressRepository addressRepository;
+    @Autowired
+    private UserInformationRepository userInformationRepository;
 
 
     // password encode permet d'encoder le mot de passe avant de l'enregistrer en BDD
@@ -85,5 +94,12 @@ public class UserServiceImplement implements UserService {
     @Override
     public void delete(Long id) {
 
+    }
+
+    @Override
+    public ProfileWrapper getProfile(String mail) {
+        UsersInformationDAO user =
+            userInformationRepository.getByMail(mail);
+        return new ProfileWrapper(user,addressRepository.getAddressMainByIdUser(user.getUser().getId()));
     }
 }

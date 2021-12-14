@@ -1,6 +1,7 @@
 package com.m2i.warhammermarket.service;
 
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
@@ -25,4 +26,5 @@ public interface UserService {
 
     void delete(Long id);
 
+    ProfileWrapper getProfile(String mail);
 }
