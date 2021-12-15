@@ -1,14 +1,10 @@
 package com.m2i.warhammermarket.repository;
 
 import com.m2i.warhammermarket.entity.DAO.ProductDAO;
-import com.m2i.warhammermarket.entity.DAO.UserDAO;
-import com.m2i.warhammermarket.entity.DTO.ProductDTO;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -60,4 +56,5 @@ public interface ProductRepository extends JpaRepository<ProductDAO, Long> {
      */
     @Query("FROM ProductDAO p order by p.yearOfProduction desc")
     Page<ProductDAO> getRandomTopSaleProducts(Pageable firstPageWithXElements);
+
 }

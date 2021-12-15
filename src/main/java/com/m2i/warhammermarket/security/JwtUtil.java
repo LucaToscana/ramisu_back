@@ -26,6 +26,7 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
+
     /**
      * Methode permettant de générer notre Token JWT
      * Celui contenant un "Claims", une liste de variable qui pourra être récupérer lorsque le BACK récupére le token depuis le front

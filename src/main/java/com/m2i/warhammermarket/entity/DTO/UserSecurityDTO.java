@@ -1,6 +1,7 @@
 package com.m2i.warhammermarket.entity.DTO;
 
 import lombok.*;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 public class UserSecurityDTO {
     private String mail;
     private String password;
+    private Long id;
     private List<String> authorities = new ArrayList<>();
 
     public String getPassword() {
@@ -37,5 +39,9 @@ public class UserSecurityDTO {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
