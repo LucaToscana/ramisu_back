@@ -1,11 +1,12 @@
 package com.m2i.warhammermarket.service;
 
-import com.m2i.warhammermarket.entity.DTO.UserDTO;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 
-import java.util.Optional;
+import com.m2i.warhammermarket.entity.DTO.UserDTO;
+import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 
 public interface UserService {
 
@@ -22,6 +23,8 @@ public interface UserService {
     Page<UserDTO> findAll(Pageable pageable);
 
     Optional<UserDTO> findOne(Long id);
+    
+    void createPasswordResetToken(UserDTO userDTO, String token);
 
     void delete(Long id);
 

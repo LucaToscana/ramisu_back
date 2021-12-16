@@ -1,6 +1,24 @@
 package com.m2i.warhammermarket.service.implement;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
+import org.apache.coyote.http11.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
+import com.m2i.warhammermarket.entity.DAO.PasswordResetTokenDAO;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
@@ -8,17 +26,6 @@ import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.UserService;
 import com.m2i.warhammermarket.service.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -80,6 +87,31 @@ public class UserServiceImplement implements UserService {
     @Override
     public Optional<UserDTO> findOne(Long id) {
         return Optional.empty();
+    }
+    
+    /**
+     * Create a token to reset password
+     */
+    @Override
+    public void createPasswordResetToken(UserDTO userDTO, String token) {
+    	UserDAO userDAO = this.userMapper.userDTOToUser(userDTO);
+    	PasswordResetTokenDAO passwordToken = new PasswordResetTokenDAO();
+    	passwordToken.setToken(token);
+    	passwordToken.setExpiryDate(this.calculateTokenExpiryDate(ApplicationConstants.TOKEN_EXPIRATION));
+    	passwordToken.setUserDAO(userDAO);
+    }
+    
+    /**
+     * Calculate and return the expiration date of a password token
+     * 
+     * @param expiryTimeInMinutes the expiration time in minutes
+     * @return Date : the date at which the token becomes invalid
+     */
+    private Date calculateTokenExpiryDate(final int expiryTimeInMinutes) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(new Date().getTime());
+        calendar.add(Calendar.MINUTE, expiryTimeInMinutes);
+        return new Date(calendar.getTime().getTime());
     }
 
     @Override
