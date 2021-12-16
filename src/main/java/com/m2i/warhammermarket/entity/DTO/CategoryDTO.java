@@ -1,7 +1,6 @@
 package com.m2i.warhammermarket.entity.DTO;
 
 import com.m2i.warhammermarket.entity.DAO.CategoryDAO;
-import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

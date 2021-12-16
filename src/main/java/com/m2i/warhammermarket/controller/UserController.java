@@ -18,9 +18,12 @@ import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistExceptio
 import com.m2i.warhammermarket.controller.exception.UserNotFoundException;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import model.Mail;
 
@@ -104,5 +107,11 @@ public class UserController {
     @GetMapping("/hello-admin")
     public String helloUser() {
         return "Hello admin";
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/public/profile")
+    public ResponseEntity<ProfileWrapper> getProfile(){
+        return ResponseEntity.ok( userService.getProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 }

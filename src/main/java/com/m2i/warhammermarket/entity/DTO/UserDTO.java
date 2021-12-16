@@ -14,6 +14,7 @@ import java.util.List;
 @ToString
 public class UserDTO implements Serializable {
 
+
     private Long id;
     private String mail;
     private Date dateOfCreation;
