@@ -35,6 +35,9 @@ public class UserDAO {
 
     @Column (name = "reset_password_token", nullable = true)
     private String token;
+    
+    @Column (name = "reset_password_token_expiration", nullable = true)
+    private Date tokenExpiryDate;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)

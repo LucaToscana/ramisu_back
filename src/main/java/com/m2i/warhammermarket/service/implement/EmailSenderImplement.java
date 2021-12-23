@@ -9,15 +9,19 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import model.Mail;
+import com.m2i.warhammermarket.model.Mail;
+import com.m2i.warhammermarket.service.EmailSenderService;
 
 /**
  * Class used to send emails to users 
  */
-public class EmailSenderImplement {
+
+@Service
+public class EmailSenderImplement implements EmailSenderService {
 
 	@Autowired
 	private JavaMailSender emailSender;

@@ -1,13 +1,14 @@
 package com.m2i.warhammermarket.service;
 
-import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
+import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 
 public interface UserService {
 
@@ -25,7 +26,9 @@ public interface UserService {
 
     Optional<UserDTO> findOne(Long id);
     
-    void createPasswordResetToken(UserDTO userDTO, String token);
+    Optional<UserInformationDTO> findUserInfoByUserMail(String mail);
+    
+    void createPasswordResetToken(String userEmail, String token);
 
     void delete(Long id);
 

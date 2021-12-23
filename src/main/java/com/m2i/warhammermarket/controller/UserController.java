@@ -1,12 +1,18 @@
 package com.m2i.warhammermarket.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+
+import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,18 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
 import com.m2i.warhammermarket.controller.exception.UserNotFoundException;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
+import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
+import com.m2i.warhammermarket.model.Mail;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.UserService;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
-import model.Mail;
 
 @RestController
 @RequestMapping("/api")
@@ -56,30 +61,44 @@ public class UserController {
         return ResponseEntity.ok(idSaved);
     }
     
-    
-    @PostMapping("/user/resetPassword")
-    public ResponseEntity resetPassword(@RequestParam("email") String userEmail) {
+    @CrossOrigin(origins = "*")
+    @PostMapping("/public/resetpassword")
+    public ResponseEntity<String> resetPassword(@RequestParam("email") String userEmail) {
+
         UserDTO userDTO = this.userService.findOneByUserMail(userEmail);
+        Optional<UserInformationDTO> userInformationDTO = null;
+
         if (userDTO == null) {
             throw new UserNotFoundException();
+        } else {
+        	userInformationDTO = this.userService.findUserInfoByUserMail(userEmail);
         }
-        String token = UUID.randomUUID().toString();
-        this.userService.createPasswordResetToken(userDTO, token);
+
+        String passwordToken = UUID.randomUUID().toString();
+        this.userService.createPasswordResetToken(userEmail, passwordToken);
 
         Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("firstName", "John Michel!");
-		properties.put("location", "Sri Lanka");
-		properties.put("sign", "Java Developer");
+		properties.put("firstName", userInformationDTO.get().getFirstName());
+		properties.put("lastName", userInformationDTO.get().getLastName());
+		properties.put("passwordToken", passwordToken);
 
 		Mail mail = Mail.builder()
-				.from("testfrom@gmail.com")
-				.to("wnsfernando95@gmail.com")
-				.htmlTemplate(new Mail.HtmlTemplate("sample", properties))
-				.subject("This is sample email with spring boot and thymeleaf")
+				.from(ApplicationConstants.WEBSITE_EMAIL_ADDRESS)
+				.to(userEmail)
+				.htmlTemplate(new Mail.HtmlTemplate("passwordresettoken", properties))
+				.subject("Réinitialisation du mot de passe Warhammer Market")
 				.build();
-		this.emailSenderService.sendMail(mail);
+		try {
+			this.emailSenderService.sendEmail(mail);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		return (ResponseEntity) ResponseEntity.ok();
+		return ResponseEntity.ok("Mail envoyé");
 		/*
         return new ResponseEntity(
           messages.getMessage("message.resetPasswordEmail", null, 

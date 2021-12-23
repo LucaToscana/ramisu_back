@@ -1,4 +1,4 @@
-package model;
+package com.m2i.warhammermarket.model;
 
 import java.util.Map;
 

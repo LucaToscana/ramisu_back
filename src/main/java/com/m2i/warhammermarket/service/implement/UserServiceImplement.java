@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.apache.coyote.http11.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +17,10 @@ import org.springframework.stereotype.Service;
 
 import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
-import com.m2i.warhammermarket.entity.DAO.PasswordResetTokenDAO;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
+import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.repository.AddressRepository;
@@ -29,8 +28,8 @@ import com.m2i.warhammermarket.repository.UserInformationRepository;
 import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.UserService;
+import com.m2i.warhammermarket.service.mapper.UserInformationMapper;
 import com.m2i.warhammermarket.service.mapper.UserMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 @Transactional
@@ -38,6 +37,8 @@ public class UserServiceImplement implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserInformationMapper userInfoMapper;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -76,10 +77,18 @@ public class UserServiceImplement implements UserService {
     public UserDTO findOneByUserMail(String mail) {
         UserDAO userDAO = userRepository.findByMail(mail);
         if(userDAO == null) return  null; //Si jamais le user n'existe pas, on renvoi directement null
+        
+        UserDTO userDTO = this.userMapper.userToUserDTO(userDAO);
+        userDTO.setAuthorities(userDAO.getAuthorities()
+        		.stream()
+        		.map(AuthorityDAO::getAuthority)
+        		.collect(Collectors.toList()));
+        /*
         UserDTO userDTO = new UserDTO(
                 userDAO.getId(),
                 userDAO.getMail(),
                 userDAO.getAuthorities().stream().map(AuthorityDAO::getAuthority).collect(Collectors.toList()));
+                */
         return userDTO;
     }
 
@@ -99,17 +108,16 @@ public class UserServiceImplement implements UserService {
     }
     
     /**
-     * Create a token to reset password
+     * Create a token to reset password and save it to the database
      */
     @Override
-    public void createPasswordResetToken(UserDTO userDTO, String token) {
-    	UserDAO userDAO = this.userMapper.userDTOToUser(userDTO);
-    	PasswordResetTokenDAO passwordToken = new PasswordResetTokenDAO();
-    	passwordToken.setToken(token);
-    	passwordToken.setExpiryDate(this.calculateTokenExpiryDate(ApplicationConstants.TOKEN_EXPIRATION));
-    	passwordToken.setUserDAO(userDAO);
+    public void createPasswordResetToken(String userEmail, String token) {
+    	UserDAO userDAO = this.userRepository.findByMail(userEmail);
+    	userDAO.setToken(token);
+    	userDAO.setTokenExpiryDate(this.calculateTokenExpiryDate(ApplicationConstants.TOKEN_EXPIRATION));
+    	this.userRepository.save(userDAO);
     }
-    
+
     /**
      * Calculate and return the expiration date of a password token
      * 
@@ -134,4 +142,10 @@ public class UserServiceImplement implements UserService {
             userInformationRepository.getByMail(mail);
         return new ProfileWrapper(user,addressRepository.getAddressMainByIdUser(user.getUser().getId()));
     }
+
+	@Override
+	public Optional<UserInformationDTO> findUserInfoByUserMail(String mail) {
+		UsersInformationDAO userInfoDao = this.userInformationRepository.getByMail(mail);
+		return Optional.ofNullable(this.userInfoMapper.userInfoDAOToUserInfoDTO(userInfoDao));
+	}
 }
