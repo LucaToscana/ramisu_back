@@ -80,7 +80,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)//On ajout notre filtre (en premier !) puis celui de SpringSecurity
                 .authorizeRequests()
                 .antMatchers("/api/login").permitAll()
-                .antMatchers("/api/user/**").hasAnyAuthority(AuthorityConstant.ROLE_USER)
+                .antMatchers("/api/user/**").permitAll()
                 .antMatchers("/api/orders/**").permitAll()
                 .antMatchers("/api/public/**").permitAll() //On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")
                 .anyRequest().authenticated() //on définie que toutes les routes ne correspondant pas aux routes du dessus sont sécurisé par authentification
