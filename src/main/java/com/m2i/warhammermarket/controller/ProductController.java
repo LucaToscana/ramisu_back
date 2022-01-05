@@ -1,5 +1,7 @@
 package com.m2i.warhammermarket.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
 import com.m2i.warhammermarket.model.ProductRequestModel;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,12 +80,15 @@ public class ProductController {
      * @return List of products
      * @author Claire
      */
-    //@CrossOrigin(origins = "*")
-    //@GetMapping ( "/public/products/search")
-    public ResponseEntity<Page<ProductDAO>> getProduct (ProductRequestModel productRequestModel,
-                                            ProductSearchCriteria productSearchCriteria ){
-        return new ResponseEntity<>(productService.getProductCriteria(productRequestModel, productSearchCriteria),
+    @CrossOrigin(origins = "*")
+    @GetMapping ( "/public/products/search")
+    public ResponseEntity<List<ProductDAO>> getProduct (@RequestParam(value = "productSearchCriteria") String productSearchCriteria ) throws JsonProcessingException {
+        return new ResponseEntity<>(productService.getProductCriteria(new ObjectMapper().readValue(productSearchCriteria,ProductSearchCriteria.class)),
                 HttpStatus.OK);
+//        List<ProductDAO> p = new ArrayList<>();
+//        ProductSearchCriteria ps = new ObjectMapper().readValue(productSearchCriteria,ProductSearchCriteria.class);
+//        System.out.println("product= "+ps);
+//        return ResponseEntity.ok(p);
     }
 
   }

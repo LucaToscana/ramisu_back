@@ -23,7 +23,7 @@ public class ProductDTO implements Serializable {
     private float promotion;
     private int stock;
     private String yearOfProduction;
-    private UniverseDAO universeDAO;
+    private UniverseDAO universe;
     private CategoryDAO categorie;
 
 
@@ -37,7 +37,7 @@ public class ProductDTO implements Serializable {
         this.promotion = productDAO.getPromotion();
         this.stock = productDAO.getStock();
         this.yearOfProduction = productDAO.getYearOfProduction();
-        this.universeDAO = productDAO.getUniverseDAO();
+        this.universe = productDAO.getUniverse();
         this.categorie = productDAO.getCategorie();
     }
 
@@ -52,7 +52,7 @@ public class ProductDTO implements Serializable {
                 ", promotion='" + getPromotion() + "'" +
                 ", stock='" + getStock() + "'" +
                 ", year of production='" + getYearOfProduction() + "'" +
-                ", universe='" + getUniverseDAO() + "'" +
+                ", universe='" + getUniverse() + "'" +
                 ", id_categories='" + getCategorie() + "'" +
                 "}";
     }

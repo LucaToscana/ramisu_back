@@ -1,8 +1,9 @@
 package com.m2i.warhammermarket.model;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.List;
 
 /**
  * Class for criteria product research fields
@@ -11,11 +12,14 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductSearchCriteria {
-    private String productTag ;
     private String label;
+//    private String productTag;
     private int price;
-    private String universe;
-    private String category;
+    private List<String> universe;
+    private List<String> category;
 
 }

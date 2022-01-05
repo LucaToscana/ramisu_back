@@ -47,6 +47,5 @@ public interface ProductService {
      * @return List of product filter by criteria query
      * @author Claire
      */
-    Page<ProductDAO> getProductCriteria(ProductRequestModel productRequestModel,
-                                        ProductSearchCriteria productSearchCriteria);
+    List<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria);
 }

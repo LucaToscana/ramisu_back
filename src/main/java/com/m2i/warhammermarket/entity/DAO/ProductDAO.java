@@ -45,7 +45,7 @@ public class ProductDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn (name = "id_universes")
-    private UniverseDAO universeDAO;
+    private UniverseDAO universe;
 
     @ManyToOne
     @JoinColumn (name = "id_categories")
