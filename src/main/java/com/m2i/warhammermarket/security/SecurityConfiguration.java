@@ -1,6 +1,7 @@
 package com.m2i.warhammermarket.security;
 
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +67,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+    
     /**
      * Methode principale, permettant de spécifier les configuration principal de notre application
      * Notamment les routes Privé et Public, ou le CORS, ou désactivation de CSRF, etc ...

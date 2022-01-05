@@ -27,23 +27,6 @@ public class ProductDTO implements Serializable {
     private UniverseDAO universe;
     private CategoryDAO categorie;
 
-
-    public ProductDTO(ProductDAO productDAO) {
-
-        this.id = productDAO.getId();
-        this.ean13 = productDAO.getEan13();
-        this.label = productDAO.getLabel();
-        this.price = productDAO.getPrice();
-        this.description = productDAO.getDescription();
-        this.promotion = productDAO.getPromotion();
-        this.stock = productDAO.getStock();
-        this.picture = productDAO.getPicture();
-        this.yearOfProduction = productDAO.getYearOfProduction();
-        this.universe = productDAO.getUniverse();
-        this.categorie = productDAO.getCategorie();
-
-    }
-
     @Override
     public String toString() {
         return "ProductDTO{" +
