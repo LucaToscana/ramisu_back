@@ -2,7 +2,10 @@ package com.m2i.warhammermarket.service.implement;
 
 import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.model.ProductRequestModel;
+import com.m2i.warhammermarket.model.ProductSearchCriteria;
 import com.m2i.warhammermarket.repository.ProductRepository;
+import com.m2i.warhammermarket.repository.ProductRepositoryCriteria;
 import com.m2i.warhammermarket.service.ProductService;
 import com.m2i.warhammermarket.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +14,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 @Service
 @Transactional
 public class ProductServiceImplement implements ProductService {
@@ -24,6 +27,14 @@ public class ProductServiceImplement implements ProductService {
     private ProductMapper productMapper;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private EntityManager entityManager;
+
+    //Claire
+    private ProductSearchCriteria productSearchCriteria;
+    @Autowired
+    private ProductRepositoryCriteria productRepositoryCriteria;
+    //-
 
     public ProductServiceImplement() {
     }
@@ -74,11 +85,12 @@ public class ProductServiceImplement implements ProductService {
      * 
      * @author Cecile
      */
+    Page<ProductDAO> productPageDAO = null;
+    Page<ProductDTO> productPageDTO = null;
 	@Override
 	public Page<ProductDTO> findRandomProducts(String field, int numberOfResult) {
 		Pageable firstPageWithXElements = PageRequest.of(0, numberOfResult);
-		Page<ProductDAO> productPageDAO = null;
-		Page<ProductDTO> productPageDTO = null;
+
 		switch (field.toLowerCase()) {
 
 			case "random" :
@@ -109,4 +121,16 @@ public class ProductServiceImplement implements ProductService {
 		}
 		return productPageDTO;
 	}
+
+
+    /**
+     * @param productSearchCriteria
+     *  This method is used for 'Dynamic Search'.
+     *  Means PersonSearchRequestModel has four variables, based on any combination of variables a search will happen.
+     * @author Claire
+     */
+    public List<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria){
+        return productRepositoryCriteria.findAllWithFilters(productSearchCriteria);
+    }
+
 }

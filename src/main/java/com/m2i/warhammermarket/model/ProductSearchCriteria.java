@@ -1,0 +1,25 @@
+package com.m2i.warhammermarket.model;
+
+
+import lombok.*;
+
+import java.util.List;
+
+/**
+ * Class for criteria product research fields
+ * @since 1.1
+ * @author Claire
+ */
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductSearchCriteria {
+    private String label;
+//    private String productTag;
+    private int price;
+    private List<String> universe;
+    private List<String> category;
+
+}
