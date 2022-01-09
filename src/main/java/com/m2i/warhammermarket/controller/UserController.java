@@ -63,7 +63,7 @@ public class UserController {
     
     @CrossOrigin(origins = "*")
     @PostMapping("/public/resetpassword")
-    public ResponseEntity<String> resetPassword(@RequestParam("email") String userEmail) {
+    public ResponseEntity<String> resetPasswordStart(@RequestParam("email") String userEmail) {
 
         UserDTO userDTO = this.userService.findOneByUserMail(userEmail);
         Optional<UserInformationDTO> userInformationDTO = null;
