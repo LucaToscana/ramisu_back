@@ -15,4 +15,5 @@ public class ProductOrderWrapper {
     private BigDecimal price;
     private Integer stock;
     private Integer quantite;
+    private String picture;
 }

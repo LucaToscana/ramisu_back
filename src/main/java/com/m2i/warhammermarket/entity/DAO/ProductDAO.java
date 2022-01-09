@@ -37,13 +37,16 @@ public class ProductDAO implements Serializable {
     @Column (name = "stock", nullable = false)
     private int stock;
 
+    @Column (name ="picture")
+    private String picture;
+
     @Column (name = "year_product")
     private String yearOfProduction;
 
 
     @ManyToOne
     @JoinColumn (name = "id_universes")
-    private UniverseDAO universeDAO;
+    private UniverseDAO universe;
 
     @ManyToOne
     @JoinColumn (name = "id_categories")

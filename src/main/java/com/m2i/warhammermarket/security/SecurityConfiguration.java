@@ -1,6 +1,7 @@
 package com.m2i.warhammermarket.security;
 
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +67,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+    
     /**
      * Methode principale, permettant de spécifier les configuration principal de notre application
      * Notamment les routes Privé et Public, ou le CORS, ou désactivation de CSRF, etc ...
@@ -80,7 +86,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)//On ajout notre filtre (en premier !) puis celui de SpringSecurity
                 .authorizeRequests()
                 .antMatchers("/api/login").permitAll()
-                .antMatchers("/api/user/**").hasAnyAuthority(AuthorityConstant.ROLE_USER)
+                .antMatchers("/api/user/**").permitAll()
                 .antMatchers("/api/orders/**").permitAll()
                 .antMatchers("/api/public/**").permitAll() //On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")
                 .anyRequest().authenticated() //on définie que toutes les routes ne correspondant pas aux routes du dessus sont sécurisé par authentification

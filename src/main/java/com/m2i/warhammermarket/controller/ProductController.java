@@ -1,21 +1,22 @@
 package com.m2i.warhammermarket.controller;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.m2i.warhammermarket.entity.DAO.ProductDAO;
+import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.model.ProductRequestModel;
+import com.m2i.warhammermarket.model.ProductSearchCriteria;
+import com.m2i.warhammermarket.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.m2i.warhammermarket.entity.DTO.ProductDTO;
-import com.m2i.warhammermarket.service.ProductService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -33,8 +34,7 @@ public class ProductController {
 
     /**
      * Que fait la méthode
-     * @param pageable
-     * @return
+     * @return .
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/public/products/{field}/{type}")
@@ -48,8 +48,8 @@ public class ProductController {
         Page<ProductDTO> page = this.productService.findAll(pageable);
         return ResponseEntity.ok().body(page.getContent());
     }
-    
-    
+
+
     /**
      * Search X number of products from a field
      * 
@@ -75,4 +75,20 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.productCounter());
     }
 
-}
+    /**
+     * @param productSearchCriteria model for criterias filters
+     * @return List of products
+     * @author Claire
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping ( "/public/products/search")
+    public ResponseEntity<List<ProductDAO>> getProduct (@RequestParam(value = "productSearchCriteria") String productSearchCriteria ) throws JsonProcessingException {
+        return new ResponseEntity<>(productService.getProductCriteria(new ObjectMapper().readValue(productSearchCriteria,ProductSearchCriteria.class)),
+                HttpStatus.OK);
+//        List<ProductDAO> p = new ArrayList<>();
+//        ProductSearchCriteria ps = new ObjectMapper().readValue(productSearchCriteria,ProductSearchCriteria.class);
+//        System.out.println("product= "+ps);
+//        return ResponseEntity.ok(p);
+    }
+
+  }

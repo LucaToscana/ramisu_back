@@ -1,6 +1,9 @@
 package com.m2i.warhammermarket.service;
 
+import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.model.ProductRequestModel;
+import com.m2i.warhammermarket.model.ProductSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -37,4 +40,11 @@ public interface ProductService {
      * @author Cecile
      */
     Page<ProductDTO> findRandomProducts(String field, int numberOfResult);
+
+    /**
+     * @param productSearchCriteria model for the critria filters
+     * @return List of product filter by criteria query
+     * @author Claire
+     */
+    List<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria);
 }

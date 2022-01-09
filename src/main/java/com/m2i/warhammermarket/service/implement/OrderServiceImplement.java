@@ -78,7 +78,7 @@ public class OrderServiceImplement implements OrderService {
                     Long idProduct = lineOfOrderDAO.getId().getId();
                     Optional<ProductDAO> productDAO = productRepository.findById(idProduct);
                     if(productDAO.isPresent()) {
-                        return new ProductOrderWrapper(productDAO.get().getId(), productDAO.get().getLabel(), productDAO.get().getPrice(), 0, quantity);
+                        return new ProductOrderWrapper(productDAO.get().getId(), productDAO.get().getLabel(), productDAO.get().getPrice(), 0, quantity, productDAO.get().getPicture());
                     } else {
                         return null;
                     }
