@@ -14,8 +14,9 @@ import java.sql.Date;
 @Entity
 @Table(name = "Users_information")
 public class UsersInformationDAO implements Serializable {
-    @Id
-    @Column(name = "id", nullable = false)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     @Column(name = "last_name")

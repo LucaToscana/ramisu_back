@@ -44,4 +44,11 @@ public class UserSecurityDTO {
     public Long getId() {
         return id;
     }
+
+	public UserSecurityDTO(String mail, String password, List<String> authorities) {
+		super();
+		this.mail = mail;
+		this.password = password;
+		this.authorities = authorities;
+	}
 }

@@ -4,6 +4,7 @@ import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistExceptio
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
+import com.m2i.warhammermarket.model.UserInscription;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,4 +65,36 @@ public class UserController {
     public ResponseEntity<ProfileWrapper> getProfile(){
         return ResponseEntity.ok( userService.getProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
+    
+    
+    
+    
+    
+    /**
+     * REST: {POST: /register}
+     * Controlleur pour pouvoir créer un nouveau compte
+     * Vérifie d'abord si le compte existe ou non en BDD
+     *
+     * @return Long: id du compte créé
+     */
+    @CrossOrigin(origins = "*")
+
+    @PostMapping("/inscription")
+    public ResponseEntity<Long> inscription(@RequestBody UserInscription userInscription) {
+      UserDTO userDTO = userService.findOneByUserMail(userInscription.getEmail());
+        if(userDTO != null) {
+            throw new UserMailAlreadyExistException();
+        }
+        System.out.println(userInscription);
+      Long idSaved = userService.saveInscription(userInscription);
+        Long test = 1L;
+        return ResponseEntity.ok(test);
+    }
+
+    
+    
+    
+    
+    
+    
 }

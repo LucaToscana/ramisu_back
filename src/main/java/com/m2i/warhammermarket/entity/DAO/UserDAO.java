@@ -17,8 +17,8 @@ import java.util.Set;
 @Table (name = "Users")
 public class UserDAO {
 
-    @Id
-    @Column (name = "id", nullable = false)
+	@Id
+	@GeneratedValue( strategy = GenerationType.AUTO )
     private Long id;
 
     @Column (name ="mail", nullable = false)
@@ -29,9 +29,13 @@ public class UserDAO {
 
     @Column (name = "date_of_creation", nullable = false)
     private Date dateOfCreation;
+    
+    
+    
+    
 
     @Column (name = "active", nullable = false)
-    private boolean active;
+    private boolean active =true;
 
     @Column (name = "reset_password_token", nullable = true)
     private String token;
