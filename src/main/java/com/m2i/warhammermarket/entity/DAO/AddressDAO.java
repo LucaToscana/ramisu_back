@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -35,4 +36,7 @@ public class AddressDAO implements Serializable {
 
     @Column(name = "country")
     private String country;
+    
+    @OneToMany(mappedBy = "address")
+    Set<InhabitDAO> inhabitDao;
 }
