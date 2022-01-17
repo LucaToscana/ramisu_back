@@ -151,8 +151,10 @@ public class UserServiceImplement implements UserService {
 		InhabitDAO newInhabit = new InhabitDAO();
 		InhabitId newIdInhabit = new InhabitId();
 		newIdInhabit.setIdAddress(newaddID.getId());
-		newIdInhabit.setIdUser(newId);
+		newIdInhabit.setIdUser(usInfo.getId());
 		newInhabit.setId(newIdInhabit);
+		newInhabit.setAddress(newaddID);
+		newInhabit.setUser(userInfo);
 		newInhabit.setIsMain(1);
 		inhabitRepository.save(newInhabit);
 		return usInfo.getId();

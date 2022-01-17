@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -34,4 +35,9 @@ public class UsersInformationDAO implements Serializable {
     @OneToOne
     @JoinColumn (name ="id_login")
     private UserDAO user;
+    
+    
+	@OneToMany(mappedBy = "user")
+	Set<InhabitDAO> inhabitDao;
+
 }

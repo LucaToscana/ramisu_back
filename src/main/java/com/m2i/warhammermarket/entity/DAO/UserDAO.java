@@ -18,7 +18,7 @@ import java.util.Set;
 public class UserDAO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY )
 	private Long id;
 
 	@Column(name = "mail", nullable = false)
@@ -43,7 +43,5 @@ public class UserDAO {
 					@JoinColumn(name = "name_role", referencedColumnName = "name") })
 	private Set<AuthorityDAO> authorities = new HashSet<>();
 
-	@OneToMany(mappedBy = "user")
-	Set<InhabitDAO> inhabitDao;
 
 }

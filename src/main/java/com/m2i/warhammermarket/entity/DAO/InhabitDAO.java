@@ -36,5 +36,5 @@ public class InhabitDAO implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("user")
     @JoinColumn(name = "id_users")
-    UserDAO user;
+    UsersInformationDAO user;
 }
