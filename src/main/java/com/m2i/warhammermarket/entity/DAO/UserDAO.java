@@ -14,24 +14,24 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table (name = "Users")
+@Table(name = "Users")
 public class UserDAO {
 
-    @Id
-    @Column (name = "id", nullable = false)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY )
+	private Long id;
 
-    @Column (name ="mail", nullable = false)
-    private String mail;
+	@Column(name = "mail", nullable = false)
+	private String mail;
 
-    @Column (name = "password", nullable = false)
-    private String password;
+	@Column(name = "password", nullable = false)
+	private String password;
 
-    @Column (name = "date_of_creation", nullable = false)
-    private Date dateOfCreation;
+	@Column(name = "date_of_creation", nullable = false)
+	private Date dateOfCreation;
 
-    @Column (name = "active", nullable = false)
-    private boolean active;
+	@Column(name = "active", nullable = false)
+	private boolean active = true;
 
     @Column (name = "reset_password_token", nullable = true)
     private String token;
@@ -39,13 +39,12 @@ public class UserDAO {
     @Column (name = "reset_password_token_expiration", nullable = true)
     private Date tokenExpiryDate;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "have",
-            joinColumns = { @JoinColumn(name = "id_users", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "name_role", referencedColumnName = "name") }
-    )
-    private Set<AuthorityDAO> authorities = new HashSet<>();
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "have", joinColumns = {
+			@JoinColumn(name = "id_users", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "name_role", referencedColumnName = "name") })
+	private Set<AuthorityDAO> authorities = new HashSet<>();
+
 
 }

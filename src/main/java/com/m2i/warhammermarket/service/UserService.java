@@ -3,6 +3,10 @@ package com.m2i.warhammermarket.service;
 import java.util.Date;
 import java.util.Optional;
 
+import com.m2i.warhammermarket.entity.DTO.UserDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
+import com.m2i.warhammermarket.model.UserInscription;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -40,4 +44,6 @@ public interface UserService {
     void delete(Long id);
 
     ProfileWrapper getProfile(String mail);
+
+	Long saveInscription(UserInscription userInscription);
 }

@@ -14,9 +14,9 @@ import java.io.Serializable;
 @ToString
 @EqualsAndHashCode
 public class InhabitId implements Serializable {
-    @Column(name = "id_users", nullable = false)
-    private Long idUser;
+	@Column(name = "id_users")
+	private Long idUser;
 
-    @Column(name = "id_address", nullable = false)
-    private Long idAddress;
+	@Column(name = "id_address")
+	private Long idAddress;
 }
