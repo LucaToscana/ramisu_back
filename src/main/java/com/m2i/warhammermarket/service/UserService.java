@@ -1,5 +1,6 @@
 package com.m2i.warhammermarket.service;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -25,10 +26,16 @@ public interface UserService {
     Page<UserDTO> findAll(Pageable pageable);
 
     Optional<UserDTO> findOne(Long id);
+
+    UserDTO findUserByPasswordResetToken(String passwordResetToken);
     
     Optional<UserInformationDTO> findUserInfoByUserMail(String mail);
     
-    void createPasswordResetToken(String userEmail, String token);
+    String createPasswordResetToken(String userEmail);
+
+    boolean isPasswordTokenValid(Date tokenExpiryDate);
+
+    void changeUserPasswordAndDeletePasswordToken(UserSecurityDTO userSecurityDTO);
 
     void delete(Long id);
 

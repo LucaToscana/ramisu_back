@@ -20,6 +20,7 @@ public class UserDTO implements Serializable {
     private Date dateOfCreation;
     private boolean active;
     private String token;
+    private Date tokenExpiryDate;
     private List<String> authorities;
 
     public UserDTO(UserDAO user) {
@@ -29,6 +30,7 @@ public class UserDTO implements Serializable {
         this.dateOfCreation = user.getDateOfCreation();
         this.active = user.isActive();
         this.token = user.getToken();
+        this.tokenExpiryDate = user.getTokenExpiryDate();
     }
 
     public UserDTO(Long id, String mail, List<String> authorities) {

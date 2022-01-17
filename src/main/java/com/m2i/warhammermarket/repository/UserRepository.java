@@ -9,4 +9,6 @@ public interface UserRepository extends JpaRepository<UserDAO, Long> {
 
     UserDAO findByMail(String mail);
 
+    UserDAO findByToken(String passwordResetToken);
+
 }

@@ -1,10 +1,6 @@
 package com.m2i.warhammermarket.service.implement;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -57,7 +53,7 @@ public class UserServiceImplement implements UserService {
         UserDAO userDAO = new UserDAO();
         userDAO.setMail(userSecurity.getMail());
         userDAO.setPassword(passwordEncoder.encode(userSecurity.getPassword())); //On encode le password avec PasswordEncoder
-        if(userSecurity.getAuthorities().size() == 0) {
+        if (userSecurity.getAuthorities().size() == 0) {
             AuthorityDAO authorityDAO = new AuthorityDAO(AuthorityConstant.ROLE_USER);
             Set<AuthorityDAO> authorities = new HashSet<>();
             authorities.add(authorityDAO);
@@ -76,13 +72,13 @@ public class UserServiceImplement implements UserService {
     @Override
     public UserDTO findOneByUserMail(String mail) {
         UserDAO userDAO = userRepository.findByMail(mail);
-        if(userDAO == null) return  null; //Si jamais le user n'existe pas, on renvoi directement null
-        
+        if (userDAO == null) return null; //Si jamais le user n'existe pas, on renvoi directement null
+
         UserDTO userDTO = this.userMapper.userToUserDTO(userDAO);
         userDTO.setAuthorities(userDAO.getAuthorities()
-        		.stream()
-        		.map(AuthorityDAO::getAuthority)
-        		.collect(Collectors.toList()));
+                .stream()
+                .map(AuthorityDAO::getAuthority)
+                .collect(Collectors.toList()));
         /*
         UserDTO userDTO = new UserDTO(
                 userDAO.getId(),
@@ -106,29 +102,75 @@ public class UserServiceImplement implements UserService {
     public Optional<UserDTO> findOne(Long id) {
         return Optional.empty();
     }
-    
+
+    @Override
+    public UserDTO findUserByPasswordResetToken(String passwordResetToken) {
+        UserDAO userDAO = this.userRepository.findByToken(passwordResetToken);
+        if (userDAO == null) return null;
+
+        UserDTO userDTO = this.userMapper.userToUserDTO(userDAO);
+        userDTO.setAuthorities(userDAO.getAuthorities()
+                .stream()
+                .map(AuthorityDAO::getAuthority)
+                .collect(Collectors.toList()));
+
+        return userDTO;
+    }
+
     /**
      * Create a token to reset password and save it to the database
+     *
+     * @param userEmail mail of the user for whom the password token will be registered
+     * @param token
+     *
+     * @author Cecile
      */
     @Override
-    public void createPasswordResetToken(String userEmail, String token) {
-    	UserDAO userDAO = this.userRepository.findByMail(userEmail);
-    	userDAO.setToken(token);
-    	userDAO.setTokenExpiryDate(this.calculateTokenExpiryDate(ApplicationConstants.TOKEN_EXPIRATION));
-    	this.userRepository.save(userDAO);
+    public String createPasswordResetToken(String userEmail) {
+        UserDAO userDAO = this.userRepository.findByMail(userEmail);
+        String passwordToken = UUID.randomUUID().toString();
+        userDAO.setToken(passwordToken);
+        userDAO.setTokenExpiryDate(this.calculatePasswordTokenExpiryDate(ApplicationConstants.TOKEN_EXPIRATION));
+        this.userRepository.save(userDAO);
+
+        return passwordToken;
     }
 
     /**
      * Calculate and return the expiration date of a password token
-     * 
+     *
      * @param expiryTimeInMinutes the expiration time in minutes
      * @return Date : the date at which the token becomes invalid
+     *
+     * @author Cecile
      */
-    private Date calculateTokenExpiryDate(final int expiryTimeInMinutes) {
+    private Date calculatePasswordTokenExpiryDate(final int expiryTimeInMinutes) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(new Date().getTime());
         calendar.add(Calendar.MINUTE, expiryTimeInMinutes);
         return new Date(calendar.getTime().getTime());
+    }
+
+    /**
+     * Check if the password token is still valid before changing the password
+     *
+     * @param tokenExpiryDate the date at which the password token will expire
+     * @return boolean : true if the token is valid, false if not
+     *
+     * @author Cecile
+     */
+    public boolean isPasswordTokenValid(Date tokenExpiryDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(new Date().getTime());
+        System.out.println("CALENDAR ===> : " + calendar.getTime().getTime() + " -- TOKEN ===> " + tokenExpiryDate);
+        return calendar.getTime().before(tokenExpiryDate);
+    }
+
+    public void changeUserPasswordAndDeletePasswordToken(UserSecurityDTO userSecurityDTO) {
+        UserDAO userDAO = this.userRepository.findByMail(userSecurityDTO.getMail());
+        userDAO.setPassword(passwordEncoder.encode(userSecurityDTO.getPassword()));
+        userDAO.setToken(null);
+        this.userRepository.save(userDAO);
     }
 
     @Override
@@ -139,13 +181,13 @@ public class UserServiceImplement implements UserService {
     @Override
     public ProfileWrapper getProfile(String mail) {
         UsersInformationDAO user =
-            userInformationRepository.getByMail(mail);
-        return new ProfileWrapper(user,addressRepository.getAddressMainByIdUser(user.getUser().getId()));
+                userInformationRepository.getByMail(mail);
+        return new ProfileWrapper(user, addressRepository.getAddressMainByIdUser(user.getUser().getId()));
     }
 
-	@Override
-	public Optional<UserInformationDTO> findUserInfoByUserMail(String mail) {
-		UsersInformationDAO userInfoDao = this.userInformationRepository.getByMail(mail);
-		return Optional.ofNullable(this.userInfoMapper.userInfoDAOToUserInfoDTO(userInfoDao));
-	}
+    @Override
+    public Optional<UserInformationDTO> findUserInfoByUserMail(String mail) {
+        UsersInformationDAO userInfoDao = this.userInformationRepository.getByMail(mail);
+        return Optional.ofNullable(this.userInfoMapper.userInfoDAOToUserInfoDTO(userInfoDao));
+    }
 }
