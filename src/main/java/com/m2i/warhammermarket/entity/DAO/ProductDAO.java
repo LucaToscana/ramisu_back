@@ -3,8 +3,11 @@ package com.m2i.warhammermarket.entity.DAO;
 import lombok.*;
 
 import javax.persistence.*;
+
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -51,4 +54,11 @@ public class ProductDAO implements Serializable {
     @ManyToOne
     @JoinColumn (name = "id_categories")
     private CategoryDAO categorie;
+    
+    
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+	private Set<LineOfOrderDAO> linesOfOrder;
+    
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+	private Set<PossessesDAO> possessesTagsProduct;
 }

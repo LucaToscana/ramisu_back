@@ -18,23 +18,21 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "Inhabit")
-public class InhabitDAO implements Serializable {
+@Table(name = "possesses")
+public class PossessesDAO implements Serializable {
     @EmbeddedId
-    private InhabitId id;
+    private PossessesId id;
 
-    @Column (name = "is_main")
-    private int isMain;
-    
+
     
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId("idAddress")
-    @JoinColumn(name = "id_address")
-    AddressDAO address;
+    @MapsId("id_tags")
+    @JoinColumn(name = "id_tags")
+    TagDAO tag;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId("idUser")
-    @JoinColumn(name = "id_users")
-    UsersInformationDAO user;
+    @MapsId("id_products")
+    @JoinColumn(name = "id_products")
+    ProductDAO product;
 }

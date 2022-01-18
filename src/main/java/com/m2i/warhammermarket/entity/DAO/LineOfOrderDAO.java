@@ -18,4 +18,20 @@ public class LineOfOrderDAO implements Serializable {
 
     @Column (name = "quantity", nullable = false)
     private int quantity;
+  
+    
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("idProduct")
+    @JoinColumn(name = "id")
+    ProductDAO product;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("idOrder")
+    @JoinColumn(name = "id_orders")
+    OrderDAO order;
+    
+    
+    
+    
 }

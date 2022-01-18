@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -33,5 +34,12 @@ public class OrderDAO implements Serializable {
     @ManyToOne
     @JoinColumn (name ="id_status")
     private StatusDAO status;
+    
+    
+    
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+	private Set<LineOfOrderDAO> linesOfOrder;
+    
+    
 
 }

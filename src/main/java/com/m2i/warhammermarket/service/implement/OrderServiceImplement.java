@@ -36,8 +36,11 @@ public class OrderServiceImplement implements OrderService {
     public void createOrder(List<ProductOrderWrapper> productsOrder, String login) {
             OrderDAO order = orderRepository.save(order(productsOrder,login));
             for (ProductOrderWrapper p:productsOrder) {
+            	
+                ProductDAO productGet = productRepository.getById(p.getId());
+
                 lineOfOrderRepository.save(
-                        new LineOfOrderDAO(new LineOfOrderId(p.getId(), order.getId()),p.getQuantite()));
+                        new LineOfOrderDAO(new LineOfOrderId(p.getId(), order.getId()),p.getQuantite(),productGet,order   ));
                 ProductDAO product = productRepository.getById(p.getId());
                 product.setStock(product.getStock()-p.getQuantite());
                 productRepository.save(product);
