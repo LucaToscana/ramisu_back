@@ -33,8 +33,11 @@ public class UserDAO {
 	@Column(name = "active", nullable = false)
 	private boolean active = true;
 
-	@Column(name = "reset_password_token", nullable = true)
-	private String token;
+    @Column (name = "reset_password_token", nullable = true)
+    private String token;
+    
+    @Column (name = "reset_password_token_expiration", nullable = true)
+    private Date tokenExpiryDate;
 
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
