@@ -30,6 +30,14 @@ public class EmailSenderImplement implements EmailSenderService {
 	@Autowired
 	private SpringTemplateEngine templateEngine;
 
+	/**
+	 * Creates and sends an email
+	 *
+	 * @param mail the mail that will be sent
+	 * @throws MessagingException
+	 * @throws IOException
+	 * @author Cecile
+	 */
 	@Async
 	public void sendEmail(Mail mail) throws MessagingException, IOException {
 
@@ -49,6 +57,13 @@ public class EmailSenderImplement implements EmailSenderService {
 	}
 
 
+	/**
+	 * Creates and insert HTML inside an email and returns it
+	 *
+	 * @param mail the email that will get the content
+	 * @return String : the template with the HTML content
+	 * @author Cecile
+	 */
 	private String getHtmlContent(Mail mail) {
 		Context context = new Context();
 		context.setVariables(mail.getHtmlTemplate().getProps());
