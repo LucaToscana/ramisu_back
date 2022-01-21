@@ -1,15 +1,21 @@
 package com.m2i.warhammermarket.controller;
 
 import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
+import com.m2i.warhammermarket.entity.DAO.AddressDAO;
+import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
+import com.m2i.warhammermarket.repository.AddressRepository;
+import com.m2i.warhammermarket.repository.UserInformationRepository;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,7 +24,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private AddressRepository addressRepository;
+    @Autowired
+    private UserInformationRepository userInformationRepository;
     /**
      * REST: {POST: /register}
      * Controlleur pour pouvoir créer un nouveau compte
@@ -64,4 +73,34 @@ public class UserController {
     public ResponseEntity<ProfileWrapper> getProfile(){
         return ResponseEntity.ok( userService.getProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
+    
+    @CrossOrigin("*")
+    @PutMapping("/public/profile")
+    public  ResponseEntity<HttpStatus> editProfile(@RequestBody ProfileWrapper profile ) {
+		  
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	// current user validity
+    	boolean success = profile.getMail().equals(userDetails.getUsername());
+    	if(!success) return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
+    	
+    	UsersInformationDAO infoProfile =  userInformationRepository.getByMail(profile.getMail());
+    	UserDTO user = userService.findOneByUserMail(userDetails.getUsername());
+    	
+    	AddressDAO addressProfile = profile.getAddress();
+    	addressProfile.setId(addressRepository.getAddressMainByIdUser(user.getId()).getId());
+    	
+		infoProfile.setLastName( profile.getUserInfo().getLastName());
+		infoProfile.setFirstName(profile.getUserInfo().getFirstName());
+		infoProfile.setPhone(profile.getUserInfo().getPhone());
+		
+		infoProfile.setBirthdate(profile.getUserInfo().getBirthdate());
+         
+    	
+    	userInformationRepository.save(infoProfile);
+    	addressRepository.save(addressProfile);
+    	
+      
+            return ResponseEntity.ok(HttpStatus.OK);
+    }
+
 }
