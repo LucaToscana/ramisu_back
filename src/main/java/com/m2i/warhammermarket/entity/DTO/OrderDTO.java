@@ -23,7 +23,7 @@ public class OrderDTO implements Serializable {
     private BigDecimal total;
     private UsersInformationDAO usersInformation;
     private StatusDAO status;
-
+/*liv? mag?ho?*/
     public OrderDTO(OrderDAO orderDAO) {
         this.id = orderDAO.getId();
         this.date = orderDAO.getDate();

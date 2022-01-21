@@ -44,8 +44,14 @@ public class OrderController {
     @GetMapping("/orders")
     public ResponseEntity<List<OrderDTO>> getOrdersById(Principal currentUserId) {
         String mail = currentUserId.getName();
+        
+        
         Long id = userService.findOneByUserMail(mail).getId();
+        
+        
         List<OrderDTO> orderDTO = orderService.findAllByUserId(id);
+ 
+        
         return ResponseEntity.ok(orderDTO);
     }
 

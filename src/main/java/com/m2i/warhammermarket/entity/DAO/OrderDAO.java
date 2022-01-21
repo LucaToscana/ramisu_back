@@ -3,6 +3,9 @@ package com.m2i.warhammermarket.entity.DAO;
 import lombok.*;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -36,7 +39,7 @@ public class OrderDAO implements Serializable {
     private StatusDAO status;
     
     
-    
+    @JsonIgnore
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
 	private Set<LineOfOrderDAO> linesOfOrder;
     

@@ -88,6 +88,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/user/**").permitAll()
                 .antMatchers("/api/inscription/**").permitAll()
+                .antMatchers("/api/payment/**").permitAll()
 
                 .antMatchers("/api/orders/**").permitAll()
                 .antMatchers("/api/public/**").permitAll() //On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")

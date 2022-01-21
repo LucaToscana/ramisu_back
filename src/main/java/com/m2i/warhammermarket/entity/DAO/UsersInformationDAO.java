@@ -3,6 +3,9 @@ package com.m2i.warhammermarket.entity.DAO;
 import lombok.*;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Set;
@@ -36,8 +39,8 @@ public class UsersInformationDAO implements Serializable {
     @JoinColumn (name ="id_login")
     private UserDAO user;
     
-    
-	@OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
 	Set<InhabitDAO> inhabitDao;
 
 }
