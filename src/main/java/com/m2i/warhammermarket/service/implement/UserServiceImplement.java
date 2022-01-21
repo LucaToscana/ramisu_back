@@ -1,5 +1,6 @@
 package com.m2i.warhammermarket.service.implement;
 
+import com.m2i.warhammermarket.entity.DAO.AddressDAO;
 import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
@@ -98,8 +99,10 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public ProfileWrapper getProfile(String mail) {
-        UsersInformationDAO user =
-            userInformationRepository.getByMail(mail);
-        return new ProfileWrapper(user,addressRepository.getAddressMainByIdUser(user.getUser().getId()));
+        UsersInformationDAO user = userInformationRepository.getByMail(mail);
+        long id = user.getUser().getId();
+        AddressDAO address = addressRepository.getAddressMainByIdUser(id);
+        
+        return new ProfileWrapper(user,address);
     }
 }
