@@ -44,5 +44,9 @@ public class UserDAO {
             inverseJoinColumns = { @JoinColumn(name = "name_role", referencedColumnName = "name") }
     )
     private Set<AuthorityDAO> authorities = new HashSet<>();
+    
+//    @OneToMany(mappedBy = "user")
+//	Set<InhabitDAO> inhabitDao;
+
 
 }
