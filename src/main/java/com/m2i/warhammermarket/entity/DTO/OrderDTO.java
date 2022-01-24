@@ -24,7 +24,7 @@ public class OrderDTO implements Serializable {
     private BigDecimal total;
     private UsersInformationDAO usersInformation;
     private StatusDAO status;
-    private AddressDAO livraisonAddress;
+ //   private AddressDAO livraisonAddress;
 /*liv? mag?ho?*/
     public OrderDTO(OrderDAO orderDAO) {
         this.id = orderDAO.getId();
@@ -32,7 +32,7 @@ public class OrderDTO implements Serializable {
         this.total = orderDAO.getTotal();
         this.usersInformation = orderDAO.getUser();
         this.status = orderDAO.getStatus();
-        this.livraisonAddress= orderDAO.getLivraisonAddress();
+     //   this.livraisonAddress= orderDAO.getLivraisonAddress();
     }
 
     @Override

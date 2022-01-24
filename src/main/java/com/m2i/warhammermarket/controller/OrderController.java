@@ -23,7 +23,7 @@ public class OrderController {
     private UserService userService;
 
     @CrossOrigin(origins = "*")
-//    @Secured(AuthorityConstant.ROLE_USER)
+  //  @Secured(AuthorityConstant.ROLE_USER)
     @PostMapping("/user/addorder")
     public ResponseEntity<Boolean> createOrder(@RequestBody List<ProductOrderWrapper> productsOrder){
         List<ProductOrderWrapper> productsFilter = productsOrder.stream().filter(c -> c.getQuantite() > 0).collect(Collectors.toList());

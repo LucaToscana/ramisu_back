@@ -42,7 +42,7 @@ public class StripeClient {
         String sourceCard = getCustomer(customerId).getDefaultSource();
         Map<String, Object> chargeParams = new HashMap<String, Object>();
         chargeParams.put("amount", amount);
-        chargeParams.put("currency", "USD");
+        chargeParams.put("currency", "EUR");
         chargeParams.put("customer", customerId);
         chargeParams.put("source", sourceCard);
         Charge charge = Charge.create(chargeParams);

@@ -38,12 +38,12 @@ public class OrderDAO implements Serializable {
     @ManyToOne
     @JoinColumn (name ="id_status")
     private StatusDAO status;
-    
+    /*
     @OneToOne(optional = false)
     @JoinColumn(unique = true)
     private AddressDAO livraisonAddress;
     
-    
+    */
     
     @JsonIgnore
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
