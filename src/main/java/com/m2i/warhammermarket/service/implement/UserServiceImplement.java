@@ -16,6 +16,8 @@ import com.m2i.warhammermarket.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -105,4 +107,24 @@ public class UserServiceImplement implements UserService {
         
         return new ProfileWrapper(user,address);
     }
+
+	@Override
+	public boolean updateProfile(ProfileWrapper profile) throws IllegalArgumentException {
+		
+		UserDTO user = findOneByUserMail(profile.getMail());
+	
+		UsersInformationDAO infoProfile =  userInformationRepository.getByMail(profile.getMail());
+							infoProfile.setLastName( profile.getLastName());
+							infoProfile.setFirstName(profile.getFirstName());
+							infoProfile.setPhone(profile.getPhone());         
+    	
+    	AddressDAO 	addressProfile = profile.getAddress();
+    				addressProfile.setId(addressRepository.getAddressMainByIdUser(user.getId()).getId());
+         
+    	UsersInformationDAO savedInfo = userInformationRepository.save(infoProfile);
+    	AddressDAO savedAddress = addressRepository.save(addressProfile);
+    	
+    	return savedAddress!=null && savedInfo != null;
+    	
+	}
 }

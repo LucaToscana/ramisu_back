@@ -25,46 +25,44 @@ public class ProfileWrapper {
     private String country;
 
     public ProfileWrapper (UsersInformationDAO user, AddressDAO address){
-        lastName = user.getLastName();
-        firstName = user.getFirstName();
-        phone = user.getPhone();
-        mail = user.getUser().getMail();
-        birthdate = user.getBirthdate();
-        
-        if(address!=null)
-        {
-        	setAddressValues(address);
-        }else {
-        	number = "666";
-        	street = "rue des Adresses Null";
-        	additionalAddress = "Bâtiment C";
-        	postalCode = "59160";
-        	city = "Lille";
-        	country = "France";        	
-        }
+    	  lastName = user.getLastName();
+          firstName = user.getFirstName();
+          phone = user.getPhone();
+          mail = user.getUser().getMail();
+          birthdate = user.getBirthdate();
+          number = address.getNumber();
+          street = address.getStreet();
+          additionalAddress = address.getAdditionalAddress();
+          postalCode = address.getPostalCode();
+          city = address.getCity();
+          country = address.getCountry();
     }
     
 
-    
-    public void setAddressValues(AddressDAO address)
+
+    public UsersInformationDAO getUserInformations()
     {
-    	number = address.getNumber();
-    	street = address.getStreet();
-    	additionalAddress = address.getAdditionalAddress();
-    	postalCode = address.getPostalCode();
-    	city = address.getCity();
-    	country = address.getCountry();        	
+
+  	  UsersInformationDAO user = new UsersInformationDAO();
+  	  user.setLastName(this.getLastName());
+  	  user.setFirstName(this.getFirstName());
+  	  user.setPhone(this.getPhone());
+  	  user.setBirthdate( this.getBirthdate());
+  	  
+  	  
+  	return user;
     }
-
-	public UsersInformationDAO getUserInfo() {
-		// TODO Auto-generated method stub
-		return new UsersInformationDAO(null, lastName, firstName, phone, birthdate, null, null);
-	}
-
-
-
-	public AddressDAO getAddress() {
-		
-		return new AddressDAO(null, number, street, additionalAddress, postalCode, city, country, null);
-	}
+    
+    public AddressDAO getAddress()
+    {
+	  	AddressDAO address = new AddressDAO();
+	  	address.setNumber(getNumber());
+	  	address.setStreet(getStreet());
+	  	address.setAdditionalAddress(getAdditionalAddress());
+	  	address.setPostalCode(getPostalCode());
+	  	address.setCountry(getCountry());
+	  	address.setCity(getCity());
+	  	return address;
+    }
+    
 }
