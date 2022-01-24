@@ -16,6 +16,7 @@ public class PaymentGatewayController {
     PaymentGatewayController(StripeClient stripeClient) {
         this.stripeClient = stripeClient;
     }
+    @CrossOrigin("*")
 
     @PostMapping("/charge")
     public Charge chargeCard(@RequestHeader(value="token") String token, @RequestHeader(value="amount") Double amount) throws Exception {

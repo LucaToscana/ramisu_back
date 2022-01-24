@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -37,6 +38,11 @@ public class OrderDAO implements Serializable {
     @ManyToOne
     @JoinColumn (name ="id_status")
     private StatusDAO status;
+    
+    @OneToOne(optional = false)
+    @JoinColumn(unique = true)
+    private AddressDAO livraisonAddress;
+    
     
     
     @JsonIgnore
