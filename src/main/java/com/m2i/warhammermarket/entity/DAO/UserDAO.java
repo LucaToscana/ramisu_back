@@ -39,12 +39,18 @@ public class UserDAO {
     @Column (name = "reset_password_token_expiration", nullable = true)
     private Date tokenExpiryDate;
 
-	@JsonIgnore
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "have", joinColumns = {
-			@JoinColumn(name = "id_users", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "name_role", referencedColumnName = "name") })
-	private Set<AuthorityDAO> authorities = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "have",
+            joinColumns = { @JoinColumn(name = "id_users", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "name_role", referencedColumnName = "name") }
+    )
+    private Set<AuthorityDAO> authorities = new HashSet<>();
+    
+//    @OneToMany(mappedBy = "user")
+//	Set<InhabitDAO> inhabitDao;
 
 
 }

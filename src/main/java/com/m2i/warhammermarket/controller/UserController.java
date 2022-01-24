@@ -3,6 +3,8 @@ package com.m2i.warhammermarket.controller;
 import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
 import com.m2i.warhammermarket.controller.exception.UserNotFoundException;
+import com.m2i.warhammermarket.entity.DAO.AddressDAO;
+import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
@@ -10,13 +12,17 @@ import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.model.KeyAndPassword;
 import com.m2i.warhammermarket.model.Mail;
 import com.m2i.warhammermarket.model.UserInscription;
+import com.m2i.warhammermarket.repository.AddressRepository;
+import com.m2i.warhammermarket.repository.UserInformationRepository;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -34,6 +40,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @Autowired
     private EmailSenderService emailSenderService;
 
@@ -42,6 +49,7 @@ public class UserController {
             super(message);
         }
     }
+
 
     /**
      * REST: {POST: /register} Controlleur pour pouvoir créer un nouveau compte
@@ -251,6 +259,22 @@ public class UserController {
         System.out.println(userInscription);
         Long idSaved = userService.saveInscription(userInscription);
         return ResponseEntity.ok(idSaved);
+    }
+    @CrossOrigin("*")
+    @PutMapping("/public/profile")
+    public  ResponseEntity<HttpStatus> editProfile(@RequestBody ProfileWrapper profile ) {
+    
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	// current user validity
+    	boolean success = profile.getMail().equals(userDetails.getUsername());
+    	if(!success) return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
+    		try {
+    			userService.updateProfile(profile);				
+			} catch (Exception e) {
+				return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+			}
+    	
+    	return ResponseEntity.ok(HttpStatus.OK);
     }
 
 }

@@ -2,6 +2,10 @@ package com.m2i.warhammermarket.service.implement;
 
 import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.entity.DAO.*;
+import com.m2i.warhammermarket.entity.DAO.AddressDAO;
+import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
+import com.m2i.warhammermarket.entity.DAO.UserDAO;
+import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
@@ -18,6 +22,10 @@ import com.m2i.warhammermarket.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -187,11 +195,7 @@ public class UserServiceImplement implements UserService {
 
     }
 
-    @Override
-    public ProfileWrapper getProfile(String mail) {
-        UsersInformationDAO user = userInformationRepository.getByMail(mail);
-        return new ProfileWrapper(user, addressRepository.getAddressMainByIdUser(user.getUser().getId()));
-    }
+  
 
     @Override
     public Long saveInscription(UserInscription userInscription) {
@@ -249,8 +253,40 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public Optional<UserInformationDTO> findUserInfoByUserMail(String mail) {
-        UsersInformationDAO userInfoDao = this.userInformationRepository.getByMail(mail);
-        return Optional.ofNullable(this.userInfoMapper.userInfoDAOToUserInfoDTO(userInfoDao));
+    public ProfileWrapper getProfile(String mail) {
+        UsersInformationDAO user = userInformationRepository.getByMail(mail);
+        long id = user.getUser().getId();
+        AddressDAO address = addressRepository.getAddressMainByIdUser(id);
+        
+        return new ProfileWrapper(user,address);
     }
+
+
+	@Override
+	public boolean updateProfile(ProfileWrapper profile) throws IllegalArgumentException {
+		
+		UserDTO user = findOneByUserMail(profile.getMail());
+	
+		UsersInformationDAO infoProfile =  userInformationRepository.getByMail(profile.getMail());
+							infoProfile.setLastName( profile.getLastName());
+							infoProfile.setFirstName(profile.getFirstName());
+							infoProfile.setPhone(profile.getPhone());         
+    	
+    	AddressDAO 	addressProfile = profile.getAddress();
+    				addressProfile.setId(addressRepository.getAddressMainByIdUser(user.getId()).getId());
+         
+    	UsersInformationDAO savedInfo = userInformationRepository.save(infoProfile);
+    	AddressDAO savedAddress = addressRepository.save(addressProfile);
+    	
+    	return savedAddress!=null && savedInfo != null;
+    	
+	}
+
+	 @Override
+	    public Optional<UserInformationDTO> findUserInfoByUserMail(String mail) {
+	        UsersInformationDAO userInfoDao = this.userInformationRepository.getByMail(mail);
+	        return Optional.ofNullable(this.userInfoMapper.userInfoDAOToUserInfoDTO(userInfoDao));
+	    }
+
+
 }
