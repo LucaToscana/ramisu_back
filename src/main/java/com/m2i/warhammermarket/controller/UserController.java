@@ -24,10 +24,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private AddressRepository addressRepository;
-    @Autowired
-    private UserInformationRepository userInformationRepository;
+  
     /**
      * REST: {POST: /register}
      * Controlleur pour pouvoir créer un nouveau compte
@@ -77,30 +74,18 @@ public class UserController {
     @CrossOrigin("*")
     @PutMapping("/public/profile")
     public  ResponseEntity<HttpStatus> editProfile(@RequestBody ProfileWrapper profile ) {
-		  
+    
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	// current user validity
     	boolean success = profile.getMail().equals(userDetails.getUsername());
     	if(!success) return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
+    		try {
+    			userService.updateProfile(profile);				
+			} catch (Exception e) {
+				return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+			}
     	
-    	UsersInformationDAO infoProfile =  userInformationRepository.getByMail(profile.getMail());
-    	UserDTO user = userService.findOneByUserMail(userDetails.getUsername());
-    	
-    	AddressDAO addressProfile = profile.getAddress();
-    	addressProfile.setId(addressRepository.getAddressMainByIdUser(user.getId()).getId());
-    	
-		infoProfile.setLastName( profile.getUserInfo().getLastName());
-		infoProfile.setFirstName(profile.getUserInfo().getFirstName());
-		infoProfile.setPhone(profile.getUserInfo().getPhone());
-		
-		infoProfile.setBirthdate(profile.getUserInfo().getBirthdate());
-         
-    	
-    	userInformationRepository.save(infoProfile);
-    	addressRepository.save(addressProfile);
-    	
-      
-            return ResponseEntity.ok(HttpStatus.OK);
+    	return ResponseEntity.ok(HttpStatus.OK);
     }
 
 }
