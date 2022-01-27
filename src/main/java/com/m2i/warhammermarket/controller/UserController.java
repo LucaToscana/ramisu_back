@@ -2,9 +2,6 @@ package com.m2i.warhammermarket.controller;
 
 import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
-import com.m2i.warhammermarket.controller.exception.UserNotFoundException;
-import com.m2i.warhammermarket.entity.DAO.AddressDAO;
-import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
@@ -12,20 +9,20 @@ import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.model.KeyAndPassword;
 import com.m2i.warhammermarket.model.Mail;
 import com.m2i.warhammermarket.model.UserInscription;
-import com.m2i.warhammermarket.repository.AddressRepository;
-import com.m2i.warhammermarket.repository.UserInformationRepository;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +33,7 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/api")
 public class UserController {
+	
 
     @Autowired
     private UserService userService;
@@ -49,7 +47,20 @@ public class UserController {
             super(message);
         }
     }
-
+    
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/public/pictureProfile", method = RequestMethod.POST)
+    public ResponseEntity<HttpStatus> saveProduct( @RequestParam("image") MultipartFile multipartFile) throws IOException
+    {
+    	MediaType mediaType = MediaType.parseMediaType(multipartFile.getContentType());
+    	if(!mediaType.getType().equals("image"))return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
+    	
+    	 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	 ProfileWrapper userProfile = userService.getProfile(userDetails.getUsername());
+	       
+    	  if(userService.savePicture(userProfile, multipartFile) )return ResponseEntity.ok(HttpStatus.OK);
+    	  else return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+    }
 
     /**
      * REST: {POST: /register} Controlleur pour pouvoir créer un nouveau compte
@@ -92,11 +103,11 @@ public class UserController {
 
         // This array contains the elements needed by the email that will be sent to the user
         Map<String, Object> properties = new HashMap();
-        properties.put("firstName", userInformationDTO.get().getFirstName());
-        properties.put("lastName", userInformationDTO.get().getLastName());
-        properties.put("baseUrl", ApplicationConstants.WEBSITE_BASE_URL);
-        properties.put("url", ApplicationConstants.WEBSITE_URL);
-        properties.put("passwordToken", passwordToken);
+					        properties.put("firstName", userInformationDTO.get().getFirstName());
+					        properties.put("lastName", userInformationDTO.get().getLastName());
+					        properties.put("baseUrl", ApplicationConstants.WEBSITE_BASE_URL);
+					        properties.put("url", ApplicationConstants.WEBSITE_URL);
+					        properties.put("passwordToken", passwordToken);
 
         Mail mail = Mail.builder()
                 .from(ApplicationConstants.WEBSITE_EMAIL_ADDRESS)
