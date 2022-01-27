@@ -285,8 +285,8 @@ public class UserServiceImplement implements UserService {
 							infoProfile.setLastName( profile.getLastName());
 							infoProfile.setFirstName(profile.getFirstName());
 							infoProfile.setPhone(profile.getPhone());  
-							infoProfile.setAvatar(profile.getAvatar());  
-    	
+							infoProfile.setAvatar(profile.getAvatar());
+							infoProfile.setBirthdate(profile.getBirthdate());    	
     	AddressDAO 	addressProfile = profile.getAddress();
     				addressProfile.setId(addressRepository.getAddressMainByIdUser(user.getId()).getId());
          
