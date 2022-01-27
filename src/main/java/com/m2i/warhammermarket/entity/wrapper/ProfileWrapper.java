@@ -4,7 +4,17 @@ import com.m2i.warhammermarket.entity.DAO.AddressDAO;
 import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import lombok.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
+
+import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -23,6 +33,10 @@ public class ProfileWrapper {
     private String postalCode;
     private String city;
     private String country;
+    private String avatar;
+    
+   
+    
 
     public ProfileWrapper (UsersInformationDAO user, AddressDAO address){
     	  lastName = user.getLastName();
@@ -30,6 +44,8 @@ public class ProfileWrapper {
           phone = user.getPhone();
           mail = user.getUser().getMail();
           birthdate = user.getBirthdate();
+          avatar = user.getAvatar();
+
           number = address.getNumber();
           street = address.getStreet();
           additionalAddress = address.getAdditionalAddress();
