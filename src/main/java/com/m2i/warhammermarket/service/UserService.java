@@ -62,4 +62,6 @@ public interface UserService {
 	boolean updateProfile(ProfileWrapper profile) throws IllegalArgumentException ;
 
 	boolean savePicture(ProfileWrapper userProfile, MultipartFile multipartFile);
+
+	void removePictureProfile(ProfileWrapper userProfile);
 }

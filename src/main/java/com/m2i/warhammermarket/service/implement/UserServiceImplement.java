@@ -330,6 +330,21 @@ public class UserServiceImplement implements UserService {
 		}
 		return success;
 	}
+	 /**
+	  * 		remove picture in database and delete on fileSystem
+	  * 		the profile picture
+	  *		 @param userProfile : The profile wrapper to update
+	  * 	
+	  * */
+	@Override
+	public void removePictureProfile(ProfileWrapper userProfile) {
+		
+		String avatar = userProfile.getAvatar();
+		if(avatar!=null)FileUpload.removefile(avatar);
+		
+		userProfile.setAvatar(null);
+		updateProfile(userProfile);
+	}
 
 
 
