@@ -19,6 +19,8 @@ import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.UserService;
 import com.m2i.warhammermarket.service.mapper.UserInformationMapper;
 import com.m2i.warhammermarket.service.mapper.UserMapper;
+import com.m2i.warhammermarket.utils.FileUpload;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,10 +28,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -270,7 +284,8 @@ public class UserServiceImplement implements UserService {
 		UsersInformationDAO infoProfile =  userInformationRepository.getByMail(profile.getMail());
 							infoProfile.setLastName( profile.getLastName());
 							infoProfile.setFirstName(profile.getFirstName());
-							infoProfile.setPhone(profile.getPhone());         
+							infoProfile.setPhone(profile.getPhone());  
+							infoProfile.setAvatar(profile.getAvatar());  
     	
     	AddressDAO 	addressProfile = profile.getAddress();
     				addressProfile.setId(addressRepository.getAddressMainByIdUser(user.getId()).getId());
@@ -287,6 +302,35 @@ public class UserServiceImplement implements UserService {
 	        UsersInformationDAO userInfoDao = this.userInformationRepository.getByMail(mail);
 	        return Optional.ofNullable(this.userInfoMapper.userInfoDAOToUserInfoDTO(userInfoDao));
 	    }
+
+	 /**
+	  * 		Save in database and store on fileSystem
+	  * 		The profile picture
+	  *		 @param userProfile : The profile wrapper to update
+	  * 	@param	multipartFile : user profile picture
+	  * */
+	@Override
+	public boolean savePicture(ProfileWrapper userProfile, MultipartFile multipartFile) {
+		
+		boolean success = false;
+		try {
+			String fileName = FileUpload.getMD5Name(multipartFile.getInputStream());
+			String current = userProfile.getAvatar();
+			
+			if(!FileUpload.saveFile(fileName, multipartFile))return false;
+			
+			if(current!=null)FileUpload.removefile(current);
+			
+			userProfile.setAvatar(fileName);
+			success = updateProfile(userProfile);	
+		
+		} catch (IOException e) {
+			success = false;
+			e.printStackTrace();
+		}
+		return success;
+	}
+
 
 
 }
