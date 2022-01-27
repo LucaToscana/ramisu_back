@@ -35,6 +35,9 @@ public class UsersInformationDAO implements Serializable {
     @Column(name = "birthdate")
     private Date birthdate;
 
+    @Column(name = "avatar")
+    private String avatar;
+    
     @OneToOne
     @JoinColumn (name ="id_login")
     private UserDAO user;
