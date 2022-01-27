@@ -47,10 +47,16 @@ public class UserController {
             super(message);
         }
     }
-    
+    /**
+     * REST: {POST: /register} 
+     *
+     * @param multipartFile profile picture to record in database and save in upload directory
+     * @throws IOException
+     * @return HttpStatus  OK, UNAUTHORIZED or BAD_REQUEST
+     */
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/public/pictureProfile", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> saveProduct( @RequestParam("image") MultipartFile multipartFile) throws IOException
+    public ResponseEntity<HttpStatus> savePicture( @RequestParam("image") MultipartFile multipartFile) throws IOException
     {
     	MediaType mediaType = MediaType.parseMediaType(multipartFile.getContentType());
     	if(!mediaType.getType().equals("image"))return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
@@ -61,7 +67,23 @@ public class UserController {
     	  if(userService.savePicture(userProfile, multipartFile) )return ResponseEntity.ok(HttpStatus.OK);
     	  else return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
     }
+    
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/public/removePictureProfile", method = RequestMethod.PUT)
+    public ResponseEntity<HttpStatus> removePicture()
+    {
+    	 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	 ProfileWrapper userProfile = userService.getProfile(userDetails.getUsername());
+    	 userService.removePictureProfile(userProfile);
+	       
+		  return ResponseEntity.ok(HttpStatus.OK);
+    	  
+    }
 
+    
+
+    
+    
     /**
      * REST: {POST: /register} Controlleur pour pouvoir créer un nouveau compte
      * Vérifie d'abord si le compte existe ou non en BDD
