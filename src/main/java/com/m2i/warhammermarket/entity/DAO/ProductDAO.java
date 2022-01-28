@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -55,10 +56,12 @@ public class ProductDAO implements Serializable {
     @JoinColumn (name = "id_categories")
     private CategoryDAO categorie;
     
-    
+    @JsonIgnore
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
 	private Set<LineOfOrderDAO> linesOfOrder;
     
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
 	private Set<PossessesDAO> possessesTagsProduct;
 }

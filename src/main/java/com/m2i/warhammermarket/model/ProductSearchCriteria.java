@@ -17,9 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductSearchCriteria {
     private String label;
-//    private String productTag;
-    private int price;
     private List<String> universe;
+    private int price;
+    private List<String> tag;
     private List<String> category;
+private int page;
+private int pageSize;;
 
 }

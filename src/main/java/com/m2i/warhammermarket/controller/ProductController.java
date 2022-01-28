@@ -6,9 +6,11 @@ import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
 import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
+import com.m2i.warhammermarket.model.ResponseSearchCriteria;
 import com.m2i.warhammermarket.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,17 +80,22 @@ public class ProductController {
     /**
      * @param productSearchCriteria model for criterias filters
      * @return List of products
-     * @author Claire
+     * @author Claire/Luca
      */
     @CrossOrigin(origins = "*")
-    @GetMapping ( "/public/products/search")
-    public ResponseEntity<List<ProductDAO>> getProduct (@RequestParam(value = "productSearchCriteria") String productSearchCriteria ) throws JsonProcessingException {
-        return new ResponseEntity<>(productService.getProductCriteria(new ObjectMapper().readValue(productSearchCriteria,ProductSearchCriteria.class)),
-                HttpStatus.OK);
-//        List<ProductDAO> p = new ArrayList<>();
-//        ProductSearchCriteria ps = new ObjectMapper().readValue(productSearchCriteria,ProductSearchCriteria.class);
-//        System.out.println("product= "+ps);
-//        return ResponseEntity.ok(p);
-    }
+    @PostMapping ( "/public/products/search/")/*get??*/
+    public ResponseEntity<ResponseSearchCriteria> getProduct (@RequestBody ProductSearchCriteria productSearchCriteria ) throws JsonProcessingException {
+    	
+    	Pageable pageable = PageRequest.of(productSearchCriteria.getPage(),productSearchCriteria.getPageSize());
+    	
+    	Page<ProductDAO> page = productService.getProductCriteria(productSearchCriteria , pageable);
+    	ResponseSearchCriteria newRes = new ResponseSearchCriteria( page.getTotalElements(),page.getContent());
+    	
+    	return  ResponseEntity.ok().body(newRes);
+    			
+    			
+    			
 
+    }
+   
   }

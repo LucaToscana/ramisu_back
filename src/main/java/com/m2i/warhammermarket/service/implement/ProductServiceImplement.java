@@ -129,8 +129,8 @@ public class ProductServiceImplement implements ProductService {
      *  Means PersonSearchRequestModel has four variables, based on any combination of variables a search will happen.
      * @author Claire
      */
-    public List<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria){
-        return productRepositoryCriteria.findAllWithFilters(productSearchCriteria);
+    public Page<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria ,Pageable pageable){
+        return productRepositoryCriteria.findAllWithFilters(productSearchCriteria,pageable);
     }
 
 }
