@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 
@@ -59,4 +60,8 @@ public interface UserService {
      * @return true success
      * */
 	boolean updateProfile(ProfileWrapper profile) throws IllegalArgumentException ;
+
+	boolean savePicture(ProfileWrapper userProfile, MultipartFile multipartFile);
+
+	void removePictureProfile(ProfileWrapper userProfile);
 }
