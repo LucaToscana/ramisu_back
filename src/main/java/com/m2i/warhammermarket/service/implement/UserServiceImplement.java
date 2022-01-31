@@ -44,6 +44,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -314,12 +315,12 @@ public class UserServiceImplement implements UserService {
 		
 		boolean success = false;
 		try {
-			String fileName = FileUpload.getMD5Name(multipartFile.getInputStream());
+			String fileName = FileUpload.getMD5Name(multipartFile.getInputStream()).concat(String.valueOf(System.currentTimeMillis()));
 			String current = userProfile.getAvatar();
+			if(current!=null)FileUpload.removefile(current);
 			
 			if(!FileUpload.saveFile(fileName, multipartFile))return false;
 			
-			if(current!=null)FileUpload.removefile(current);
 			
 			userProfile.setAvatar(fileName);
 			success = updateProfile(userProfile);	
