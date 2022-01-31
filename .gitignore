@@ -1,3 +1,4 @@
+src/main/resources/static/upload/*
 
 
 src/main/resources/static/upload/**
@@ -224,3 +225,4 @@ buildNumber.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/maven,eclipse,intellij,java
 /.idea/
+/target/

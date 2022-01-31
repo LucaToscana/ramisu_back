@@ -1,0 +1,64 @@
+package com.m2i.warhammermarket.entity.DAO;
+
+import lombok.*;
+
+import javax.persistence.*;
+
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Entity
+@Table (name = "Products")
+public class ProductDAO implements Serializable {
+
+    @Id
+    @Column (name = "id", nullable = false)
+    private Long id;
+
+    @Column (name ="ean13", nullable = false)
+    private String ean13;
+
+    @Column (name ="label", nullable = false)
+    private String label;
+
+    @Column (name = "price", nullable = false)
+    private BigDecimal price;
+
+    @Column (name = "description", nullable = false)
+    private String description;
+
+    @Column (name = "promotion", nullable = false)
+    private Float promotion;
+
+    @Column (name = "stock", nullable = false)
+    private int stock;
+
+    @Column (name ="picture")
+    private String picture;
+
+    @Column (name = "year_product")
+    private String yearOfProduction;
+
+
+    @ManyToOne
+    @JoinColumn (name = "id_universes")
+    private UniverseDAO universe;
+
+    @ManyToOne
+    @JoinColumn (name = "id_categories")
+    private CategoryDAO categorie;
+    
+    
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+	private Set<LineOfOrderDAO> linesOfOrder;
+    
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+	private Set<PossessesDAO> possessesTagsProduct;
+}
