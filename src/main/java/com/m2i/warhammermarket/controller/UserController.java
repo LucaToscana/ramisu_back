@@ -289,10 +289,11 @@ public class UserController {
         if (userDTO != null) {
             throw new UserMailAlreadyExistException();
         }
-        System.out.println(userInscription);
         Long idSaved = userService.saveInscription(userInscription);
         return ResponseEntity.ok(idSaved);
     }
+    
+    
     @CrossOrigin("*")
     @PutMapping("/public/profile")
     public  ResponseEntity<HttpStatus> editProfile(@RequestBody ProfileWrapper profile ) {

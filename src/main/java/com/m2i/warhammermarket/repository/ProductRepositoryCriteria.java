@@ -44,22 +44,26 @@ public class ProductRepositoryCriteria {
 		Predicate predicate = getPredicate(searchCriteria, productDAORoot);
 		ctQuery.where(predicate);
 		ctQuery.distinct(true);
-		TypedQuery<ProductDAO> typedQuery = em.createQuery(ctQuery);
-        Long total = (long) typedQuery.getResultList().size();
 
-		
-		
-		
+		ctQuery.orderBy(cb.asc(productDAORoot.get("label")));
+
+		TypedQuery<ProductDAO> typedQuery = em.createQuery(ctQuery);
+		Long total = (long) typedQuery.getResultList().size();
+
+		/*
+		 * 
+		 * // Define the CriteriaQuery CriteriaBuilder cb = em.getCriteriaBuilder();
+		 * CriteriaQuery<Book> cq = cb.createQuery(Book.class); Root<Book> root =
+		 * cq.from(Book.class); cq.orderBy(cb.asc(root.get(Book_.title)))
+		 */
+
 		int pageNumber = pageable.getPageNumber();
 		int pageSize = pageable.getPageSize();
-		typedQuery.setFirstResult((pageNumber) * pageSize); 
+		typedQuery.setFirstResult((pageNumber) * pageSize);
 		typedQuery.setMaxResults(pageSize);
-		
-		
-		
 
 		List<ProductDAO> result = typedQuery.getResultList();
-	     Page<ProductDAO> resultP = new PageImpl<ProductDAO>(result,pageable,total);
+		Page<ProductDAO> resultP = new PageImpl<ProductDAO>(result, pageable, total);
 
 		return resultP;
 	}
@@ -108,17 +112,30 @@ public class ProductRepositoryCriteria {
 		}
 
 		if (Objects.nonNull(productSearchCriteria.getTag()) && productSearchCriteria.getTag().size() > 0) {
-			
-			
+
 			Join join = productDAORoot.join("possessesTagsProduct").join("tag");
 			// cb.equal(join.get("id"),authorId);
 			Stream<Predicate> p = productSearchCriteria.getTag().stream().map(tag -> cb.like(join.get("label")
 
 					, "%" + tag + "%"));
+
 			List<Predicate> predicateList = p.collect(Collectors.toList());
 			predicates.add(cb.or(predicateList.toArray(new Predicate[0])));
-			
+
 		}
+
+		if (Objects.nonNull(productSearchCriteria.getMinPrice())
+				&& Objects.nonNull(productSearchCriteria.getMaxPrice())) {
+
+			Predicate onStart = cb.greaterThanOrEqualTo(productDAORoot.get("price"),
+					productSearchCriteria.getMinPrice());
+			Predicate onEnd = cb.lessThanOrEqualTo(productDAORoot.get("price"), productSearchCriteria.getMaxPrice());
+
+			predicates.add(onStart);
+			predicates.add(onEnd);
+
+		}
+
 		return cb.and(predicates.toArray(new Predicate[0]));
 	}
 
