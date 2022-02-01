@@ -10,7 +10,7 @@ import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
-import com.m2i.warhammermarket.model.UserInscription;
+import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
 import com.m2i.warhammermarket.repository.AddressRepository;
 import com.m2i.warhammermarket.repository.InhabitRepository;
 import com.m2i.warhammermarket.repository.UserInformationRepository;
@@ -65,13 +65,8 @@ public class UserServiceImplement implements UserService {
     private AddressRepository addressRepository;
     @Autowired
     private UserInformationRepository userInformationRepository;
-
     @Autowired
     private InhabitRepository inhabitRepository;
-    // password encode permet d'encoder le mot de passe avant de l'enregistrer en
-    // BDD
-    // Pour fonctionner, PasswordEncoder est défini dans SecurityConfig (dans le
-    // package Security)
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -109,11 +104,6 @@ public class UserServiceImplement implements UserService {
                 .collect(Collectors.toList()));
 
         return userDTO;
-    }
-
-    @Override
-    public UserDTO save(UserDTO user) {
-        return null;
     }
 
     @Override
@@ -209,51 +199,6 @@ public class UserServiceImplement implements UserService {
     public void delete(Long id) {
 
     }
-
-  
-
-    @Override
-    public Long saveInscription(UserInscription userInscription) {
-        List<String> authorities = new ArrayList<String>();
-        authorities.add("user");
-        UserSecurityDTO userSecDTO = new UserSecurityDTO();
-        userSecDTO.setAuthorities(authorities);
-        userSecDTO.setMail(userInscription.getEmail());
-        userSecDTO.setPassword(userInscription.getPassword());
-        Long newId = save(userSecDTO);
-        UserDAO user = userRepository.findById(newId).get();
-        UsersInformationDAO userInfo = new UsersInformationDAO();
-        userInfo.setUser(user);
-        String sDate1 = userInscription.getAnniversaire();
-
-        userInfo.setBirthdate(getDate(sDate1));
-        userInfo.setFirstName(userInscription.getNom());
-        userInfo.setLastName(userInscription.getPrenom());
-        userInfo.setPhone(userInscription.getTelephone());
-        UsersInformationDAO usInfo = userInformationRepository.save(userInfo);
-
-        AddressDAO newadd = new AddressDAO();
-
-        newadd.setAdditionalAddress(userInscription.getComplementadresse());
-        newadd.setCity(userInscription.getVille());
-        newadd.setCountry(userInscription.getPays());
-        newadd.setPostalCode(userInscription.getCodepostal());
-        newadd.setNumber(userInscription.getNumeroA());
-        newadd.setStreet(userInscription.getRue());
-        AddressDAO newaddID = addressRepository.save(newadd);
-
-        InhabitDAO newInhabit = new InhabitDAO();
-        InhabitId newIdInhabit = new InhabitId();
-        newIdInhabit.setIdAddress(newaddID.getId());
-        newIdInhabit.setIdUser(usInfo.getId());
-        newInhabit.setId(newIdInhabit);
-        newInhabit.setAddress(newaddID);
-        newInhabit.setUser(userInfo);
-        newInhabit.setIsMain(1);
-        inhabitRepository.save(newInhabit);
-        return usInfo.getId();
-    }
-
     public static java.sql.Date getDate(String date) {
         java.util.Date utilDate;
         java.sql.Date sqlDate = null;
@@ -266,6 +211,7 @@ public class UserServiceImplement implements UserService {
         }
         return sqlDate;
     }
+    
 
     @Override
     public ProfileWrapper getProfile(String mail) {
@@ -345,6 +291,33 @@ public class UserServiceImplement implements UserService {
 		
 		userProfile.setAvatar(null);
 		updateProfile(userProfile);
+	}
+
+	
+	@Override
+	public Long save(RegistrationProfile userProfile) {
+		
+		List<String> authorities = new ArrayList<String>();
+        authorities.add("user");
+        
+        UserSecurityDTO userSecDTO =  userProfile.getUserSecurity();
+        UsersInformationDAO userInfo = userProfile.getUserInformations();
+
+        Long userSecID = save(userSecDTO);
+        	 userInfo.setUser( userRepository.findById(userSecID).get());
+        
+        userInfo.setId(userInformationRepository.save(userInfo).getId());
+        AddressDAO address = addressRepository.save(userProfile.getAddress());
+       
+        try {
+        	inhabitRepository.save(InhabitDAO.getInhabit(address , userInfo , userSecID));
+        	
+        }catch(Exception e) {
+        	e.printStackTrace();
+        	return null;
+        }
+        
+        return userSecID;
 	}
 
 
