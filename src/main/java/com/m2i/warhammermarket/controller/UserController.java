@@ -6,9 +6,9 @@ import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
+import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
 import com.m2i.warhammermarket.model.KeyAndPassword;
 import com.m2i.warhammermarket.model.Mail;
-import com.m2i.warhammermarket.model.UserInscription;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.UserService;
@@ -48,7 +48,7 @@ public class UserController {
         }
     }
     /**
-     * REST: {POST: /register} 
+     * REST: {POST: /pictureProfile} 
      *
      * @param multipartFile profile picture to record in database and save in upload directory
      * @throws IOException
@@ -83,23 +83,6 @@ public class UserController {
     
 
     
-    
-    /**
-     * REST: {POST: /register} Controlleur pour pouvoir créer un nouveau compte
-     * Vérifie d'abord si le compte existe ou non en BDD
-     *
-     * @param userSecurity
-     * @return Long: id du compte créé
-     */
-    @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestBody UserSecurityDTO userSecurity) {
-        UserDTO userDTO = userService.findOneByUserMail(userSecurity.getMail());
-        if (userDTO != null) {
-            throw new UserMailAlreadyExistException();
-        }
-        Long idSaved = userService.save(userSecurity);
-        return ResponseEntity.ok(idSaved);
-    }
 
     /**
      * Start the password recovery feature
@@ -283,16 +266,15 @@ public class UserController {
      */
     @CrossOrigin(origins = "*")
 
-    @PostMapping("/inscription")
-    public ResponseEntity<Long> inscription(@RequestBody UserInscription userInscription) {
-        UserDTO userDTO = userService.findOneByUserMail(userInscription.getEmail());
+    @PostMapping("/public/register")
+    public ResponseEntity<Long> inscription(@RequestBody RegistrationProfile userProfile) {
+        UserDTO userDTO = userService.findOneByUserMail(userProfile.getMail());
         if (userDTO != null) {
             throw new UserMailAlreadyExistException();
         }
-        Long idSaved = userService.saveInscription(userInscription);
+        Long idSaved = userService.save(userProfile);
         return ResponseEntity.ok(idSaved);
     }
-    
     
     @CrossOrigin("*")
     @PutMapping("/public/profile")
