@@ -5,31 +5,25 @@ import java.util.Optional;
 
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
-import com.m2i.warhammermarket.model.UserInscription;
-
+import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 
-import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
-import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
-import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 
 public interface UserService {
 
-    Long save(UserSecurityDTO userSecurity);
+  
 
     /**
      * Save a user in database
-     * @param user the entity to save
+     * @param userSecurity the entity to save
      * @return the persisted entity
      */
-    UserDTO save (UserDTO user);
+    Long save (UserSecurityDTO userSecurity);
 
     Page<UserDTO> findAll(Pageable pageable);
 
@@ -50,10 +44,11 @@ public interface UserService {
     void changeUserPasswordAndDeletePasswordToken(UserSecurityDTO userSecurityDTO);
 
     void delete(Long id);
-
+    
+    Long save(RegistrationProfile userProfile);
     ProfileWrapper getProfile(String mail);
 
-	Long saveInscription(UserInscription userInscription);
+	
     /*
      * 	Update user profile information
      * @param user data for update database
