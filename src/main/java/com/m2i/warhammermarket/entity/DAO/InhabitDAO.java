@@ -37,4 +37,22 @@ public class InhabitDAO implements Serializable {
     @MapsId("idUser")
     @JoinColumn(name = "id_users")
     UsersInformationDAO user;
+    
+    
+    
+    public static InhabitDAO getInhabit(AddressDAO address, UsersInformationDAO userInfo, Long userSecID)
+    {
+    	 InhabitDAO inhabit = new InhabitDAO();
+         InhabitId ids = new InhabitId();
+         
+         ids.setIdAddress(address.getId());
+         ids.setIdUser(userSecID);
+         inhabit.setId(ids);
+         inhabit.setAddress(address);
+         inhabit.setUser(userInfo);
+         inhabit.setIsMain(1);
+    	
+		return inhabit;
+    	
+    }
 }
