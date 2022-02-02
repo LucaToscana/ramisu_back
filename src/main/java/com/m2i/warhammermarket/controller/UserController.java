@@ -123,7 +123,7 @@ public class UserController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/public/passwordresetcheck/{key}")
-    public ResponseEntity<String> checkTokenValidityOnOpeningResetPage(@PathVariable String key) {
+    public ResponseEntity<HttpStatus> checkTokenValidityOnOpeningResetPage(@PathVariable String key) {
         if (this.userService.findUserByPasswordResetToken(key) != null) {
             UserDTO userDTO = this.userService.findUserByPasswordResetToken(key);
 
@@ -131,11 +131,11 @@ public class UserController {
                 if (userDTO.getTokenExpiryDate() != null
                         && this.userService.isPasswordTokenValid(userDTO.getTokenExpiryDate())
                         && userDTO.isActive()) {
-                    return ResponseEntity.ok("");
+                    return ResponseEntity.ok(HttpStatus.OK);
                 }
             }
         }
-        throw new UserControllerException("Ce lien n'est pas valide");
+        return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -150,10 +150,7 @@ public class UserController {
     public ResponseEntity<String> resetPasswordEnd(@RequestBody KeyAndPassword keyAndPassword) {
 
         //First we verify if keyAndPassword is present and check if the passwords match
-        if (keyAndPassword != null && (keyAndPassword.getKey() != null
-                && keyAndPassword.getNewPassword() != null && keyAndPassword.getVerifyPassword() != null)
-                && (keyAndPassword.getNewPassword().equals(keyAndPassword.getVerifyPassword()))
-        ) {
+        if (keyAndPassword != null && keyAndPassword.isValid()) {
 
             //We check if the password is as complex as asked
             Pattern pattern;
