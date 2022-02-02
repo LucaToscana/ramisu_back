@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 @RequestMapping("/api")
 public class UserController {
 	
-
     @Autowired
     private UserService userService;
 
@@ -80,9 +79,6 @@ public class UserController {
     	  
     }
 
-    
-
-    
 
     /**
      * Start the password recovery feature
@@ -100,33 +96,18 @@ public class UserController {
 
         if (userDTO != null && userDTO.isActive()) {
             userInformationDTO = this.userService.findUserInfoByUserMail(email);
-        } else {
-            return ResponseEntity.ok("Mail envoyé");
+            String passwordToken = this.userService.createPasswordResetToken(email);
+            Mail mail =  EmailSenderService.getresetPswMail(userInformationDTO.get().getFirstName(), userInformationDTO.get().getLastName(), passwordToken , email);
+            
+            try {
+                this.emailSenderService.sendEmail(mail);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-        String passwordToken = this.userService.createPasswordResetToken(email);
-
-        // This array contains the elements needed by the email that will be sent to the user
-        Map<String, Object> properties = new HashMap();
-					        properties.put("firstName", userInformationDTO.get().getFirstName());
-					        properties.put("lastName", userInformationDTO.get().getLastName());
-					        properties.put("baseUrl", ApplicationConstants.WEBSITE_BASE_URL);
-					        properties.put("url", ApplicationConstants.WEBSITE_URL);
-					        properties.put("passwordToken", passwordToken);
-
-        Mail mail = Mail.builder()
-                .from(ApplicationConstants.WEBSITE_EMAIL_ADDRESS)
-                .to(email)
-                .htmlTemplate(new Mail.HtmlTemplate("passwordresettoken", properties))
-                .subject("Réinitialisation du mot de passe Warhammer Market")
-                .build();
-        try {
-            this.emailSenderService.sendEmail(mail);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
         return ResponseEntity.ok("Mail envoyé");
     }
 
