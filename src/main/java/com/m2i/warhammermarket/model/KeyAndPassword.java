@@ -1,5 +1,8 @@
 package com.m2i.warhammermarket.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +17,15 @@ public class KeyAndPassword {
     
     public boolean isValid()
     {
-    	 return newPassword != null && verifyPassword != null && newPassword.equals(verifyPassword);
-         
+    	if(newPassword != null && verifyPassword != null && newPassword.equals(verifyPassword))
+		{
+		  Pattern pattern = Pattern.compile("^.*(?=.{8,})((?=.*[!@#$%^&*()\\-_=+{};:,<.>]))(?=.*\\d)((?=.*[a-z]))((?=.*[A-Z])).*$");
+	        Matcher matcher  = pattern.matcher(newPassword);
+
+	        //    validation schema failed
+	        if(matcher.find())return true; 
+		}
+    	return false;
     }
 
 }
