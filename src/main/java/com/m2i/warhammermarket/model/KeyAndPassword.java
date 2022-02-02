@@ -10,5 +10,12 @@ public class KeyAndPassword {
     private String key;
     private String newPassword;
     private String verifyPassword;
+    
+    
+    public boolean isValid()
+    {
+    	 return newPassword != null && verifyPassword != null && newPassword.equals(verifyPassword);
+         
+    }
 
 }
