@@ -41,11 +41,6 @@ public class UserController {
     @Autowired
     private EmailSenderService emailSenderService;
 
-    private static class UserControllerException extends RuntimeException {
-        private UserControllerException(String message) {
-            super(message);
-        }
-    }
     /**
      * REST: {POST: /pictureProfile} 
      *
@@ -147,63 +142,34 @@ public class UserController {
      */
     @CrossOrigin(origins = "*")
     @PostMapping("/public/passwordresetend")
-    public ResponseEntity<String> resetPasswordEnd(@RequestBody KeyAndPassword keyAndPassword) {
+    public ResponseEntity<HttpStatus> resetPasswordEnd(@RequestBody KeyAndPassword keyAndPassword) {
 
         //First we verify if keyAndPassword is present and check if the passwords match
         if (keyAndPassword != null && keyAndPassword.isValid()) {
 
-            //We check if the password is as complex as asked
-            Pattern pattern;
-            Matcher matcher;
-            pattern = Pattern.compile("^.*(?=.{8,})((?=.*[!@#$%^&*()\\-_=+{};:,<.>]))(?=.*\\d)((?=.*[a-z]))((?=.*[A-Z])).*$");
-            matcher = pattern.matcher(keyAndPassword.getNewPassword());
-
-            if(!matcher.find()) {
-                throw new UserControllerException("Le mot de passe doit contenir au moins 8 caractères, "
-                        + "une majuscule, un nombre et un caractère spécial.");
-            }
-
             UserDTO userDTO = this.userService.findUserByPasswordResetToken(keyAndPassword.getKey());
 
-            if (userDTO == null) throw new UserControllerException("Utilisateur non trouvé.");
+            if (userDTO == null) return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
 
             if (this.userService.isPasswordTokenValid(userDTO.getTokenExpiryDate()) && userDTO.isActive()) {
-
-                // We put the new password and email address into an UserSecurityDTO instance,
-                // then snd it to the service layer where the new password will replace the old one
-                // and the token will be deleted
-                UserSecurityDTO userSecurityDTO = new UserSecurityDTO();
-                userSecurityDTO.setPassword(keyAndPassword.getNewPassword());
-                userSecurityDTO.setMail(userDTO.getMail());
-                this.userService.changeUserPasswordAndDeletePasswordToken(userSecurityDTO);
-
-                Optional<UserInformationDTO> userInformationDTO =
-                        this.userService.findUserInfoByUserMail(userSecurityDTO.getMail());
-
-                Map<String, Object> properties = new HashMap();
-                properties.put("firstName", userInformationDTO.get().getFirstName());
-                properties.put("lastName", userInformationDTO.get().getLastName());
-
-                Mail mail = Mail.builder()
-                        .from(ApplicationConstants.WEBSITE_EMAIL_ADDRESS)
-                        .to(userDTO.getMail())
-                        .htmlTemplate(new Mail.HtmlTemplate("passwordchanged", properties))
-                        .subject("Votre mot de passe Warhammer Market a changé")
-                        .build();
-                try {
-                    this.emailSenderService.sendEmail(mail);
+            	 Optional<UserInformationDTO> userInformationDTO =  this.userService.findUserInfoByUserMail(userDTO.getMail());
+            	 Mail mail =  EmailSenderService.getNotificationMail(userInformationDTO.get().getFirstName() , userInformationDTO.get().getLastName(), userDTO.getMail());
+                 
+                 try {
+                     this.emailSenderService.sendEmail(mail);
+                     return ResponseEntity.ok(HttpStatus.OK);
                 } catch (MessagingException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                return ResponseEntity.ok("Mot de passe changé et mail envoyé.");
+                return ResponseEntity.ok(HttpStatus.OK);
             } else {
-                throw new UserControllerException("Erreur de traitement.");
+            	return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } else {
-            throw new UserControllerException("Erreur de traitement.");
+        	return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
