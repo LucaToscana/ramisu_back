@@ -160,11 +160,11 @@ public class UserController {
                      return ResponseEntity.ok(HttpStatus.OK);
                 } catch (MessagingException e) {
                     e.printStackTrace();
+                    return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-
-                return ResponseEntity.ok(HttpStatus.OK);
             } else {
             	return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
             }
