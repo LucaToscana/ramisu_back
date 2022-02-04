@@ -4,6 +4,8 @@ import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
 import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
+import com.m2i.warhammermarket.model.ResponseProductDetails;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -47,4 +49,6 @@ public interface ProductService {
      * @author Claire
      */
     Page<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria  ,Pageable pageable);
+
+	Optional<ResponseProductDetails> findOneDetails(Long id);
 }
