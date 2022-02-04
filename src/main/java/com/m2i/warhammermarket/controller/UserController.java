@@ -4,15 +4,16 @@ import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
-import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
+import com.m2i.warhammermarket.entity.wrapper.UserMessage;
 import com.m2i.warhammermarket.model.KeyAndPassword;
 import com.m2i.warhammermarket.model.Mail;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api")
@@ -209,7 +208,6 @@ public class UserController {
      * @return Long: id du compte créé
      */
     @CrossOrigin(origins = "*")
-
     @PostMapping("/public/register")
     public ResponseEntity<Long> inscription(@RequestBody RegistrationProfile userProfile) {
         UserDTO userDTO = userService.findOneByUserMail(userProfile.getMail());
@@ -236,5 +234,29 @@ public class UserController {
     	
     	return ResponseEntity.ok(HttpStatus.OK);
     }
+    
+    /**
+     * 				
+     * */
+    @CrossOrigin("*")
+    @PostMapping("/public/contactus")
+    public  ResponseEntity<HttpStatus> editProfile(@RequestBody UserMessage message) {
+    	
+    	if(!message.valid())return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+    	
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	String email = userDetails.getUsername();
+    	ProfileWrapper profile =  userService.getProfile(email);
+    	 Mail mail =  EmailSenderService.getTeamMail(profile , message);
 
+          try {
+			this.emailSenderService.sendEmail(mail);
+		} catch (MessagingException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return ResponseEntity.ok(HttpStatus.OK);
+    }
+    
 }
