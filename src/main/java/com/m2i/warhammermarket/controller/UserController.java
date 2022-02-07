@@ -11,6 +11,7 @@ import com.m2i.warhammermarket.model.KeyAndPassword;
 import com.m2i.warhammermarket.model.Mail;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.EmailSenderService;
+import com.m2i.warhammermarket.service.ReCaptchaValidationService;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -28,10 +29,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 @RestController
 @RequestMapping("/api")
 public class UserController {
+	@Autowired
+	private ReCaptchaValidationService validator;
+
 	
     @Autowired
     private UserService userService;
@@ -208,15 +211,21 @@ public class UserController {
      * @return Long: id du compte créé
      */
     @CrossOrigin(origins = "*")
-    @PostMapping("/public/register")
-    public ResponseEntity<Long> inscription(@RequestBody RegistrationProfile userProfile) {
-        UserDTO userDTO = userService.findOneByUserMail(userProfile.getMail());
-        if (userDTO != null) {
-            throw new UserMailAlreadyExistException();
-        }
-        Long idSaved = userService.save(userProfile);
-        return ResponseEntity.ok(idSaved);
-    }
+@PostMapping("/public/register")
+	public ResponseEntity<Long> inscription(@RequestBody RegistrationProfile userProfile) {
+	System.out.println("catpcha"+userProfile.getCaptchaToken());
+		Long idSaved = 0L;
+		if (validator.validateCaptcha(userProfile.getCaptchaToken())) {
+
+			UserDTO userDTO = userService.findOneByUserMail(userProfile.getMail());
+			if (userDTO != null) {
+				throw new UserMailAlreadyExistException();
+			}
+			idSaved = userService.save(userProfile);
+		}
+		return ResponseEntity.ok(idSaved);
+	}
+
     
     @CrossOrigin("*")
     @PutMapping("/public/profile")
