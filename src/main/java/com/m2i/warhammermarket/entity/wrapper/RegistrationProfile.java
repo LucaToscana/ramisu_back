@@ -18,6 +18,7 @@ import lombok.ToString;
 @ToString
 public class RegistrationProfile extends ProfileWrapper {
 	private String password;
+	private String captchaToken;
 
 	public UserSecurityDTO getUserSecurity() {
 		 
