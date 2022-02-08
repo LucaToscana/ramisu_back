@@ -45,7 +45,7 @@ public class AuthentificationController {
             //Dans le cas contraire, renvoi une exception BadCredentialsException
             authenticationManager.authenticate(tokenSpring);
         } catch (BadCredentialsException ex) {
-            throw ex;
+            return null ;
         }
         //Je récupére le UserDetails coresspondant au username reçu
         UserDetails userDetails = userDetailService.loadUserByUsername(userSecurity.getMail());
