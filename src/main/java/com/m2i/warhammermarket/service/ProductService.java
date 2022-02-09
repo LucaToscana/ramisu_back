@@ -2,6 +2,7 @@ package com.m2i.warhammermarket.service;
 
 import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProductAddWrapper;
 import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
 import org.springframework.data.domain.Page;
@@ -47,4 +48,14 @@ public interface ProductService {
      * @author Claire
      */
     List<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria);
+    
+    
+    /**
+     * @param ProductAddWrapper object
+     * @return A product 
+     * @author Amal
+     */
+    public ProductDAO saveProduct(ProductAddWrapper productWrapper) ;
 }
+
+

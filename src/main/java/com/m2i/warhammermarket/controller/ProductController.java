@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProductAddWrapper;
 import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
 import com.m2i.warhammermarket.service.ProductService;
@@ -90,5 +91,18 @@ public class ProductController {
 //        System.out.println("product= "+ps);
 //        return ResponseEntity.ok(p);
     }
+    
+    /**
+     * @param ProductAddWrapper object
+     * @return A product 
+     * @author Amal
+     */
+    @CrossOrigin(origins = "*")
+    @PostMapping("/public/addproducts")
+    public ResponseEntity<ProductDAO> addProduct(@RequestBody ProductAddWrapper product){
+    	return new ResponseEntity<>(productService.saveProduct(product),(HttpStatus.OK));
+    	
+    }
+    
 
   }

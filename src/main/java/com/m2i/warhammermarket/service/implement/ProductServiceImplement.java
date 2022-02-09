@@ -1,7 +1,10 @@
 package com.m2i.warhammermarket.service.implement;
 
+import com.m2i.warhammermarket.entity.DAO.CategoryDAO;
 import com.m2i.warhammermarket.entity.DAO.ProductDAO;
+import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import com.m2i.warhammermarket.entity.DTO.ProductDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProductAddWrapper;
 import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
 import com.m2i.warhammermarket.repository.ProductRepository;
@@ -131,6 +134,44 @@ public class ProductServiceImplement implements ProductService {
      */
     public List<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria){
         return productRepositoryCriteria.findAllWithFilters(productSearchCriteria);
+    }
+    
+    /**
+     * @param productWrapper
+     *  This method is used for get from a front a complete product object and to register this object in database.
+     *  @return a product
+     * @author Amal
+     */ 
+    
+    public ProductDAO saveProduct(ProductAddWrapper productWrapper) {
+    	
+    	ProductDAO product = new ProductDAO();
+    	product.setEan13(productWrapper.getEan13());
+    	product.setDescription(productWrapper.getDescription());
+    	product.setLabel(productWrapper.getLabelProduct());
+    	product.setPrice(productWrapper.getPrice());
+    	product.setPromotion(productWrapper.getPromotion());
+    	product.setStock(productWrapper.getStock());
+    	product.setPicture(productWrapper.getPicture());
+    	
+    	
+    	
+    	UniverseDAO universe = new UniverseDAO();
+    	universe.setLabel(productWrapper.getLabelUniverse());
+    	universe.setRefCode(productWrapper.getRefCodeUniverse());
+    	
+    	product.setUniverse(universe);
+
+
+    	CategoryDAO category = new CategoryDAO();
+    	category.setLabel(productWrapper.getLabelCategory());
+    	category.setRefCode(productWrapper.getRefCodeCategory());
+    	
+    	product.setCategorie(category);
+
+    	
+    	
+        return productRepository.save(product);
     }
 
 }
