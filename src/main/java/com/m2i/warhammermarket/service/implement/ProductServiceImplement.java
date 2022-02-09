@@ -7,8 +7,10 @@ import com.m2i.warhammermarket.entity.DTO.ProductDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductAddWrapper;
 import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
+import com.m2i.warhammermarket.repository.CategoryRepository;
 import com.m2i.warhammermarket.repository.ProductRepository;
 import com.m2i.warhammermarket.repository.ProductRepositoryCriteria;
+import com.m2i.warhammermarket.repository.UniverseRepository;
 import com.m2i.warhammermarket.service.ProductService;
 import com.m2i.warhammermarket.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,10 @@ public class ProductServiceImplement implements ProductService {
     private ProductMapper productMapper;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private UniverseRepository universeRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Autowired
     private EntityManager entityManager;
 
@@ -160,14 +166,19 @@ public class ProductServiceImplement implements ProductService {
     	universe.setLabel(productWrapper.getLabelUniverse());
     	universe.setRefCode(productWrapper.getRefCodeUniverse());
     	
+    	universeRepository.save(universe);
     	product.setUniverse(universe);
+    	
+    	
 
 
     	CategoryDAO category = new CategoryDAO();
     	category.setLabel(productWrapper.getLabelCategory());
     	category.setRefCode(productWrapper.getRefCodeCategory());
     	
+    	categoryRepository.save(category);
     	product.setCategorie(category);
+    	
 
     	
     	
