@@ -19,7 +19,7 @@ import java.util.Set;
 public class ProductDAO implements Serializable {
 
     @Id
-    @Column (name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Long id;
 
     @Column (name ="ean13", nullable = false)
