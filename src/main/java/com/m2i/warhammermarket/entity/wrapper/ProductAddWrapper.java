@@ -6,10 +6,13 @@ import com.m2i.warhammermarket.entity.DAO.CategoryDAO;
 import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 
+import lombok.NoArgsConstructor;
+
 /**
  *  This class is create for use one object with all attributes that we need for the form on the front-end
  * @author Amal
  */
+@NoArgsConstructor
 public class ProductAddWrapper {
 	
 	// Attributes class ProductDTO :
@@ -29,6 +32,7 @@ public class ProductAddWrapper {
     private Long idCategory;
     private String refCodeCategory;
     private String labelCategory;
+    
     
     // Personalised constructor for create a new object with all attributes in the same object.
     public ProductAddWrapper(ProductDAO product, UniverseDAO univers, CategoryDAO category){
