@@ -2,6 +2,7 @@ package com.m2i.warhammermarket.controller;
 
 import com.m2i.warhammermarket.entity.DTO.OrderDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductOrderWrapper;
+import com.m2i.warhammermarket.model.ResponseOrderDetails;
 import com.m2i.warhammermarket.service.OrderService;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,16 @@ public class OrderController {
     public ResponseEntity<List<ProductOrderWrapper>> getProductsByOrderId(@PathVariable Long id) {
         List<ProductOrderWrapper> productOrderWrappers = orderService.findAllByOrderId(id);
         return ResponseEntity.ok(productOrderWrappers);
+    }
+    
+    
+    @CrossOrigin(origins = "*")
+    @GetMapping("/orders/details/{id}")
+    public ResponseEntity<ResponseOrderDetails> getOrderAndProductsByOrderId(@PathVariable Long id) {
+      
+    	ResponseOrderDetails response = orderService.getOrderAndProductsByOrderId(id);
+       
+        
+        return ResponseEntity.ok(response);
     }
 }

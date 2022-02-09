@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Entity
 @Table(name = "Line_of_order")
 public class LineOfOrderDAO implements Serializable {
@@ -30,6 +30,11 @@ public class LineOfOrderDAO implements Serializable {
     @MapsId("idOrder")
     @JoinColumn(name = "id_orders")
     OrderDAO order;
+
+	@Override
+	public String toString() {
+		return "LineOfOrderDAO [id=" + id + ", quantity=" + quantity + "]";
+	}
     
     
     

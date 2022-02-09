@@ -156,18 +156,7 @@ public class ProductServiceImplement implements ProductService {
 		 * t depends on the source and the intermediate operations.”*/
 		
 		Optional<TagDAO> tag = Optional.ofNullable(p.getPossessesTagsProduct().stream().findFirst().get().getTag());
-		
-		
-		System.out.println(tag);
-		System.out.println(tag);
 
-		System.out.println(tag);
-
-		System.out.println(tag);
-
-		System.out.println(tag);
-
-		System.out.println(tag.get().getLabel());
 
 		Set<PossessesDAO> list = tag.get().getPossessesProductsTag();
 		Optional<ProductDTO> product = Optional.ofNullable(this.productMapper.productToProductDTO(p));

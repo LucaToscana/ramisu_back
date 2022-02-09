@@ -19,7 +19,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Entity
 @Table(name = "Categories")
 public class CategoryDAO implements Serializable {
@@ -38,5 +38,11 @@ public class CategoryDAO implements Serializable {
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER , mappedBy="categorie")
     private Set<ProductDAO> products;
+
+
+	@Override
+	public String toString() {
+		return "CategoryDAO [id=" + id + ", refCode=" + refCode + ", label=" + label + "]";
+	}
 
 }

@@ -3,6 +3,9 @@ package com.m2i.warhammermarket.entity.DAO;
 import lombok.*;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -10,7 +13,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name = "Address")
 public class AddressDAO implements Serializable {
@@ -36,7 +38,20 @@ public class AddressDAO implements Serializable {
 
     @Column(name = "country",  nullable=true)
     private String country;
+   
     
+    
+    @Override
+	public String toString() {
+		return "AddressDAO [id=" + id + ", number=" + number + ", street=" + street + ", additionalAddress="
+				+ additionalAddress + ", postalCode=" + postalCode + ", city=" + city + ", country=" + country + "]";
+	}
+
+	@JsonIgnore
     @OneToMany(mappedBy = "address")
     Set<InhabitDAO> inhabitDao;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "address", fetch = FetchType.EAGER)
+	private Set<OrderDAO> ordersAddress;
 }

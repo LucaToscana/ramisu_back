@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Entity
 @Table (name = "Products")
 public class ProductDAO implements Serializable {
@@ -64,4 +64,16 @@ public class ProductDAO implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
 	private Set<PossessesDAO> possessesTagsProduct;
+
+
+	@Override
+	public String toString() {
+		return "ProductDAO [id=" + id + ", ean13=" + ean13 + ", label=" + label + ", price=" + price + ", description="
+				+ description + ", promotion=" + promotion + ", stock=" + stock + ", picture=" + picture
+				+ ", yearOfProduction=" + yearOfProduction + ", universe=" + universe + ", categorie=" + categorie
+				+ "]";
+	}
+    
+    
+    
 }

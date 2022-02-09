@@ -3,11 +3,13 @@ package com.m2i.warhammermarket.service.implement;
 import com.m2i.warhammermarket.entity.DAO.*;
 import com.m2i.warhammermarket.entity.DTO.OrderDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductOrderWrapper;
+import com.m2i.warhammermarket.model.ResponseOrderDetails;
 import com.m2i.warhammermarket.repository.*;
 import com.m2i.warhammermarket.service.OrderService;
 import com.m2i.warhammermarket.service.mapper.OrderMapper;
 import com.m2i.warhammermarket.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -40,7 +42,7 @@ public class OrderServiceImplement implements OrderService {
                 ProductDAO productGet = productRepository.getById(p.getId());
 
                 lineOfOrderRepository.save(
-                        new LineOfOrderDAO(new LineOfOrderId(p.getId(), order.getId()),p.getQuantite(),productGet,order   ));
+                        new LineOfOrderDAO(new LineOfOrderId(p.getId(), order.getId()),p.getQuantite(),productGet,order));
                 ProductDAO product = productRepository.getById(p.getId());
                 product.setStock(product.getStock()-p.getQuantite());
                 productRepository.save(product);
@@ -108,5 +110,26 @@ public class OrderServiceImplement implements OrderService {
         }
         return total.multiply(BigDecimal.valueOf(1.20));
     }
+
+	@Override
+	public ResponseOrderDetails getOrderAndProductsByOrderId(Long id) {
+		
+		List<ProductOrderWrapper> listProductsOrderById= 	findAllByOrderId(id);
+		
+		OrderDAO test = orderRepository.getById(id);
+		
+		System.out.println(test);
+		System.out.println(test.getId());
+		System.out.println(test.getId());
+		System.out.println(test.getAddress());
+
+
+		
+		
+        OrderDTO order = orderMapper.OrderDAOtoOrderDTO(orderRepository.getById(id));
+        order.setUsersInformation(null);
+        ResponseOrderDetails newResponse = new ResponseOrderDetails(order,listProductsOrderById);
+		return newResponse;
+	}
 
 }

@@ -14,10 +14,16 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Entity
 @Table(name = "Users_information")
 public class UsersInformationDAO implements Serializable {
+	@Override
+	public String toString() {
+		return "UsersInformationDAO [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", phone="
+				+ phone + ", birthdate=" + birthdate + ", avatar=" + avatar + ", user=" + user + "]";
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -46,4 +52,6 @@ public class UsersInformationDAO implements Serializable {
     @OneToMany(mappedBy = "user")
 	Set<InhabitDAO> inhabitDao;
 
+    
+    
 }
