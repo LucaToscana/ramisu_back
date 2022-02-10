@@ -48,19 +48,6 @@ public class OrderServiceImplement implements OrderService {
 
 		OrderDAO orderDao = order(productsOrder, login, orderNew);
 
-		System.out.println(orderDao);
-		System.out.println(orderDao);
-
-		System.out.println(orderDao);
-
-		System.out.println(orderDao);
-
-		System.out.println(orderDao);
-
-		System.out.println(orderDao);
-
-		System.out.println(orderDao);
-
 		OrderDAO order = orderRepository.save(orderDao);
 		for (ProductOrderWrapper p : productsOrder) {
 
@@ -135,6 +122,19 @@ public class OrderServiceImplement implements OrderService {
 
 		AddressDAO addTest = addressRepository.findById(add.getId()).orElse(null);
 		if (orderNew.getType().equals("domicile")) {
+			BigDecimal bg25 = new BigDecimal("25");
+			BigDecimal bg10 = new BigDecimal("10");
+
+			// create int object
+			int res;
+
+			res = order.getTotal().compareTo(bg25); // compare bg1 with bg2
+			if (res != 1) {
+				BigDecimal sum = order.getTotal().add(bg10);
+
+				order.setTotal(sum);
+
+			}
 			if (addTest.equals(add) == false) {
 				add.setId(null);
 				AddressDAO newAddress = addressRepository.save(add);
@@ -180,7 +180,7 @@ public class OrderServiceImplement implements OrderService {
 		List<ProductOrderWrapper> listProductsOrderById = findAllByOrderId(id);
 
 		OrderDTO order = orderMapper.OrderDAOtoOrderDTO(orderRepository.getById(id));
-		order.setUsersInformation(null);
+		// order.setUsersInformation(null);
 		ResponseOrderDetails newResponse = new ResponseOrderDetails(order, listProductsOrderById);
 		return newResponse;
 	}
