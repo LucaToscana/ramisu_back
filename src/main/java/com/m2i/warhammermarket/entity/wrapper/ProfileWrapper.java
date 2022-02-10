@@ -27,6 +27,7 @@ public class ProfileWrapper {
     private String phone;
     private String mail;
     private Date birthdate;
+    private Long idaddress;
     private String number;
     private String street;
     private String additionalAddress;
@@ -45,7 +46,7 @@ public class ProfileWrapper {
           mail = user.getUser().getMail();
           birthdate = user.getBirthdate();
           avatar = user.getAvatar();
-
+          idaddress = address.getId();
           number = address.getNumber();
           street = address.getStreet();
           additionalAddress = address.getAdditionalAddress();

@@ -46,6 +46,15 @@ public class OrderDAO implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
 	private Set<LineOfOrderDAO> linesOfOrder;
+
+	public OrderDAO(Date date, BigDecimal total, UsersInformationDAO user, StatusDAO status, AddressDAO address) {
+		super();
+		this.date = date;
+		this.total = total;
+		this.user = user;
+		this.status = status;
+		this.address = address;
+	}
     
     
 

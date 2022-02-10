@@ -25,7 +25,9 @@ public class OrderDTO implements Serializable {
     private UsersInformationDAO usersInformation;
     private StatusDAO status;
     private AddressDAO livraisonAddress;
-/*liv? mag?ho?*/
+    
+    
+    
     public OrderDTO(OrderDAO orderDAO) {
         this.id = orderDAO.getId();
         this.date = orderDAO.getDate();

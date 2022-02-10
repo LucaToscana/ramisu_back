@@ -2,6 +2,7 @@ package com.m2i.warhammermarket.controller;
 
 import com.m2i.warhammermarket.entity.DTO.OrderDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductOrderWrapper;
+import com.m2i.warhammermarket.model.RequestAddOrderWithAddress;
 import com.m2i.warhammermarket.model.ResponseOrderDetails;
 import com.m2i.warhammermarket.service.OrderService;
 import com.m2i.warhammermarket.service.UserService;
@@ -26,12 +27,12 @@ public class OrderController {
     @CrossOrigin(origins = "*")
   //  @Secured(AuthorityConstant.ROLE_USER)
     @PostMapping("/user/addorder")
-    public ResponseEntity<Boolean> createOrder(@RequestBody List<ProductOrderWrapper> productsOrder){
-        List<ProductOrderWrapper> productsFilter = productsOrder.stream().filter(c -> c.getQuantite() > 0).collect(Collectors.toList());
+    public ResponseEntity<Boolean> createOrder(@RequestBody RequestAddOrderWithAddress order){
+        List<ProductOrderWrapper> productsFilter = order.getProductsOrder().stream().filter(c -> c.getQuantite() > 0).collect(Collectors.toList());
         if(productsFilter.size() > 0 && orderService.checkStock(productsFilter)){
             try {
                 orderService.createOrder(productsFilter,
-                SecurityContextHolder.getContext().getAuthentication().getName());
+                SecurityContextHolder.getContext().getAuthentication().getName(),order);
                 return ResponseEntity.ok(true);
             }catch (Exception e){
                 System.out.println("Exception dans createOrder");
