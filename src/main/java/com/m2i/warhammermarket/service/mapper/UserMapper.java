@@ -2,6 +2,9 @@ package com.m2i.warhammermarket.service.mapper;
 
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserMapper {
-
+    @Autowired
+    private ModelMapper modelMapper;
     public List<UserDTO> usersToUsersDTO(List<UserDAO> users) {
         return users.stream()
                 .filter(Objects::nonNull)
@@ -19,7 +23,7 @@ public class UserMapper {
     }
 
     public UserDTO userToUserDTO(UserDAO user) {
-        return new UserDTO(user);
+        return modelMapper.map(user, UserDTO.class);
     }
 
     public List<UserDAO> userDTOsToUsers(List<UserDTO> userDTOs) {
