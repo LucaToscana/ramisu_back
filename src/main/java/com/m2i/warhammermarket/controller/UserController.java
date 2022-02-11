@@ -172,28 +172,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Simpl controlleur sécurisé, pour tester le token JWT
-     *
-     * @return
-     */
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello world";
-    }
-
-    @Secured({AuthorityConstant.ROLE_USER, AuthorityConstant.ROLE_ADMIN})
-    @GetMapping("/hello-user")
-    public String helloAdmin() {
-        return "Hello user";
-    }
-
-    @Secured(AuthorityConstant.ROLE_ADMIN)
-    @GetMapping("/hello-admin")
-    public String helloUser() {
-        return "Hello admin";
-    }
-
+  
     @CrossOrigin(origins = "*")
     @GetMapping("/public/profile")
     public ResponseEntity<ProfileWrapper> getProfile() {
