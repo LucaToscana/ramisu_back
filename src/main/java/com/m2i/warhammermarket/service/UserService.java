@@ -59,4 +59,9 @@ public interface UserService {
 	boolean savePicture(ProfileWrapper userProfile, MultipartFile multipartFile);
 
 	void removePictureProfile(ProfileWrapper userProfile);
+
+	void updateRoles(Long userID, Long roleID, boolean b);
+	
+	
+	
 }
