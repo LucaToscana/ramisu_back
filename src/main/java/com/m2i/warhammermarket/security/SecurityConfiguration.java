@@ -91,19 +91,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)//On ajout notre filtre (en premier !) puis celui de SpringSecurity
                 .authorizeRequests()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/user/**").permitAll()
                
                 .antMatchers("/api/payment/**").permitAll()
                 .antMatchers("/upload/profilePictures/**").permitAll()
-                .antMatchers("/api/orders/**").permitAll()
-                .antMatchers("/api/orders/details/**").permitAll()
+                .antMatchers("/api/orders/**").hasRole("USER")
+                .antMatchers("/api/orders/details/**").hasRole("USER")
 
                 .antMatchers("/api/public/**").permitAll() //On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")
                 .anyRequest().authenticated() //on définie que toutes les routes ne correspondant pas aux routes du dessus sont sécurisé par authentification
                 .and()
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)//On ajout notre filtre (en premier !) puis celui de SpringSecurity
+
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //on spécifie à SpringSecurity de ne pas créer de HttpSession
     }
 

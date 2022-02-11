@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, allowedHeaders = "*")
 @RequestMapping("/api")
 public class OrderController {
 
@@ -41,10 +42,10 @@ public class OrderController {
         }
         return ResponseEntity.ok(false);
     }
-
     @CrossOrigin(origins = "*")
     @GetMapping("/orders")
     public ResponseEntity<List<OrderDTO>> getOrdersById(Principal currentUserId) {
+    	System.out.println("@GetMapping(/orders)"+currentUserId);
         String mail = currentUserId.getName();
         
         

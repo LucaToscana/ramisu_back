@@ -1,11 +1,19 @@
 package com.m2i.warhammermarket.security;
 
 import com.m2i.warhammermarket.service.implement.JwtUserDetailService;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,7 +29,9 @@ import java.io.IOException;
  */
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-
+	@Value("${jwt.secret}")
+	private String secret;
+	
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -41,40 +51,97 @@ public class JwtFilter extends OncePerRequestFilter {
      * @throws ServletException
      * @throws IOException
      */
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        //On récupére le token (null sinon)
-        String token = resolveToken(request);
-        //On vérifie que le token existe bien, donc non null
-        if(StringUtils.isNotBlank(token)) {
-            String username = jwtUtil.getSubject(token);
-            //On vérifie que le token a bien un username et que l'Authentication n'est pas déjà fait
-            if(StringUtils.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = jwtUserDetailService.loadUserByUsername(username);
-                //On vérifie la validité du token selon la méthode de JwtUtil créé précédemment
-                if(jwtUtil.isTokenValid(token, userDetails)) {
-                    //On crée l'authentication et on la set
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
-            }
-        }
-        //On renvoit toujours la requete et la réponse
-        chain.doFilter(request, response);
-    }
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws ServletException, IOException
 
-    /**
-     * Permet de récupérer le token depuis une requête
-     * Envoi nul si token non existant, ou si incohérent
-     *
-     * @param request
-     * @return le token, ou null si non existant ou incohérent
-     */
-    private String resolveToken(HttpServletRequest request) {
-        String authToken = request.getHeader("Authorization");
-        if(StringUtils.isNotBlank(authToken) && authToken.startsWith("Bearer ")) {
-            return authToken.substring(7);
-        }
-        return null;
-    }
+	{
+
+		final String requestTokenHeader = request.getHeader("authorization");
+
+		String username = null;
+		String jwtToken = null;
+		logger.warn(requestTokenHeader);
+		logger.warn(requestTokenHeader);
+		logger.warn(requestTokenHeader);
+		logger.warn(requestTokenHeader);
+
+		// JWT Token is in the form "Bearer token".
+		// Remove Bearer word and get only the Token
+		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+		//	logger.warn("JWT Token does not begin  with Bearer String");
+			jwtToken = requestTokenHeader.substring(7);
+			try {
+			//	logger.warn("JWT Token does not begin  with Bearer String");
+
+				Claims claims = null;
+
+				try {
+					claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(jwtToken).getBody();
+					logger.warn(claims);
+					logger.warn(claims);
+					logger.warn(claims);
+					logger.warn(claims);
+					logger.warn(claims);
+
+
+					username = claims.getSubject().toString();
+				} catch (ExpiredJwtException | SignatureException e) {
+
+				} catch (Exception e) {
+
+				}
+
+			} catch (IllegalArgumentException e) {
+				System.out.println("Unable to get JWT Token");
+			} catch (ExpiredJwtException e) {
+				System.out.println("JWT Token has expired");
+			}
+		} else {
+			logger.warn("JWT Token does not begin  with Bearer String");
+		}
+		// Once we get the token validate it.
+
+		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			UserDetails userDetails = this.jwtUserDetailService.loadUserByUsername(username);
+			logger.warn(userDetails);
+			logger.warn(userDetails);
+			logger.warn(userDetails);
+			logger.warn(userDetails);
+
+
+			// if token is valid configure Spring Security to manually set
+			// authentication
+			
+			logger.warn(jwtUtil.isTokenValid(jwtToken, userDetails));
+			logger.warn(jwtUtil.isTokenValid(jwtToken, userDetails));
+			logger.warn(jwtUtil.isTokenValid(jwtToken, userDetails));
+			logger.warn(jwtUtil.isTokenValid(jwtToken, userDetails));
+			logger.warn(jwtUtil.isTokenValid(jwtToken, userDetails));
+
+			
+			if (jwtUtil.isTokenValid(jwtToken, userDetails)) {
+				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+						userDetails, null, userDetails.getAuthorities());
+				usernamePasswordAuthenticationToken
+						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+// After setting the Authentication in the context, we specify
+// that the current user is authenticated. So it passes the
+// Spring Security Configurations successfully.
+				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+			}
+		}			
+		logger.warn(request.toString());
+		logger.warn(response.toString());
+		logger.warn(request.toString());
+		logger.warn(response.toString());
+		logger.warn(request.toString());
+		logger.warn(response.toString());
+		logger.warn(request.toString());
+		logger.warn(response.toString());
+		logger.warn(request.toString());
+		logger.warn(response.toString());
+		chain.doFilter(request, response);
+	}
 }

@@ -27,8 +27,14 @@ public class JwtUserDetailService implements UserDetailsService {
     	
         UserDAO userDAO = userRepository.findByMail(mail);
         if(userDAO == null) throw new UsernameNotFoundException("User not found with this mail : " + mail);
-        return new User(userDAO.getMail(), userDAO.getPassword(), userDAO.getAuthorities());
+        return new User(userDAO.getMail(), userDAO.getPassword(),getAuthority( userDAO));
     }
    
-    
+    private Set<SimpleGrantedAuthority> getAuthority(UserDAO user) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<SimpleGrantedAuthority>();
+        user.getAuthorities().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getAuthority()));
+        });
+        return authorities;
+    }
 }

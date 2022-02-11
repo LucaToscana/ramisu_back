@@ -23,7 +23,7 @@ public class RegistrationProfile extends ProfileWrapper {
 	public UserSecurityDTO getUserSecurity() {
 		 
 		List<String> authorities = new ArrayList<String>();
-		 authorities.add("user");
+		 authorities.add("USER");
 	        
 		UserSecurityDTO user = new UserSecurityDTO();
 						user.setAuthorities(authorities);

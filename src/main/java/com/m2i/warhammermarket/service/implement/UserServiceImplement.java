@@ -298,7 +298,7 @@ public class UserServiceImplement implements UserService {
 	public Long save(RegistrationProfile userProfile) {
 		
 		List<String> authorities = new ArrayList<String>();
-        authorities.add("user");
+        authorities.add(AuthorityConstant.ROLE_USER);
         
         UserSecurityDTO userSecDTO =  userProfile.getUserSecurity();
         UsersInformationDAO userInfo = userProfile.getUserInformations();
