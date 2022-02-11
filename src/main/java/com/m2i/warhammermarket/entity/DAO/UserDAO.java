@@ -49,8 +49,7 @@ public class UserDAO {
     )
     private Set<AuthorityDAO> authorities = new HashSet<>();
     
-//    @OneToMany(mappedBy = "user")
-//	Set<InhabitDAO> inhabitDao;
+
 
 
 }

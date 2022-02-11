@@ -10,6 +10,7 @@ import com.m2i.warhammermarket.service.OrderService;
 import com.m2i.warhammermarket.service.mapper.OrderMapper;
 import com.m2i.warhammermarket.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -84,7 +85,9 @@ public class OrderServiceImplement implements OrderService {
 
 	@Override
 	public List<OrderDTO> findAllByUserId(Long id) {
-		List<OrderDAO> orderDAOS = orderRepository.findAllByUserUserId(id);
+		
+		List<OrderDAO> orderDAOS = orderRepository.findAllByUserUserId(id, Sort
+		         .by(Sort.Direction.DESC, "id"));
 		return orderDAOS.stream().map(orderDAO -> orderMapper.OrderDAOtoOrderDTO(orderDAO))
 				.collect(Collectors.toList());
 	}
@@ -108,10 +111,8 @@ public class OrderServiceImplement implements OrderService {
 
 	private OrderDAO order(List<ProductOrderWrapper> productsOrder, String login, RequestAddOrderWithAddress orderNew) {
 		OrderDAO order = new OrderDAO();
-
 		UsersInformationDAO user = userInformationRepository.getByMail(login);
 		Set<InhabitDAO> setInhabit = inhabitRepository.findAllByUserUserId(user.getId());
-
 		order.setUser(user);
 		order.setDate(new Date(System.currentTimeMillis()));
 		order.setTotal(sumTotal(productsOrder));
@@ -119,50 +120,34 @@ public class OrderServiceImplement implements OrderService {
 		status.setId(1L);
 		order.setStatus(status);
 		AddressDAO add = orderNew.getAddress();
-
 		AddressDAO addTest = addressRepository.findById(add.getId()).orElse(null);
 		if (orderNew.getType().equals("domicile")) {
 			BigDecimal bg25 = new BigDecimal("25");
 			BigDecimal bg10 = new BigDecimal("10");
-
 			// create int object
 			int res;
-
 			res = order.getTotal().compareTo(bg25); // compare bg1 with bg2
 			if (res != 1) {
 				BigDecimal sum = order.getTotal().add(bg10);
-
 				order.setTotal(sum);
-
 			}
 			if (addTest.equals(add) == false) {
 				add.setId(null);
 				AddressDAO newAddress = addressRepository.save(add);
 				order.setAddress(newAddress);
-
 				if (orderNew.getIsMain().equals("true")) {
-
 					inhabitRepository.save(InhabitDAO.getInhabit(newAddress, user, user.getUser().getId()));
-
 					for (InhabitDAO i : setInhabit) {
 						i.setIsMain(0);
 					}
-
 					inhabitRepository.saveAll(setInhabit);
-
 				}
 			} else {
-
 				order.setAddress(add);
-
 			}
-
 		} else {
-
 			order.setAddress(add);
-
 		}
-
 		return order;
 	}
 
@@ -185,4 +170,6 @@ public class OrderServiceImplement implements OrderService {
 		return newResponse;
 	}
 
+	
+	
 }
