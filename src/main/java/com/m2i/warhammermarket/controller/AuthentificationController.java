@@ -1,5 +1,6 @@
 package com.m2i.warhammermarket.controller;
 
+import com.m2i.warhammermarket.controller.exception.InactiveAccountException;
 import com.m2i.warhammermarket.entity.DTO.AuthentificationResponseDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.security.JwtUtil;
@@ -57,7 +58,7 @@ public class AuthentificationController {
         	throw ex;
         }catch(LockedException ex)
         {	  throw ex;
-        }catch(AuthenticationException  ex)
+        }catch(RuntimeException  ex)
         {
         	throw new Exception("Le compte " + userSecurity.getMail() + " est désactivé.");
         }
