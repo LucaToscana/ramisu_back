@@ -6,6 +6,7 @@ import com.m2i.warhammermarket.entity.DAO.AddressDAO;
 import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
+import com.m2i.warhammermarket.entity.DTO.ProductDTO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
@@ -21,8 +22,11 @@ import com.m2i.warhammermarket.service.mapper.UserInformationMapper;
 import com.m2i.warhammermarket.service.mapper.UserMapper;
 import com.m2i.warhammermarket.utils.FileUpload;
 
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.http.HttpStatus;
@@ -98,22 +102,21 @@ public class UserServiceImplement implements UserService {
         if (userDAO == null) return null; //Si jamais le user n'existe pas, on renvoi directement null
 
         UserDTO userDTO = this.userMapper.userToUserDTO(userDAO);
-        userDTO.setAuthorities(userDAO.getAuthorities()
-                .stream()
-                .map(AuthorityDAO::getAuthority)
-                .collect(Collectors.toList()));
+        userDTO.setAuthorities(userDAO.getAuthorities());
 
         return userDTO;
     }
-
+   
     @Override
     public Page<UserDTO> findAll(Pageable pageable) {
-        return null;
+    	
+    	return this.userRepository.findAll(pageable).map(this.userMapper::userToUserDTO);
     }
 
     @Override
     public Optional<UserDTO> findOne(Long id) {
-        return Optional.empty();
+    	
+        return  Optional.ofNullable(userMapper.userToUserDTO(userRepository.findById(id).get()));
     }
 
     /**
@@ -129,10 +132,7 @@ public class UserServiceImplement implements UserService {
         if (userDAO == null) return null;
 
         UserDTO userDTO = this.userMapper.userToUserDTO(userDAO);
-        userDTO.setAuthorities(userDAO.getAuthorities()
-                .stream()
-                .map(AuthorityDAO::getAuthority)
-                .collect(Collectors.toList()));
+        userDTO.setAuthorities(userDAO.getAuthorities());
 
         return userDTO;
     }
@@ -218,8 +218,8 @@ public class UserServiceImplement implements UserService {
         UsersInformationDAO user = userInformationRepository.getByMail(mail);
         long id = user.getUser().getId();
         AddressDAO address = addressRepository.getAddressMainByIdUser(id);
-        
-        return new ProfileWrapper(user,address);
+        ProfileWrapper p = new ProfileWrapper(user,address);
+        return p;
     }
 
 
@@ -318,6 +318,34 @@ public class UserServiceImplement implements UserService {
         }
         
         return userSecID;
+	}
+
+	/*
+	*		@param value 1 user 2 commercial 3 admin
+	*/
+	@Override
+	public void updateRoles(Long userID, Long roleID, boolean active) {
+		
+		Optional<UserDAO> user = userRepository.findById(userID);
+		 AuthorityDAO authUser = new AuthorityDAO(AuthorityConstant.ROLE_USER);
+		
+		 Set<AuthorityDAO> authorities = new HashSet<>();
+		 authorities.add(authUser);
+		 if(roleID>=2)
+		 {
+			 AuthorityDAO authComm = new AuthorityDAO(AuthorityConstant.ROLE_COMM);
+			 authorities.add(authComm);
+		 }
+
+		 if(roleID==3)
+		 {
+			 AuthorityDAO authAdmin = new AuthorityDAO(AuthorityConstant.ROLE_ADMIN);
+			 authorities.add(authAdmin);
+		 }
+		 
+		 user.get().setAuthorities(authorities);
+		 user.get().setActive(active);
+		 userRepository.save(user.get()); 	
 	}
 
 

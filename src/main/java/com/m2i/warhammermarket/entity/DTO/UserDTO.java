@@ -1,11 +1,15 @@
 package com.m2i.warhammermarket.entity.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -21,7 +25,9 @@ public class UserDTO implements Serializable {
     private boolean active;
     private String token;
     private Date tokenExpiryDate;
-    private List<String> authorities;
+    @JsonIgnore
+    private Set<AuthorityDAO> authorities;
+  
 
     public UserDTO(UserDAO user) {
 
@@ -33,12 +39,20 @@ public class UserDTO implements Serializable {
         this.tokenExpiryDate = user.getTokenExpiryDate();
     }
 
-    public UserDTO(Long id, String mail, List<String> authorities) {
-        this.id = id;
-        this.mail = mail;
-        this.authorities = authorities;
+    
+    public String getRoles()
+    {
+//    	String str = String.join("-", authorities.get(0).ge);
+//    	authorities.stream().map(null);
+    	return authorities.stream()
+    			  .map(AuthorityDAO::getAuthority)
+    			  .collect(Collectors.joining(",")); // "John, Anna, Paul"
     }
 
+    public void setAuthorities(Set<AuthorityDAO> set)
+    {
+    	this.authorities = set;
+    }
     @Override
     public String toString() {
         return "UserDTO{" +
