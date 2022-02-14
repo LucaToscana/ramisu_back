@@ -110,12 +110,6 @@ public class UserServiceImplement implements UserService {
     @Override
     public Page<UserDTO> findAll(Pageable pageable) {
     	
-    	String orderByElement = "id desc";
-    	 String query = "SELECT * FROM user ORDER BY " + orderByElement;
-
-//    	    Object entityManager;
-//			entityManager.createQuery(query).getResultList();
-    	
     	return this.userRepository.findAll(pageable).map(this.userMapper::userToUserDTO);
     }
 
