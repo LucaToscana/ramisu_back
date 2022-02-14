@@ -1,7 +1,6 @@
 package com.m2i.warhammermarket.service.implement;
 
 import com.m2i.warhammermarket.repository.UserRepository;
-import com.m2i.warhammermarket.controller.exception.InactiveAccountException;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;

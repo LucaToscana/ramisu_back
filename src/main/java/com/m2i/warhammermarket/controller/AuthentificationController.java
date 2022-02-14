@@ -1,13 +1,5 @@
 package com.m2i.warhammermarket.controller;
 
-import com.m2i.warhammermarket.controller.exception.InactiveAccountException;
-import com.m2i.warhammermarket.entity.DTO.AuthentificationResponseDTO;
-import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
-import com.m2i.warhammermarket.security.JwtUtil;
-import com.m2i.warhammermarket.service.implement.JwtUserDetailService;
-
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,13 +7,16 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.m2i.warhammermarket.entity.DTO.AuthentificationResponseDTO;
+import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
+import com.m2i.warhammermarket.security.JwtUtil;
+import com.m2i.warhammermarket.service.implement.JwtUserDetailService;
 
 @RestController
 public class AuthentificationController {
