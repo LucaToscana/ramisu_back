@@ -148,7 +148,7 @@ public class ProductServiceImplement implements ProductService {
      *  @return a product
      * @author Amal
      */ 
-    
+    @Override
     public ProductDAO saveProduct(ProductAddWrapper productWrapper) {
     	
     	ProductDAO product = new ProductDAO();
@@ -168,8 +168,6 @@ public class ProductServiceImplement implements ProductService {
     	
     	universeRepository.save(universe);
     	product.setUniverse(universe);
-    	
-    	
 
 
     	CategoryDAO category = new CategoryDAO();
@@ -179,10 +177,66 @@ public class ProductServiceImplement implements ProductService {
     	categoryRepository.save(category);
     	product.setCategorie(category);
     	
-
-    	
     	
         return productRepository.save(product);
     }
+    
+    /**
+     * @param Long id and productWrapper
+     *  This method is used to update a product
+     *  @return a product updated
+     * @author Amal
+     */ 
+    
+    @Override    
+    public ProductDAO updateProduct(ProductAddWrapper productWrapper) {
+	
+	
+    	ProductDAO product = new ProductDAO();
+    	
+    	product.setId(productWrapper.getIdProduct());
+    	product.setEan13(productWrapper.getEan13());
+    	product.setDescription(productWrapper.getDescription());
+    	product.setLabel(productWrapper.getLabelProduct());
+    	product.setPrice(productWrapper.getPrice());
+    	product.setPromotion(productWrapper.getPromotion());
+    	product.setStock(productWrapper.getStock());
+    	product.setPicture(productWrapper.getPicture());
+    	
+    	
+    	
+    	UniverseDAO universe = new UniverseDAO();
+    	universe.setId(productWrapper.getIdUniverse());
+    	universe.setLabel(productWrapper.getLabelUniverse());
+    	universe.setRefCode(productWrapper.getRefCodeUniverse());
+    	
+    	universeRepository.saveAndFlush(universe);
+    	product.setUniverse(universe);
+    	
 
+
+    	CategoryDAO category = new CategoryDAO();
+    	category.setId(productWrapper.getIdCategory());
+    	category.setLabel(productWrapper.getLabelCategory());
+    	category.setRefCode(productWrapper.getRefCodeCategory());
+    	
+    	categoryRepository.saveAndFlush(category);
+    	product.setCategorie(category);
+    	
+    	
+        return productRepository.saveAndFlush(product);
+    }
+
+/**
+ * @param Long id of product
+ *  This method delete a product on database
+ * @author Amal
+ */ 
+    
+   @Override 
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+ 
+    
 }

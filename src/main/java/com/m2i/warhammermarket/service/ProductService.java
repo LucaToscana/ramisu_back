@@ -56,6 +56,20 @@ public interface ProductService {
      * @author Amal
      */
     public ProductDAO saveProduct(ProductAddWrapper productWrapper) ;
+    
+    
+    /**
+     * @param ProductAddWrapper object
+     * @return A product udpated
+     * @author Amal
+     */    
+    public ProductDAO updateProduct(ProductAddWrapper productWrapper);
+
+    /**
+     * @param Long id 
+     * @author Amal
+     */
+	public void deleteProduct(Long id);
 }
 
 
