@@ -150,19 +150,23 @@ public class ProductServiceImplement implements ProductService {
 	@Override
 	public Optional<ResponseProductDetails> findOneDetails(Long id) {
 		ProductDAO p = this.productRepository.findById(id).orElse(null);
-		/*When there is no encounter order, it returns any element from the Stream. 
+		/*
+		 * When there is no encounter order, it returns any element from the Stream.
 		 * According to the java.util.streams package documentation,
-		 *  “Streams may or may not have a defined encounter order. I
-		 * t depends on the source and the intermediate operations.”*/
-		
-		Optional<TagDAO> tag = Optional.ofNullable(p.getPossessesTagsProduct().stream().findFirst().get().getTag());
+		 *  “Streams may or may
+		 * not have a defined encounter order. I t depends on the source and the
+		 * intermediate operations.”
+		 */
 
+		Optional<TagDAO> tag = Optional.ofNullable(p.getPossessesTagsProduct().stream().findFirst().get().getTag());
 
 		Set<PossessesDAO> list = tag.get().getPossessesProductsTag();
 		Optional<ProductDTO> product = Optional.ofNullable(this.productMapper.productToProductDTO(p));
 		List<ProductDTO> productsRelated = new ArrayList<ProductDTO>();
 		for (PossessesDAO prod : list) {
-		if(prod.getProduct().getId()!=id) {	productsRelated.add(this.productMapper.productToProductDTO(prod.getProduct()));}
+			if (prod.getProduct().getId() != id) {
+				productsRelated.add(this.productMapper.productToProductDTO(prod.getProduct()));
+			}
 		}
 
 		Optional<ResponseProductDetails> response = Optional
