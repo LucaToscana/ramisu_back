@@ -10,4 +10,5 @@ import lombok.*;
 public class AuthentificationResponseDTO {
     private String token;
     private String mail;
+    private String errorMessage;
 }

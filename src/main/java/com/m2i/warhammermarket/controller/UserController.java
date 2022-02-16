@@ -229,22 +229,19 @@ public class UserController {
     @CrossOrigin("*")
     @PostMapping("/public/contactus")
     public  ResponseEntity<HttpStatus> editProfile(@RequestBody UserMessage message) {
+    	if (validator.validateCaptcha(message.getCaptchaToken())) {
+        	 Mail mail =  EmailSenderService.getTeamMail( message);
+              try {
+    			this.emailSenderService.sendEmail(mail);
+    		} catch (MessagingException | IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+        	
+    		return ResponseEntity.ok(HttpStatus.OK);
+    	}
     	
-    	if(!message.valid())return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
-    	
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	String email = userDetails.getUsername();
-    	ProfileWrapper profile =  userService.getProfile(email);
-    	 Mail mail =  EmailSenderService.getTeamMail(profile , message);
-
-          try {
-			this.emailSenderService.sendEmail(mail);
-		} catch (MessagingException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	return ResponseEntity.ok(HttpStatus.OK);
+    	return ResponseEntity.ok(HttpStatus.FORBIDDEN);
     }
     
 }

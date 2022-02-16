@@ -52,37 +52,34 @@ public interface EmailSenderService {
 		return mail;
 	}
 
-	static Mail getTeamMail(ProfileWrapper profile, UserMessage message) {
-//    	String genre = Todo
-    	String firstName = profile.getFirstName();
-    	String lastName =  profile.getLastName();
-    	String subject = null;
+	static Mail getTeamMail(UserMessage message) {
+    	String subject = "message form webSite";
     	//	askcomm|askadm|askuser
-    		  switch (message.getSubject()) {
-    		  case "askadm":
-    			  subject = "Question à propos d'un compte utilisateur";
-					break;
-    		  case "askcomm":
-    			  subject = "Question d'ordre commercial";
-					break;
-    		  case "askuser":
-    			  subject = "Un utilisateur a constaté un bug sur le site";
-					break;
-		
-    		  default:
-    			  subject = "sujet non défini";
-				break;
-			}
+//    		  switch (message.getSubject()) {
+//    		  case "askadm":
+//    			  subject = "Question à propos d'un compte utilisateur";
+//					break;
+//    		  case "askcomm":
+//    			  subject = "Question d'ordre commercial";
+//					break;
+//    		  case "askuser":
+//    			  subject = "Un utilisateur a constaté un bug sur le site";
+//					break;
+//		
+//    		  default:
+//    			  subject = "sujet non défini";
+//				break;
+//			}
     	   
     	  Map<String, Object> properties = new HashMap();
-          properties.put("firstName", firstName);
-          properties.put("lastName", lastName);
-          properties.put("email", profile.getMail());
+//          properties.put("firstName", firstName);
+//          properties.put("lastName", lastName);
+          properties.put("email", message.getEmail());
           properties.put("subject", subject);
           properties.put("message", message.getMessage());
           
           Mail mail = Mail.builder()
-                  .from( profile.getMail())
+    		       .from(ApplicationConstants.WEBSITE_EMAIL_ADDRESS)
                   .to(ApplicationConstants.WEBSITE_EMAIL_ADDRESS)
                   .htmlTemplate(new Mail.HtmlTemplate("userMessage", properties))
                   .subject(subject)

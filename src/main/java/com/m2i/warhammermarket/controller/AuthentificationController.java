@@ -43,8 +43,7 @@ public class AuthentificationController {
 	public ResponseEntity<AuthentificationResponseDTO> authenticate(@RequestBody UserSecurityDTO userSecurity)
 			throws Exception {
 
-		UsernamePasswordAuthenticationToken tokenSpring = new UsernamePasswordAuthenticationToken(
-				userSecurity.getMail(), userSecurity.getPassword());
+		UsernamePasswordAuthenticationToken tokenSpring = new UsernamePasswordAuthenticationToken(userSecurity.getMail(), userSecurity.getPassword());
 		try {
 			// L'authentification se fait ici. C'est SpringSecurity qui vérifie les
 			// Crédentials reçu, et va pouvoir m'authentifier
@@ -62,9 +61,8 @@ public class AuthentificationController {
 			return null;
 
 		} catch (RuntimeException ex) {
-			// throw new Exception("Le compte " + userSecurity.getMail() + " est
-			// désactivé.");
-			return null;
+			
+			return ResponseEntity.ok(new AuthentificationResponseDTO(null, userSecurity.getMail(),"Le compte " + userSecurity.getMail() + " est	désactivé."));
 
 		}
 		// Je récupére le UserDetails coresspondant au username reçu
@@ -76,7 +74,7 @@ public class AuthentificationController {
 		// username de l'utilisateur
 		// Toutes requetes sécurisé en back aura donc besoin de ce JWT pour être
 		// effectué
-		return ResponseEntity.ok(new AuthentificationResponseDTO(jwt, userDetails.getUsername()));
+		return ResponseEntity.ok(new AuthentificationResponseDTO(jwt, userDetails.getUsername(),null));
 
 	}
 
