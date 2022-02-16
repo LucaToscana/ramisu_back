@@ -13,22 +13,15 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserMessage {
-		private String subject;
-	    private String message;
-		public boolean valid() {
-			if(subject.matches("askcomm|askadm|askuser"))
-			{
-				if (message.length()>= 5 && message.length()< 255)return true; 
-			}
-			
-			
-			
-			
-			return false;
-		}
-		
+		private String email;
+		private String message;
+		private String captchaToken;
+	    
+	
 		
 		public String getMessage() {
 			return message.replaceAll("(\r\n|\n)", "<br />");
-		}	    
+		}
+
+
 }
