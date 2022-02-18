@@ -20,6 +20,8 @@ import java.util.Set;
 public class ProductDAO implements Serializable {
 
     @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column (name = "id", nullable = false)
     private Long id;
 
