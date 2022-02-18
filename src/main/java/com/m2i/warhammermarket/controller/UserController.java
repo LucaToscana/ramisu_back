@@ -4,6 +4,7 @@ import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
+import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
 import com.m2i.warhammermarket.entity.wrapper.UserMessage;
@@ -150,13 +151,17 @@ public class UserController {
         if (keyAndPassword != null && keyAndPassword.isValid()) {
 
             UserDTO userDTO = this.userService.findUserByPasswordResetToken(keyAndPassword.getKey());
-
+            
             if (userDTO == null) return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
 
+            userService.changeUserPasswordAndDeletePasswordToken(userDTO, keyAndPassword.getNewPassword());
+            
             if (this.userService.isPasswordTokenValid(userDTO.getTokenExpiryDate()) && userDTO.isActive()) {
             	 Optional<UserInformationDTO> userInformationDTO =  this.userService.findUserInfoByUserMail(userDTO.getMail());
             	 Mail mail =  EmailSenderService.getNotificationMail(userInformationDTO.get().getFirstName() , userInformationDTO.get().getLastName(), userDTO.getMail());
                  
+            	 
+            	 
                  try {
                      this.emailSenderService.sendEmail(mail);
                      return ResponseEntity.ok(HttpStatus.OK);

@@ -41,8 +41,8 @@ public interface UserService {
 
     boolean isPasswordTokenValid(Date tokenExpiryDate);
 
-    void changeUserPasswordAndDeletePasswordToken(UserSecurityDTO userSecurityDTO);
-
+    void changeUserPasswordAndDeletePasswordToken(UserDTO userDTO, String newPassword);
+   
     void delete(Long id);
     
     Long save(RegistrationProfile userProfile);
@@ -61,6 +61,8 @@ public interface UserService {
 	void removePictureProfile(ProfileWrapper userProfile);
 
 	void updateRoles(Long userID, Long roleID, boolean b);
+
+	
 	
 	
 	

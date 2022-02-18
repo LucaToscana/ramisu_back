@@ -188,9 +188,9 @@ public class UserServiceImplement implements UserService {
      * @param userSecurityDTO the information used to find the user and update their password
      * @author Cecile
      */
-    public void changeUserPasswordAndDeletePasswordToken(UserSecurityDTO userSecurityDTO) {
-        UserDAO userDAO = this.userRepository.findByMail(userSecurityDTO.getMail());
-        userDAO.setPassword(passwordEncoder.encode(userSecurityDTO.getPassword()));
+    public void changeUserPasswordAndDeletePasswordToken(UserDTO userDTO, String newPassword) {
+        UserDAO userDAO = this.userRepository.findByMail(userDTO.getMail());
+        userDAO.setPassword(passwordEncoder.encode(newPassword));
         userDAO.setToken(null);
         this.userRepository.save(userDAO);
     }
