@@ -38,10 +38,10 @@ public class StripeClient {
         return charge;
     }
 
-    public Charge chargeCustomerCard(String customerId, int amount) throws Exception {
+    public Charge chargeCustomerCard(String customerId, double amount) throws Exception {
         String sourceCard = getCustomer(customerId).getDefaultSource();
         Map<String, Object> chargeParams = new HashMap<String, Object>();
-        chargeParams.put("amount", amount);
+        chargeParams.put("amount", (int)(amount * 100));
         chargeParams.put("currency", "EUR");
         chargeParams.put("customer", customerId);
         chargeParams.put("source", sourceCard);

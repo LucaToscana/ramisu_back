@@ -50,6 +50,11 @@ public class RequestAddOrderWithAddress {
 	public void setIsMain(String isMain) {
 		this.isMain = isMain;
 	}
+	@Override
+	public String toString() {
+		return "RequestAddOrderWithAddress [productsOrder=" + productsOrder + ", address=" + address + ", type=" + type
+				+ ", isMain=" + isMain + "]";
+	}
 	
 	
 	

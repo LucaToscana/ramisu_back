@@ -63,7 +63,7 @@ public class ProductServiceImplement implements ProductService {
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void delete1(Long id) {
 
 	}
 
@@ -173,6 +173,18 @@ public class ProductServiceImplement implements ProductService {
 				.ofNullable(new ResponseProductDetails(product.get(), productsRelated, 0));
 
 		return response;
+	}
+
+	@Override
+	public void delete(Long id) {
+		
+		System.out.println("ciao");
+		ProductDAO p = 	productRepository.getById(id);
+		System.out.println(p);
+    productRepository.delete(p);		
+	ProductDAO p2 = 	productRepository.getById(id);
+System.out.println(p2);
+    
 	}
 
 }

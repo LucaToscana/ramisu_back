@@ -46,16 +46,22 @@ public class OrderServiceImplement implements OrderService {
 	@Override
 	public void createOrder(List<ProductOrderWrapper> productsOrder, String login,
 			RequestAddOrderWithAddress orderNew) {
-
+System.out.println("1"+orderNew);
 		OrderDAO orderDao = order(productsOrder, login, orderNew);
+		System.out.println("2"+orderDao);
 
 		OrderDAO order = orderRepository.save(orderDao);
+		
 		for (ProductOrderWrapper p : productsOrder) {
 
 			ProductDAO productGet = productRepository.getById(p.getId());
 
 			lineOfOrderRepository.save(new LineOfOrderDAO(new LineOfOrderId(p.getId(), order.getId()), p.getQuantite(),
 					productGet, order));
+			
+			
+			System.out.println("save-line");
+
 			ProductDAO product = productRepository.getById(p.getId());
 			product.setStock(product.getStock() - p.getQuantite());
 			productRepository.save(product);
@@ -112,27 +118,43 @@ public class OrderServiceImplement implements OrderService {
 	private OrderDAO order(List<ProductOrderWrapper> productsOrder, String login, RequestAddOrderWithAddress orderNew) {
 		OrderDAO order = new OrderDAO();
 		UsersInformationDAO user = userInformationRepository.getByMail(login);
+		
+		
+		
 		Set<InhabitDAO> setInhabit = inhabitRepository.findAllByUserUserId(user.getId());
+
 		order.setUser(user);
 		order.setDate(new Date(System.currentTimeMillis()));
 		order.setTotal(sumTotal(productsOrder));
+		
+		
 		StatusDAO status = new StatusDAO();
 		status.setId(1L);
 		order.setStatus(status);
 		AddressDAO add = orderNew.getAddress();
+		System.out.println("order3"+ add);
+
 		AddressDAO addTest = addressRepository.findById(add.getId()).orElse(null);
 		if (orderNew.getType().equals("domicile")) {
 			BigDecimal bg25 = new BigDecimal("25");
 			BigDecimal bg10 = new BigDecimal("10");
 			// create int object
 			int res;
+
 			res = order.getTotal().compareTo(bg25); // compare bg1 with bg2
+
 			if (res != 1) {
+				
+				
+
 				BigDecimal sum = order.getTotal().add(bg10);
+
 				order.setTotal(sum);
+
 			}
 			if (addTest.equals(add) == false) {
 				add.setId(null);
+
 				AddressDAO newAddress = addressRepository.save(add);
 				order.setAddress(newAddress);
 				if (orderNew.getIsMain().equals("true")) {
@@ -140,6 +162,8 @@ public class OrderServiceImplement implements OrderService {
 					for (InhabitDAO i : setInhabit) {
 						i.setIsMain(0);
 					}
+					System.out.println("orde6");
+
 					inhabitRepository.saveAll(setInhabit);
 				}
 			} else {

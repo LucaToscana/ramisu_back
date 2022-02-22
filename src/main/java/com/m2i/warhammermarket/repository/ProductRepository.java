@@ -4,9 +4,12 @@ import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 
 public interface ProductRepository extends JpaRepository<ProductDAO, Long> {
@@ -56,5 +59,10 @@ public interface ProductRepository extends JpaRepository<ProductDAO, Long> {
      */
     @Query("FROM ProductDAO p order by p.yearOfProduction desc")
     Page<ProductDAO> getRandomTopSaleProducts(Pageable firstPageWithXElements);
+
+    
+    
+    @Modifying
+	void deleteById(Long id);
 
 }

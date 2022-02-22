@@ -59,7 +59,14 @@ public class ProductController {
 		Page<ProductDTO> page = this.productService.findAll(pageable);
 		return ResponseEntity.ok().body(page.getContent());
 	}
-
+	
+	
+	@CrossOrigin(origins = "*")
+	@DeleteMapping("/public/products/{id}")
+	public ResponseEntity<Long> delete(@PathVariable Long id) {
+		productService.delete(id);
+		return ResponseEntity.ok().body(id);
+	}
 	/**
 	 * Search X number of products from a field
 	 * 

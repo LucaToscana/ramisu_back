@@ -51,4 +51,6 @@ public interface ProductService {
     Page<ProductDAO> getProductCriteria(ProductSearchCriteria productSearchCriteria  ,Pageable pageable);
 
 	Optional<ResponseProductDetails> findOneDetails(Long id);
+
+	void delete1(Long id);
 }
