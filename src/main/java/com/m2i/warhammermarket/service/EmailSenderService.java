@@ -74,11 +74,26 @@ public interface EmailSenderService {
 		return mail;
 	}
 
+
 	/*
 	* 	 compose the contact us email
 	* 		@param UserMessage wrapper
 	*		@return Mail
 	* */
+	static Mail getWelcomeMail(String firstName, String lastName, String email){
+		Map<String, Object> properties = new HashMap();
+		properties.put("firstName", firstName);
+		properties.put("lastName", lastName);
+
+		Mail mail = Mail.builder()
+				.from(ApplicationConstants.WEBSITE_EMAIL_ADDRESS)
+				.to(email)
+				.htmlTemplate(new Mail.HtmlTemplate("welcomeMessage", properties))
+				.subject("Bienvenue sur Warhammer Market!")
+				.build();
+		return mail;
+	}
+	
 	static Mail getTeamMail(UserMessage message) {
     	String subject = "message form webSite";
 

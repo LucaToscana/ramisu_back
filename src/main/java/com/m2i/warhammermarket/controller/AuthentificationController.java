@@ -50,15 +50,15 @@ public class AuthentificationController {
 			// Dans le cas contraire, renvoi une exception BadCredentialsException
 			authenticationManager.authenticate(tokenSpring);
 		} catch (BadCredentialsException ex) {
-			// throw ex;
-			return null;
+			 throw ex;
+			//return null;
 
 		} catch (DisabledException ex) {
-			 //throw ex;
-			return null;
+			 throw ex;
+			//return null;
 
-		} catch (LockedException ex) { // throw ex;
-			return null;
+		} catch (LockedException ex) { throw ex;
+			//return null;
 
 		} catch (RuntimeException ex) {
 			
