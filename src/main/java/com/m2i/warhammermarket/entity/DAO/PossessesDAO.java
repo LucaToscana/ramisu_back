@@ -20,11 +20,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = "possesses")
 public class PossessesDAO implements Serializable {
-    @EmbeddedId
+
+	@EmbeddedId
     private PossessesId id;
-
-
-    
     
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("id_tags")
