@@ -15,8 +15,26 @@ import com.m2i.warhammermarket.entity.wrapper.UserMessage;
 import com.m2i.warhammermarket.model.Mail;
 
 public interface EmailSenderService {
-	
-	void sendEmail(Mail mail) throws MessagingException, IOException;
+
+    static Mail getResetPswMailUser(String firstName, String lastName, String passwordToken, String email) {
+		Map<String, Object> properties = new HashMap();
+				properties.put("firstName", 	firstName);
+				properties.put("lastName", 		lastName);
+				properties.put("baseUrl", 		ApplicationConstants.WEBSITE_BASE_URL);
+				properties.put("url", 			ApplicationConstants.WEBSITE_URL);
+				properties.put("passwordToken", passwordToken);
+
+		Mail mail = Mail.builder()
+				.from(ApplicationConstants.WEBSITE_EMAIL_ADDRESS)
+				.to(email)
+				.htmlTemplate(new Mail.HtmlTemplate("passwordresetUser", properties))
+				.subject("Réinitialisation du mot de passe Warhammer Market")
+				.build();
+
+		return mail;
+    }
+
+    void sendEmail(Mail mail) throws MessagingException, IOException;
 
 	static Mail getresetPswMail(String firstName, String lastName, String passwordToken, String email) {
 
