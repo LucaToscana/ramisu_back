@@ -2,6 +2,7 @@ package com.m2i.warhammermarket.controller;
 
 import com.m2i.warhammermarket.configuration.ApplicationConstants;
 import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
+import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
@@ -10,10 +11,13 @@ import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
 import com.m2i.warhammermarket.entity.wrapper.UserMessage;
 import com.m2i.warhammermarket.model.KeyAndPassword;
 import com.m2i.warhammermarket.model.Mail;
+import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.ReCaptchaValidationService;
 import com.m2i.warhammermarket.service.UserService;
+import com.m2i.warhammermarket.service.mapper.UserMapper;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
@@ -39,7 +44,8 @@ public class UserController {
 	
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EmailSenderService emailSenderService;
@@ -95,8 +101,12 @@ public class UserController {
         if (userDTO != null && userDTO.isActive()) {
             userInformationDTO = this.userService.findUserInfoByUserMail(email);
             String passwordToken = this.userService.createPasswordResetToken(email);
-            Mail mail =  EmailSenderService.getresetPswMail(userInformationDTO.get().getFirstName(), userInformationDTO.get().getLastName(), passwordToken , email);
-            
+            Mail mail =  EmailSenderService.getresetPswMail(
+                                                                userInformationDTO.get().getFirstName(),
+                                                                userInformationDTO.get().getLastName(),
+                                                                passwordToken ,
+                                                                email
+                                                            );
             try {
                 this.emailSenderService.sendEmail(mail);
             } catch (MessagingException e) {
@@ -248,5 +258,92 @@ public class UserController {
     	
     	return ResponseEntity.ok(HttpStatus.FORBIDDEN);
     }
-    
+
+    /**
+     *      user change password
+     * */
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @CrossOrigin("*")
+    @PutMapping("/public/changePSW")
+    public  ResponseEntity<HttpStatus> changePSW(@RequestBody PSWValues values) {
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDAO user = userRepository.findByMail(userDetails.getUsername());
+        if( passwordEncoder.matches(values.getPassword() , user.getPassword())){
+            if(values.getNewPassword().equals(values.getNewPasswordTest()))
+            {
+                UserDTO userDTO =   userService.findOneByUserMail(user.getMail());
+                                    userService.changeUserPasswordAndDeletePasswordToken(userDTO, values.getNewPassword());
+                return ResponseEntity.ok(HttpStatus.OK);
+            }
+            return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
+        }else{
+            return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+
+    @CrossOrigin("*")
+    @GetMapping("/public/requestChangePSW")
+    public  ResponseEntity<HttpStatus> requestPSW() {
+       UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(userDetails!=null)
+        {
+            try {
+                String passwordToken = this.userService.createPasswordResetToken(userDetails.getUsername());
+                Optional<UserInformationDTO> userInformationDTO  = this.userService.findUserInfoByUserMail(userDetails.getUsername());
+                    this.emailSenderService.sendEmail( EmailSenderService.getResetPswMailUser(
+                            userInformationDTO.get().getFirstName(),
+                            userInformationDTO.get().getLastName(),
+                            passwordToken ,
+                            userDetails.getUsername()
+                    ));
+                return ResponseEntity.ok(HttpStatus.OK);
+            } catch (MessagingException e) {
+                        e.printStackTrace();
+                return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (IOException e) {
+                        e.printStackTrace();
+                return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return ResponseEntity.ok(HttpStatus.FORBIDDEN);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/public/userPasswordCheck/{key}")
+    public ResponseEntity<HttpStatus> checkTokenValidityFromUserAccount(@PathVariable String key) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(userDetails!=null)
+        {
+            UserDTO user = userService.findOneByUserMail(userDetails.getUsername());
+
+            if(user.getToken() != null && user.getToken().equals(key))
+            {
+                if(this.userService.isPasswordTokenValid(user.getTokenExpiryDate()))
+                {
+                    return ResponseEntity.ok(HttpStatus.OK);
+                }
+                return  ResponseEntity.ok(HttpStatus.LOCKED);
+            }
+            return ResponseEntity.ok(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(HttpStatus.FORBIDDEN);
+
+    }
+
+
+}
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+class PSWValues{
+    String password;
+    String newPassword;
+    String newPasswordTest;
 }
