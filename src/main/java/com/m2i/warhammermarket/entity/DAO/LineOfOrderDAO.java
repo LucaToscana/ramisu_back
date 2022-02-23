@@ -18,6 +18,7 @@ public class LineOfOrderDAO implements Serializable {
 
     @Column (name = "quantity", nullable = false)
     private int quantity;
+    
   
     
     

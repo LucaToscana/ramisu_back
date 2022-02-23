@@ -56,9 +56,9 @@ public class ProductDAO implements Serializable {
     private CategoryDAO categorie;
     
     
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)    
 	private Set<LineOfOrderDAO> linesOfOrder;
     
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)    
 	private Set<PossessesDAO> possessesTagsProduct;
 }

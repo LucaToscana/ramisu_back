@@ -24,7 +24,6 @@ public interface ProductService {
 
     Optional<ProductDTO> findOne(Long id);
 
-    void delete(Long id);
 
     Integer productCounter();
 
@@ -70,6 +69,8 @@ public interface ProductService {
      * @author Amal
      */
 	public void deleteProduct(Long id);
+
+	
 }
 
 

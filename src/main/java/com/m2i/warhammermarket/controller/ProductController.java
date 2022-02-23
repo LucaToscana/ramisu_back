@@ -8,6 +8,9 @@ import com.m2i.warhammermarket.entity.wrapper.ProductAddWrapper;
 import com.m2i.warhammermarket.model.ProductRequestModel;
 import com.m2i.warhammermarket.model.ProductSearchCriteria;
 import com.m2i.warhammermarket.service.ProductService;
+
+//import io.github.jhipster.web.util.HeaderUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -103,6 +106,34 @@ public class ProductController {
     	return new ResponseEntity<>(productService.saveProduct(product),(HttpStatus.OK));
     	
     }
+    
+    
+    /**
+     * @param ProductAddWrapper object
+     * @return A product updated 
+     * @author Amal
+     */
+    @CrossOrigin(origins = "*")
+    @PutMapping("/public/updateproducts")
+    public ResponseEntity<ProductDAO> updatingProduct(@RequestBody ProductAddWrapper product){
+    	return new ResponseEntity<>(productService.updateProduct(product),(HttpStatus.OK));
+    	
+    }
+    
+    
+    /**
+     * @param Long id of product object to delete this one 
+     * @author Amal
+     */
+    @CrossOrigin(origins = "*")
+    @DeleteMapping("/public/deleteproducts/{id}")
+    public ResponseEntity<Long> deleteProduct(@PathVariable Long id) {
+    	productService.deleteProduct(id);
+    	return new ResponseEntity<>(id,HttpStatus.OK);
+    }
+            
+    
+    
     
 
   }

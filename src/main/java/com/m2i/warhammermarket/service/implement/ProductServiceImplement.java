@@ -63,10 +63,7 @@ public class ProductServiceImplement implements ProductService {
         return Optional.ofNullable(this.productMapper.productToProductDTO(this.productRepository.findById(id).orElse(null)));
     }
 
-    @Override
-    public void delete(Long id) {
-
-    }
+   
 
     @Override
     public List<ProductDTO> getProductsSort(String field, String type) {
@@ -152,6 +149,7 @@ public class ProductServiceImplement implements ProductService {
     public ProductDAO saveProduct(ProductAddWrapper productWrapper) {
     	
     	ProductDAO product = new ProductDAO();
+    	
     	product.setEan13(productWrapper.getEan13());
     	product.setDescription(productWrapper.getDescription());
     	product.setLabel(productWrapper.getLabelProduct());
@@ -162,23 +160,29 @@ public class ProductServiceImplement implements ProductService {
     	
     	
     	
-    	UniverseDAO universe = new UniverseDAO();
-    	universe.setLabel(productWrapper.getLabelUniverse());
-    	universe.setRefCode(productWrapper.getRefCodeUniverse());
+    	UniverseDAO universe = universeRepository.findById(productWrapper.getIdUniverse()).get();
     	
-    	universeRepository.save(universe);
+    	//universe.setId(productWrapper.getIdUniverse());
+    	//universe.setLabel(productWrapper.getLabelCategory());
+    	////universe.setRefCode(productWrapper.getRefCodeUniverse());
+    	
+    	//universeRepository.save(universe); 
     	product.setUniverse(universe);
 
-
-    	CategoryDAO category = new CategoryDAO();
-    	category.setLabel(productWrapper.getLabelCategory());
-    	category.setRefCode(productWrapper.getRefCodeCategory());
     	
-    	categoryRepository.save(category);
+    	CategoryDAO category = categoryRepository.findById(productWrapper.getIdCategory()).get();
+    	//category.setId(productWrapper.getIdCategory());
+    	//category.setLabel(productWrapper.getLabelCategory());
+    	//category.setRefCode(productWrapper.getRefCodeCategory());
+
+    	//categoryRepository.save(category);
     	product.setCategorie(category);
     	
     	
-        return productRepository.save(product);
+    	productRepository.save(product);
+    	
+    	
+        return product ;
     }
     
     /**
@@ -192,7 +196,8 @@ public class ProductServiceImplement implements ProductService {
     public ProductDAO updateProduct(ProductAddWrapper productWrapper) {
 	
 	
-    	ProductDAO product = new ProductDAO();
+    	ProductDAO product = productRepository.findById(productWrapper.getIdProduct()).get();
+    	
     	
     	product.setId(productWrapper.getIdProduct());
     	product.setEan13(productWrapper.getEan13());
@@ -205,26 +210,31 @@ public class ProductServiceImplement implements ProductService {
     	
     	
     	
-    	UniverseDAO universe = new UniverseDAO();
-    	universe.setId(productWrapper.getIdUniverse());
-    	universe.setLabel(productWrapper.getLabelUniverse());
-    	universe.setRefCode(productWrapper.getRefCodeUniverse());
+    	UniverseDAO universe = universeRepository.findById(productWrapper.getIdUniverse()).get();
     	
-    	universeRepository.saveAndFlush(universe);
+    	//UniverseDAO universe = new UniverseDAO();
+    	//universe.setId(productWrapper.getIdUniverse());
+    	//universe.setLabel(productWrapper.getLabelUniverse());
+    	//universe.setRefCode(productWrapper.getRefCodeUniverse());
+    	
+    	//universeRepository.saveAndFlush(universe);
     	product.setUniverse(universe);
     	
 
-
-    	CategoryDAO category = new CategoryDAO();
-    	category.setId(productWrapper.getIdCategory());
-    	category.setLabel(productWrapper.getLabelCategory());
-    	category.setRefCode(productWrapper.getRefCodeCategory());
+    	CategoryDAO category = categoryRepository.findById(productWrapper.getIdCategory()).get();
+    	//CategoryDAO category = new CategoryDAO();
+    	////category.setLabel(productWrapper.getLabelCategory());
+    	//category.setRefCode(productWrapper.getRefCodeCategory());
     	
-    	categoryRepository.saveAndFlush(category);
+    	//categoryRepository.saveAndFlush(category);
     	product.setCategorie(category);
     	
     	
-        return productRepository.saveAndFlush(product);
+    	
+    	productRepository.saveAndFlush(product);
+    	
+    	
+        return product ;
     }
 
 /**
@@ -235,7 +245,9 @@ public class ProductServiceImplement implements ProductService {
     
    @Override 
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+	   	ProductDAO idProduct = productRepository.getById(id);
+	   	productRepository.delete(idProduct);
+        
     }
  
     
