@@ -198,7 +198,7 @@ public class UserController {
     /**
      * Send welcome mail upon registration
      *
-     * @param email the user email address needed for resetting its password
+     * @param email the user email address provided upon registration
      * @return a ResponseEntity
      * @author Loic
      */
