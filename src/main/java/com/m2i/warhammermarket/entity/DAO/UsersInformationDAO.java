@@ -20,7 +20,7 @@ import java.util.Set;
 public class UsersInformationDAO implements Serializable {
 	@Override
 	public String toString() {
-		return "UsersInformationDAO [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", phone="
+		return "UsersInformationDAO [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phone="
 				+ phone + ", birthdate=" + birthdate + ", avatar=" + avatar + ", user=" + user + "]";
 	}
 
@@ -29,11 +29,11 @@ public class UsersInformationDAO implements Serializable {
 
     private Long id;
 
-    @Column(name = "last_name")
-    private String lastName;
-
     @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
 
     @Column(name = "phone")
     private String phone;
