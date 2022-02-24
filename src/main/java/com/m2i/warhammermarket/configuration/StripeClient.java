@@ -72,7 +72,7 @@ public class StripeClient {
 	/* STRIPE-CUSTOM-FORM */
 	public String newCustomerAndPay(CustomerData customerData) throws AuthenticationException, InvalidRequestException,
 			APIConnectionException, CardException, APIException, StripeException, Exception {
-		String idTest = "Vous avez dépassé la limite de cartes enregistrées, effectuez le paiement sans enregistrer la carte ou supprimez un ancien mode de paiement";
+		String idTest = "Vous avez atteint la limite de cartes enregistrées, effectuez le paiement sans enregistrer la carte ou supprimez un ancien mode de paiement";
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", customerData.getEmail());
@@ -143,7 +143,7 @@ public class StripeClient {
 
 				CreditCardModel cb = new CreditCardModel(card.getId(), card.getLast4(), card.getExpMonth().toString(),
 						card.getExpYear().toString(), card.getBrand());
-			
+
 				System.out.println(client);
 				listCards.add(cb);
 			}
@@ -159,24 +159,23 @@ public class StripeClient {
 		return response;
 	}
 
-	public void deleteCustomer(String card, String customerMail) throws AuthenticationException, InvalidRequestException, APIConnectionException, CardException, APIException{
+	public void deleteCustomer(String card, String customerMail) throws AuthenticationException,
+			InvalidRequestException, APIConnectionException, CardException, APIException {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", customerMail);
 		CustomerCollection customers;
-	
-			customers = Customer.list(params);
-			for (Customer c : customers.getData()) {
-				if (c.getDefaultSource().intern().equals(card)) {
 
-					Customer customer = Customer.retrieve(c.getId());
-					DeletedCustomer cust =  customer.delete();
+		customers = Customer.list(params);
+		for (Customer c : customers.getData()) {
+			if (c.getDefaultSource().intern().equals(card)) {
 
-				}
-}
-		
-		
+				Customer customer = Customer.retrieve(c.getId());
+				DeletedCustomer cust = customer.delete();
+
+			}
+		}
 
 	}
 
@@ -200,4 +199,32 @@ public class StripeClient {
 		return params2;
 	}
 
+	public String payWithRegistredCard(CreditCardModel card, String customer) throws AuthenticationException,
+			InvalidRequestException, APIConnectionException, CardException, APIException {
+		String idTest = "Un problème s'est produit lors du paiement";
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("limit", 3);
+		params.put("email", customer);
+		CustomerCollection customers;
+
+		customers = Customer.list(params);
+		for (Customer c : customers.getData()) {
+			if (c.getDefaultSource().intern().equals(card.getCardStripe())) {
+
+				try {
+					Charge charge = chargeCustomerCard(c.getId(), card.getAmountOrder());
+					System.out.println(charge);
+					idTest = charge.getStatus();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+
+		}
+
+		return idTest;
+	}
 }

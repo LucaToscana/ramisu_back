@@ -89,7 +89,17 @@ public class PaymentGatewayController {
 	
 	
 	
-	
+	@CrossOrigin("*")
+	@PostMapping("/registred-card-pay")
+	public String  payWithRegistredCard(@RequestBody CreditCardModel card) throws Exception {
+   	
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(userDetails!=null)
+        {
+        return stripeClient.payWithRegistredCard(card,userDetails.getUsername());
+        }
+		return null;
+	}
 	
 	
 	
