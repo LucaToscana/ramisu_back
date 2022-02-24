@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Mail de bienvenue</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'/>
+
+    <!-- use the font -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+<p th:text="${'Bonjour ' + firstName + ' ' + lastName + ',' + ' ' + 'bienvenue sur Warhammer Market! '}"></p>
+
+<p th:text="${email}"></p>
+<p th:utext="${message}"></p>
+
+</p>
+
+<p>
+    À bientôt sur Warhammer Market.
+</p>
+<p>
+    <img src="https://raw.githubusercontent.com/globule554/patacrepes/main/public/assets/warhammer-shop-logo.png" alt="Warhammer Market logo" height="110" width="500"/>
+</p>
+</body>
+</html>

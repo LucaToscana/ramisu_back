@@ -99,7 +99,7 @@ public class UserServiceImplement implements UserService {
     @Override
     public UserDTO findOneByUserMail(String mail) {
         UserDAO userDAO = userRepository.findByMail(mail);
-        if (userDAO == null) return null; //Si jamais le user n'existe pas, on renvoi directement null
+        if (userDAO == null) return null; //Si jamais le user n'existe pas, on renvoie directement null
 
         UserDTO userDTO = this.userMapper.userToUserDTO(userDAO);
         userDTO.setAuthorities(userDAO.getAuthorities());
@@ -229,8 +229,8 @@ public class UserServiceImplement implements UserService {
 		UserDTO user = findOneByUserMail(profile.getMail());
 	
 		UsersInformationDAO infoProfile =  userInformationRepository.getByMail(profile.getMail());
-							infoProfile.setLastName( profile.getLastName());
-							infoProfile.setFirstName(profile.getFirstName());
+                            infoProfile.setFirstName(profile.getFirstName());
+                            infoProfile.setLastName( profile.getLastName());
 							infoProfile.setPhone(profile.getPhone());  
 							infoProfile.setAvatar(profile.getAvatar());
 							infoProfile.setBirthdate(profile.getBirthdate());    	

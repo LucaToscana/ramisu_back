@@ -22,8 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @ToString
 public class ProfileWrapper {
-    private String lastName;
     private String firstName;
+    private String lastName;
     private String phone;
     private String mail;
     private Date birthdate;
@@ -40,19 +40,19 @@ public class ProfileWrapper {
     
 
     public ProfileWrapper (UsersInformationDAO user, AddressDAO address){
-    	  lastName = user.getLastName();
-          firstName = user.getFirstName();
-          phone = user.getPhone();
-          mail = user.getUser().getMail();
-          birthdate = user.getBirthdate();
-          avatar = user.getAvatar();
-          idaddress = address.getId();
-          number = address.getNumber();
-          street = address.getStreet();
-          additionalAddress = address.getAdditionalAddress();
-          postalCode = address.getPostalCode();
-          city = address.getCity();
-          country = address.getCountry();
+        firstName = user.getFirstName();
+        lastName = user.getLastName();
+        phone = user.getPhone();
+        mail = user.getUser().getMail();
+        birthdate = user.getBirthdate();
+        avatar = user.getAvatar();
+        idaddress = address.getId();
+        number = address.getNumber();
+        street = address.getStreet();
+        additionalAddress = address.getAdditionalAddress();
+        postalCode = address.getPostalCode();
+        city = address.getCity();
+        country = address.getCountry();
     }
     
 
@@ -61,10 +61,10 @@ public class ProfileWrapper {
     {
 
   	  UsersInformationDAO user = new UsersInformationDAO();
-  	  user.setLastName(this.getLastName());
-  	  user.setFirstName(this.getFirstName());
-  	  user.setPhone(this.getPhone());
-  	  user.setBirthdate( this.getBirthdate());
+        user.setFirstName(this.getFirstName());
+        user.setLastName(this.getLastName());
+  	    user.setPhone(this.getPhone());
+  	    user.setBirthdate( this.getBirthdate());
   	  
   	  
   	return user;

@@ -17,8 +17,8 @@ import lombok.Setter;
 public class UserInformationDTO implements Serializable {
 	
 	private Long id;
-    private String lastName;
     private String firstName;
+    private String lastName;
     private String phone;
     private Date birthdate;
     
@@ -26,8 +26,8 @@ public class UserInformationDTO implements Serializable {
     public UserInformationDTO(UsersInformationDAO userInformationDao) {
 
     	this.id = userInformationDao.getId();
+        this.firstName = userInformationDao.getFirstName();
     	this.lastName = userInformationDao.getLastName();
-    	this.firstName = userInformationDao.getFirstName();
     	this.phone = userInformationDao.getPhone();
     	this.birthdate = userInformationDao.getBirthdate();    	
     }
@@ -37,8 +37,8 @@ public class UserInformationDTO implements Serializable {
 
         return "UserInformationDTO{" +
                 "id=" + getId() +
-                ", last name='" + getLastName() + "'" +
                 ", first name='" + getFirstName() + "'" +
+                ", last name='" + getLastName() + "'" +
                 ", phone='" + getPhone() + "'" +
                 ", birthdate ='" + getBirthdate() + "'" +
                 "}";

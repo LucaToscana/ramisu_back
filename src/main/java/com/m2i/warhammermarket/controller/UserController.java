@@ -192,6 +192,38 @@ public class UserController {
                 .ok(userService.getProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
+
+
+    /**
+     * Send welcome mail upon registration
+     *
+     * @param email the user email address provided upon registration
+     * @return a ResponseEntity
+     * @author Loic
+     */
+    @CrossOrigin(origins = "*")
+    @PostMapping("/public/welcome")
+    public ResponseEntity<String> mailBienvenue(String email) {
+
+        UserDTO userDTO = userService.findOneByUserMail(email);
+        Optional<UserInformationDTO> userInformationDTO = null;
+
+        if (userDTO != null && userDTO.isActive()) {
+            userInformationDTO = this.userService.findUserInfoByUserMail(email);
+        Mail mail = EmailSenderService.getWelcomeMail(userInformationDTO.get().getFirstName(),userInformationDTO.get().getLastName(),userDTO.getMail());
+
+            try {
+                this.emailSenderService.sendEmail(mail);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ResponseEntity.ok("Mail envoyé");
+    }
+
     /**
      * REST: {POST: /register} Controlleur pour pouvoir créer un nouveau compte
      * Vérifie d'abord si le compte existe ou non en BDD
@@ -199,7 +231,7 @@ public class UserController {
      * @return Long: id du compte créé
      */
     @CrossOrigin(origins = "*")
-@PostMapping("/public/register")
+    @PostMapping("/public/register")
 	public ResponseEntity<Long> inscription(@RequestBody RegistrationProfile userProfile) {
 	System.out.println("catpcha"+userProfile.getCaptchaToken());
 		Long idSaved = 0L;
@@ -210,9 +242,11 @@ public class UserController {
 				throw new UserMailAlreadyExistException();
 			}
 			idSaved = userService.save(userProfile);
+            this.mailBienvenue(userProfile.getMail());
 		}
 		return ResponseEntity.ok(idSaved);
 	}
+
 
     /*
     *      updates User informations & address
@@ -220,7 +254,6 @@ public class UserController {
     *   @param ProfileWrapper
     *   @return HttpStatus
     *  */
-    
     @CrossOrigin("*")
     @PutMapping("/public/profile")
     public  ResponseEntity<HttpStatus> editProfile(@RequestBody ProfileWrapper profile ) {
