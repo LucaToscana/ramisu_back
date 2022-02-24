@@ -1,17 +1,13 @@
 package com.m2i.warhammermarket.controller;
-
 import com.m2i.warhammermarket.configuration.StripeClient;
 import com.m2i.warhammermarket.model.CustomerData;
-import com.m2i.warhammermarket.model.ProductSearchCriteria;
-import com.stripe.model.Charge;
-import com.stripe.model.Customer;
-import com.stripe.model.CustomerCollection;
-import com.stripe.model.Token;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.m2i.warhammermarket.model.ResponseCreditCardsDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,7 +28,7 @@ public class PaymentGatewayController {
 	
 	@CrossOrigin("*")
 	@PostMapping("/new-customer-and-pay")
-	public String  saveCunstomer(
+	public String  saveCustomer(
 			@RequestBody CustomerData customerData) throws Exception {
 		
 		return stripeClient.newCustomerAndPay(customerData);
@@ -51,7 +47,29 @@ public class PaymentGatewayController {
 
 	}
 	
+
+	@CrossOrigin("*")
+	@PostMapping("/new-customer")
+	public String  newCustomer(
+			@RequestBody CustomerData customerData) throws Exception {
+		
+		return stripeClient.newCustomer(customerData);
+
+	}
 	
+	
+	@CrossOrigin("*")
+	@GetMapping("/customer-cards")
+	public ResponseCreditCardsDetails  allCustomerCards() throws Exception {
+   	
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(userDetails!=null)
+        {		return stripeClient.allCustomerCards(userDetails.getUsername());}
+	
+		return null;
+
+
+	}
 	
 	
 	

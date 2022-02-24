@@ -33,7 +33,6 @@ public class UserController {
 	@Autowired
 	private ReCaptchaValidationService validator;
 
-	
     @Autowired
     private UserService userService;
     @Autowired
