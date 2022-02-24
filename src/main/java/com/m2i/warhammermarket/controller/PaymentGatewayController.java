@@ -1,5 +1,6 @@
 package com.m2i.warhammermarket.controller;
 import com.m2i.warhammermarket.configuration.StripeClient;
+import com.m2i.warhammermarket.model.CreditCardModel;
 import com.m2i.warhammermarket.model.CustomerData;
 import com.m2i.warhammermarket.model.ResponseCreditCardsDetails;
 
@@ -72,6 +73,19 @@ public class PaymentGatewayController {
 	}
 	
 	
+	
+
+	@CrossOrigin("*")
+	@PostMapping("/delete-customer-card")
+	public void  deleteCustomerCard(@RequestBody CreditCardModel card) throws Exception {
+   	
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(userDetails!=null)
+        {
+       stripeClient.deleteCustomer(card.getCardStripe(), userDetails.getUsername());
+        }
+
+	}
 	
 	
 	

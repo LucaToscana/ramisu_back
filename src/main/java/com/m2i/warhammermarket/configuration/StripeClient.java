@@ -14,6 +14,7 @@ import com.stripe.model.Card;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.model.CustomerCollection;
+import com.stripe.model.DeletedCustomer;
 import com.stripe.model.Token;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,40 +120,64 @@ public class StripeClient {
 		return idTest;
 	}
 
-	public ResponseCreditCardsDetails allCustomerCards(String email) throws AuthenticationException,
-			InvalidRequestException, APIConnectionException, CardException, APIException, StripeException, Exception {
-		
-		 List<CreditCardModel> listCards = new ArrayList<>();
-		String idTest = "Vous avez dépassé la limite de cartes enregistrées, supprimez un ancien mode de paiement";
+	public ResponseCreditCardsDetails allCustomerCards(String email) {
+		ResponseCreditCardsDetails response = new ResponseCreditCardsDetails(null);
+
+		List<CreditCardModel> listCards = new ArrayList<>();
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", email);
-		CustomerCollection customers = Customer.list(params);
-		
-		for(Customer client : customers.getData()) {
-			String idCustomer = client.getId();	
-			String idCard = client.getDefaultSource().intern();
-			Map<String, Object> retrieveParams = new HashMap<>();
-			List<String> expandList = new ArrayList<>();
-			expandList.add("sources");
-			retrieveParams.put("expand", expandList);
-			Customer customer = Customer.retrieve(idCustomer, retrieveParams, null);
-			Card card = (Card) customer.getSources().retrieve(idCard);
-			System.out.println(card);
+		CustomerCollection customers;
+		try {
+			customers = Customer.list(params);
+			for (Customer client : customers.getData()) {
+				String idCustomer = client.getId();
+				String idCard = client.getDefaultSource().intern();
+				Map<String, Object> retrieveParams = new HashMap<>();
+				List<String> expandList = new ArrayList<>();
+				expandList.add("sources");
+				retrieveParams.put("expand", expandList);
+				Customer customer = Customer.retrieve(idCustomer, retrieveParams, null);
+				Card card = (Card) customer.getSources().retrieve(idCard);
+				System.out.println(card);
+
+				CreditCardModel cb = new CreditCardModel(card.getId(), card.getLast4(), card.getExpMonth().toString(),
+						card.getExpYear().toString(), card.getBrand());
 			
-			CreditCardModel cb = new CreditCardModel(card.getId(),card.getLast4(),card.getExpMonth().toString(),
-					card.getExpYear().toString(),card.getBrand());			
-			listCards.add(cb);
-		}
-		
+				System.out.println(client);
+				listCards.add(cb);
+			}
 
-		if (listCards.size() < 100) {
-			idTest = listCards.size() + "";
+			ResponseCreditCardsDetails responseList = new ResponseCreditCardsDetails(listCards);
+			response = responseList;
+		} catch (AuthenticationException | InvalidRequestException | APIConnectionException | CardException
+				| APIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		ResponseCreditCardsDetails response = new ResponseCreditCardsDetails(listCards);
 
 		return response;
+	}
+
+	public void deleteCustomer(String card, String customerMail) throws AuthenticationException, InvalidRequestException, APIConnectionException, CardException, APIException{
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("limit", 3);
+		params.put("email", customerMail);
+		CustomerCollection customers;
+	
+			customers = Customer.list(params);
+			for (Customer c : customers.getData()) {
+				if (c.getDefaultSource().intern().equals(card)) {
+
+					Customer customer = Customer.retrieve(c.getId());
+					DeletedCustomer cust =  customer.delete();
+
+				}
+}
+		
+		
+
 	}
 
 	/* SHARED => create-parameter-for-customer */
