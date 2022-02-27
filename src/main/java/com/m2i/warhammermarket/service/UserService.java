@@ -1,8 +1,10 @@
 package com.m2i.warhammermarket.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+import com.m2i.warhammermarket.entity.DTO.ProductDTO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
@@ -62,8 +64,11 @@ public interface UserService {
 
 	void updateRoles(Long userID, Long roleID, boolean b);
 
-	
-	
-	
-	
+
+    List<ProductDTO> getFavorites(String username);
+    void addFavorite(String username, Long id) throws Exception;
+    void removeFavorite(String username, Long id);
+
+
+
 }
