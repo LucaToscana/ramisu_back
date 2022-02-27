@@ -369,6 +369,10 @@ public class UserServiceImplement implements UserService {
         UserDAO user = userRepository.findByMail(username);
         List<ProductDAO> fav = new ArrayList<ProductDAO>(user.getFavorites());
         fav.removeIf(e -> e.getId().equals(id));
+       user.setFavorites( new HashSet<ProductDAO>(fav));
+
+        userRepository.save(user);
+
     }
 
 
