@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @RequestMapping("/api")
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    @CrossOrigin(origins = "*")
     @GetMapping("/public/categories")
     public ResponseEntity<List<CategoryDTO>> getAllCategories(String field, String type) {
         List<CategoryDTO> list = this.categoryService.findAll();

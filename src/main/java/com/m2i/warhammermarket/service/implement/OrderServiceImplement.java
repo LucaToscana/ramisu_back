@@ -194,6 +194,14 @@ System.out.println("1"+orderNew);
 		return newResponse;
 	}
 
-	
+	@Override
+	public List<OrderDTO> findAll() {
+		
+		List<OrderDAO> orderDAOS = orderRepository.findAll( Sort
+		         .by(Sort.Direction.DESC, "id"));
+		return orderDAOS.stream().map(orderDAO -> orderMapper.OrderDAOtoOrderDTO(orderDAO))
+				.collect(Collectors.toList());
+	}
+
 	
 }

@@ -54,7 +54,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**").allowedOrigins("*").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH","OPTIONS")
+				.allowedHeaders("*");
+	}
 
+	
     /**
      * Methode pour spécifier quel manager est utilisé pour gérer l'Authentication
      * Ici, on utilise par défaut AuthenticationManager de SpringSecurity
@@ -68,13 +73,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
     
-    
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins("*").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
-				.allowedHeaders("*");
-	}
-
-
+   
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
@@ -89,22 +88,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf().disable()
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)//On ajout notre filtre (en premier !) puis celui de SpringSecurity
+        httpSecurity.cors().and()
+                .csrf().disable().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/api/login").permitAll()
-                .antMatchers("/api/user/**").permitAll()
-               
-                .antMatchers("/api/payment/**").permitAll()
+                .antMatchers("/api/public/**").permitAll()
                 .antMatchers("/upload/profilePictures/**").permitAll()
-                .antMatchers("/api/orders/**").permitAll()
-                .antMatchers("/api/orders/details/**").permitAll()
-
-                .antMatchers("/api/public/**").permitAll() //On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")
+                .antMatchers("/api/user/**").hasAuthority(AuthorityConstant.ROLE_USER)
+                .antMatchers("/api/admin/**").hasAuthority(AuthorityConstant.ROLE_ADMIN)
+                .antMatchers("/api/commercial/**").hasAuthority(AuthorityConstant.ROLE_COMM)
+                .antMatchers("/api/orders/**").hasAuthority(AuthorityConstant.ROLE_USER)
+//On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")
                 .anyRequest().authenticated() //on définie que toutes les routes ne correspondant pas aux routes du dessus sont sécurisé par authentification
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //on spécifie à SpringSecurity de ne pas créer de HttpSession
+
     }
 
 }

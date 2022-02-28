@@ -1,5 +1,8 @@
 package com.m2i.warhammermarket.controller;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +22,10 @@ import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.security.JwtUtil;
 import com.m2i.warhammermarket.service.implement.JwtUserDetailService;
 
+
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 public class AuthentificationController {
 	@Autowired
 	private JwtUtil jwtUtil;
@@ -38,7 +45,6 @@ public class AuthentificationController {
 	 * @return AuthenticationResponse
 	 * @throws Exception
 	 */
-	@CrossOrigin("*")
 	@PostMapping("/api/login")
 	public ResponseEntity<AuthentificationResponseDTO> authenticate(@RequestBody UserSecurityDTO userSecurity)
 			throws Exception {
@@ -78,4 +84,5 @@ public class AuthentificationController {
 
 	}
 
+    
 }

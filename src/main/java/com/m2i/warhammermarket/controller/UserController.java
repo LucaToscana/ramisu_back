@@ -1,14 +1,9 @@
 package com.m2i.warhammermarket.controller;
 
-import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
-import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
-import com.m2i.warhammermarket.entity.wrapper.UserMessage;
-import com.m2i.warhammermarket.model.KeyAndPassword;
-import com.m2i.warhammermarket.model.Mail;
 import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.ReCaptchaValidationService;
@@ -18,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,10 +24,11 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.Optional;
 @RestController
-@RequestMapping("/api")
+@PreAuthorize("hasAuthority('user')")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/api/user")
 public class UserController {
-	@Autowired
-	private ReCaptchaValidationService validator;
+	
 
     @Autowired
     private UserService userService;
@@ -48,8 +45,7 @@ public class UserController {
      * @throws IOException
      * @return HttpStatus  OK, UNAUTHORIZED or BAD_REQUEST
      */
-    @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/public/pictureProfile", method = RequestMethod.POST)
+    @RequestMapping(value = "/pictureProfile", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> savePicture( @RequestParam("image") MultipartFile multipartFile) throws IOException
     {
     	MediaType mediaType = MediaType.parseMediaType(multipartFile.getContentType());
@@ -62,8 +58,7 @@ public class UserController {
     	  else return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
     }
     
-    @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/public/removePictureProfile", method = RequestMethod.PUT)
+    @RequestMapping(value = "/removePictureProfile", method = RequestMethod.PUT)
     public ResponseEntity<HttpStatus> removePicture()
     {
     	 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -75,177 +70,24 @@ public class UserController {
     }
 
 
-    /**
-     * Start the password recovery feature
-     *
-     * @param email the user email address needed for resetting its password
-     * @return a ResponseEntity
-     * @author Cecile
-     */
-    @CrossOrigin(origins = "*")
-    @PostMapping("/public/passwordresetstart")
-    public ResponseEntity<String> resetPasswordStart(@RequestBody String email) {
-
-        UserDTO userDTO = this.userService.findOneByUserMail(email);
-        Optional<UserInformationDTO> userInformationDTO = null;
-
-        if (userDTO != null && userDTO.isActive()) {
-            userInformationDTO = this.userService.findUserInfoByUserMail(email);
-            String passwordToken = this.userService.createPasswordResetToken(email);
-            Mail mail =  EmailSenderService.getresetPswMail(
-                                                                userInformationDTO.get().getFirstName(),
-                                                                userInformationDTO.get().getLastName(),
-                                                                passwordToken ,
-                                                                email
-                                                            );
-            try {
-                this.emailSenderService.sendEmail(mail);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        return ResponseEntity.ok("Mail envoyé");
-    }
-
-    /**
-     * When the user is trying to reach the page to reset their password with a token,
-     * check if the token exists and is valid.
-     * If it does, the user can change their password,
-     * else, the Front will put them back to the home page.
-     *
-     * @param key the password token used to reset a password
-     * @return a ResponseEntity
-     * @author Cecile
-     */
-    @CrossOrigin(origins = "*")
-    @GetMapping("/public/passwordresetcheck/{key}")
-    public ResponseEntity<HttpStatus> checkTokenValidityOnOpeningResetPage(@PathVariable String key) {
-        if (this.userService.findUserByPasswordResetToken(key) != null) {
-            UserDTO userDTO = this.userService.findUserByPasswordResetToken(key);
-
-            if ( userDTO!= null) {
-                if (userDTO.getTokenExpiryDate() != null
-                        && this.userService.isPasswordTokenValid(userDTO.getTokenExpiryDate())
-                        && userDTO.isActive()) {
-                    return ResponseEntity.ok(HttpStatus.OK);
-                }
-            }
-        }
-        return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
-    }
-
-    /**
-     * End the password recovery feature
-     *
-     * @param keyAndPassword the key allowing the change of the old password with the new one
-     * @return a ResponseEntity
-     * @author Cecile
-     */
-    @CrossOrigin(origins = "*")
-    @PostMapping("/public/passwordresetend")
-    public ResponseEntity<HttpStatus> resetPasswordEnd(@RequestBody KeyAndPassword keyAndPassword) {
-
-        //First we verify if keyAndPassword is present and check if the passwords match
-        if (keyAndPassword != null && keyAndPassword.isValid()) {
-
-            UserDTO userDTO = this.userService.findUserByPasswordResetToken(keyAndPassword.getKey());
-            
-            if (userDTO == null) return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
-
-            userService.changeUserPasswordAndDeletePasswordToken(userDTO, keyAndPassword.getNewPassword());
-            
-            if (this.userService.isPasswordTokenValid(userDTO.getTokenExpiryDate()) && userDTO.isActive()) {
-            	 Optional<UserInformationDTO> userInformationDTO =  this.userService.findUserInfoByUserMail(userDTO.getMail());
-            	 Mail mail =  EmailSenderService.getNotificationMail(userInformationDTO.get().getFirstName() , userInformationDTO.get().getLastName(), userDTO.getMail());
-                 
-            	 
-            	 
-                 try {
-                     this.emailSenderService.sendEmail(mail);
-                     return ResponseEntity.ok(HttpStatus.OK);
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                    return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            } else {
-            	return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
-            }
-        } else {
-        	return ResponseEntity.ok(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+   
 
     /*
      *      get User informations & address
      *   @return ProfileWrapper
      *  */
-    @CrossOrigin(origins = "*")
-    @GetMapping("/public/profile")
+    @GetMapping("/profile")
     public ResponseEntity<ProfileWrapper> getProfile() {
+    	
         return ResponseEntity
                 .ok(userService.getProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
 
 
-    /**
-     * Send welcome mail upon registration
-     *
-     * @param email the user email address provided upon registration
-     * @return a ResponseEntity
-     * @author Loic
-     */
-    @CrossOrigin(origins = "*")
-    @PostMapping("/public/welcome")
-    public ResponseEntity<String> mailBienvenue(String email) {
+   
 
-        UserDTO userDTO = userService.findOneByUserMail(email);
-        Optional<UserInformationDTO> userInformationDTO = null;
-
-        if (userDTO != null && userDTO.isActive()) {
-            userInformationDTO = this.userService.findUserInfoByUserMail(email);
-        Mail mail = EmailSenderService.getWelcomeMail(userInformationDTO.get().getFirstName(),userInformationDTO.get().getLastName(),userDTO.getMail());
-
-            try {
-                this.emailSenderService.sendEmail(mail);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return ResponseEntity.ok("Mail envoyé");
-    }
-
-    /**
-     * REST: {POST: /register} Controlleur pour pouvoir créer un nouveau compte
-     * Vérifie d'abord si le compte existe ou non en BDD
-     *
-     * @return Long: id du compte créé
-     */
-    @CrossOrigin(origins = "*")
-    @PostMapping("/public/register")
-	public ResponseEntity<Long> inscription(@RequestBody RegistrationProfile userProfile) {
-	System.out.println("catpcha"+userProfile.getCaptchaToken());
-		Long idSaved = 0L;
-		if (validator.validateCaptcha(userProfile.getCaptchaToken())) {
-
-			UserDTO userDTO = userService.findOneByUserMail(userProfile.getMail());
-			if (userDTO != null) {
-				throw new UserMailAlreadyExistException();
-			}
-			idSaved = userService.save(userProfile);
-            this.mailBienvenue(userProfile.getMail());
-		}
-		return ResponseEntity.ok(idSaved);
-	}
+  
 
 
     /*
@@ -254,11 +96,12 @@ public class UserController {
     *   @param ProfileWrapper
     *   @return HttpStatus
     *  */
-    @CrossOrigin("*")
-    @PutMapping("/public/profile")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping("/profile")
     public  ResponseEntity<HttpStatus> editProfile(@RequestBody ProfileWrapper profile ) {
     
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	
     	// current user validity
     	boolean success = profile.getMail().equals(userDetails.getUsername());
     	if(!success) return ResponseEntity.ok(HttpStatus.UNAUTHORIZED);
@@ -271,28 +114,7 @@ public class UserController {
     	return ResponseEntity.ok(HttpStatus.OK);
     }
     
-    /**
-     * 		Send message from contact us form
-     * @Param UserMessage
-     * @Return HttpStatus
-     * */
-    @CrossOrigin("*")
-    @PostMapping("/public/contactus")
-    public  ResponseEntity<HttpStatus> editProfile(@RequestBody UserMessage message) {
-    	if (validator.validateCaptcha(message.getCaptchaToken())) {
-        	 Mail mail =  EmailSenderService.getTeamMail( message);
-              try {
-    			this.emailSenderService.sendEmail(mail);
-    		} catch (MessagingException | IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-        	
-    		return ResponseEntity.ok(HttpStatus.OK);
-    	}
-    	
-    	return ResponseEntity.ok(HttpStatus.FORBIDDEN);
-    }
+    
 
     /**
      *      user change password
@@ -301,8 +123,8 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @CrossOrigin("*")
-    @PutMapping("/public/changePSW")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping("/changePSW")
     public  ResponseEntity<HttpStatus> changePSW(@RequestBody PSWValues values) {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -325,7 +147,7 @@ public class UserController {
      * @return HttpStatus code
      * */
     @CrossOrigin("*")
-    @GetMapping("/public/requestChangePSW")
+    @GetMapping("/requestChangePSW")
     public  ResponseEntity<HttpStatus> requestPSW() {
        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(userDetails!=null)
@@ -360,7 +182,7 @@ public class UserController {
     *                       HttpStatus.FORBIDDEN
     * */
     @CrossOrigin(origins = "*")
-    @GetMapping("/public/userPasswordCheck/{key}")
+    @GetMapping("/userPasswordCheck/{key}")
     public ResponseEntity<HttpStatus> checkTokenValidityFromUserAccount(@PathVariable String key) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(userDetails!=null)

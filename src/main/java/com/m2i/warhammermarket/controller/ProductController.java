@@ -22,20 +22,20 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
+
 public class ProductController {
 
 	@Autowired
 	private ProductService productService;
 
-	@CrossOrigin(origins = "*")
 	@GetMapping("/public/product/{id}")
 	public ResponseEntity<Optional<ProductDTO>> getProduct(@PathVariable Long id) {
 		Optional<ProductDTO> productDTO = this.productService.findOne(id);
 		return ResponseEntity.ok().body(productDTO);
 	}
 
-	@CrossOrigin(origins = "*")
 	@GetMapping("/public/productDetails/{id}")
 	public ResponseEntity<Optional<ResponseProductDetails>> getProductDetails(@PathVariable Long id) {
 		Optional<ResponseProductDetails> response = this.productService.findOneDetails(id);
@@ -47,13 +47,11 @@ public class ProductController {
 	 * 
 	 * @return .
 	 */
-	@CrossOrigin(origins = "*")
 	@GetMapping("/public/products/{field}/{type}")
 	public ResponseEntity<List<ProductDTO>> getProductsSort(@PathVariable String field, @PathVariable String type) {
 		return ResponseEntity.ok().body(productService.getProductsSort(field, type));
 	}
 
-	@CrossOrigin(origins = "*")
 	@GetMapping("/public/products")
 	public ResponseEntity<List<ProductDTO>> getAllProduct(Pageable pageable) {
 		Page<ProductDTO> page = this.productService.findAll(pageable);
@@ -61,7 +59,6 @@ public class ProductController {
 	}
 	
 	
-	@CrossOrigin(origins = "*")
 	@DeleteMapping("/public/products/{id}")
 	public ResponseEntity<Long> delete(@PathVariable Long id) {
 		productService.delete(id);
@@ -76,7 +73,6 @@ public class ProductController {
 	 * 
 	 * @author Cecile
 	 */
-	@CrossOrigin(origins = "*")
 	@GetMapping("/public/products/random/{field}/{numberOfResult}")
 	public ResponseEntity<List<ProductDTO>> getRandomProducts(@PathVariable String field,
 			@PathVariable int numberOfResult) {
@@ -87,7 +83,6 @@ public class ProductController {
 		return ResponseEntity.ok().body(page.getContent());
 	}
 
-	@CrossOrigin(origins = "*")
 	@GetMapping("/public/products/count")
 	public ResponseEntity<Integer> ProductCount() {
 		return ResponseEntity.ok().body(productService.productCounter());
@@ -98,7 +93,6 @@ public class ProductController {
 	 * @return List of products
 	 * @author Claire/Luca
 	 */
-	@CrossOrigin(origins = "*")
 	@PostMapping("/public/products/search/") /* get?? */
 	public ResponseEntity<ResponseSearchCriteria> getProduct(@RequestBody ProductSearchCriteria productSearchCriteria)
 			throws JsonProcessingException {

@@ -7,13 +7,15 @@ import com.m2i.warhammermarket.model.ResponseCreditCardsDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("*")
-@RequestMapping("/api/payment")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@PreAuthorize("hasAuthority('user')")
+@RequestMapping("/api/user")
 public class PaymentGatewayController {
 
 	private StripeClient stripeClient;
@@ -27,8 +29,7 @@ public class PaymentGatewayController {
 	
 	/*custom-stripe*/
 	
-	@CrossOrigin("*")
-	@PostMapping("/new-customer-and-pay")
+	@PostMapping("/payment/new-customer-and-pay")
 	public String  saveCustomer(
 			@RequestBody CustomerData customerData) throws Exception {
 		
@@ -39,8 +40,7 @@ public class PaymentGatewayController {
 	
 	
 	
-	@CrossOrigin("*")
-	@PostMapping("/one-times-pay")
+	@PostMapping("/payment/one-times-pay")
 	public String  payCharge(
 			@RequestBody CustomerData customerData) throws Exception {
 		
@@ -49,8 +49,7 @@ public class PaymentGatewayController {
 	}
 	
 
-	@CrossOrigin("*")
-	@PostMapping("/new-customer")
+	@PostMapping("/payment/new-customer")
 	public String  newCustomer(
 			@RequestBody CustomerData customerData) throws Exception {
 		
@@ -58,14 +57,13 @@ public class PaymentGatewayController {
 
 	}
 	
-	
-	@CrossOrigin("*")
-	@GetMapping("/customer-cards")
-	public ResponseCreditCardsDetails  allCustomerCards() throws Exception {
+
+	@GetMapping("/payment/customer-cards")
+	public ResponseEntity<ResponseCreditCardsDetails>  allCustomerCards() throws Exception {
    	
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(userDetails!=null)
-        {		return stripeClient.allCustomerCards(userDetails.getUsername());}
+        {		return  ResponseEntity.ok().body(stripeClient.allCustomerCards(userDetails.getUsername())); }
 	
 		return null;
 
@@ -75,8 +73,7 @@ public class PaymentGatewayController {
 	
 	
 
-	@CrossOrigin("*")
-	@PostMapping("/delete-customer-card")
+	@PostMapping("/payment/delete-customer-card")
 	public void  deleteCustomerCard(@RequestBody CreditCardModel card) throws Exception {
    	
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -89,14 +86,14 @@ public class PaymentGatewayController {
 	
 	
 	
-	@CrossOrigin("*")
-	@PostMapping("/registred-card-pay")
+	@PostMapping("/payment/registred-card-pay")
 	public String  payWithRegistredCard(@RequestBody CreditCardModel card) throws Exception {
    	
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(userDetails!=null)
         {
-        return stripeClient.payWithRegistredCard(card,userDetails.getUsername());
+			
+			return stripeClient.payWithRegistredCard(card,userDetails.getUsername());
         }
 		return null;
 	}
@@ -109,56 +106,5 @@ public class PaymentGatewayController {
 	
 	
 	
-	
-	
-	/*stripe-element-checkout*/
-/*
-	@CrossOrigin("*")
-	@PostMapping("/charge")
-	public Charge chargeCard(@RequestHeader(value = "token") String token,
-			@RequestHeader(value = "amount") Double amount) throws Exception {
-		// Customer c = stripeClient.createCustomer(token, "luca@email.com");
-		/*System.out.println(token);
-		Map<String, Object> params = new HashMap<>();
-		params.put(
-		  "description",
-		  "My First Test Customer (created for API docs)"
-		);*/
 
-		//Customer customer = Customer.create(params);
-		// System.out.println(c);
-	/*	Map<String, Object> card = new HashMap<>();
-		card.put("number", "4242424242424242");
-		card.put("exp_month", 2);
-		card.put("exp_year", 2023);
-		card.put("cvc", "314");
-		Map<String, Object> params2 = new HashMap<>();
-		params2.put("card", card);
-
-		Token tokenS = Token.create(params2);
-		System.out.println(tokenS);
-		// int i = amount.intValue();
-	    String c=     stripeClient.createCustomer(tokenS.getId(), "lucatscddddn@gmail.com");
-	    System.out.println(c);*/
-	/*	return this.stripeClient.chargeNewCard(token, amount);
-
-	}
-/*
-	@CrossOrigin("*")
-	@PostMapping("/charge-customer-card")
-	public Charge chargeCustomerCard(@RequestHeader(value = "token") String token,
-			@RequestHeader(value = "amount") Double amount,@RequestHeader(value = "customer") String customer) throws Exception {
-
-		return  this.stripeClient.chargeCustomerCard(customer, amount);
-		
-	}*/
-/*stripe-element-checkout*/
-	/*@CrossOrigin("*")
-	@PostMapping("/new-customer")
-	public String newCustomerCard(@RequestHeader(value = "token") String token,
-			@RequestHeader(value = "mail") String mail) throws Exception {
-
-			
-		return  stripeClient.createCustomer(token, mail);
-	}*/
 }

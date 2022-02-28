@@ -55,7 +55,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 if(jwtUtil.isTokenValid(token, userDetails)) {
                     //On crée l'authentication et on la set
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
                     SecurityContextHolder.getContext().setAuthentication(auth);
+
+
                 }
             }
         }
@@ -71,8 +74,13 @@ public class JwtFilter extends OncePerRequestFilter {
      * @return le token, ou null si non existant ou incohérent
      */
     private String resolveToken(HttpServletRequest request) {
+
         String authToken = request.getHeader("Authorization");
+        
+
+
         if(StringUtils.isNotBlank(authToken) && authToken.startsWith("Bearer ")) {
+
             return authToken.substring(7);
         }
         return null;

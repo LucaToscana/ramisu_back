@@ -3,7 +3,11 @@ package com.m2i.warhammermarket.service.implement;
 import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,9 +28,17 @@ public class JwtUserDetailService implements UserDetailsService {
     	if(userDAO == null) 	throw new UsernameNotFoundException("User not found with this mail : " + mail);
     
     	if(!userDAO.isActive())	throw new RuntimeException("");
-        
-        return new User(userDAO.getMail(), userDAO.getPassword(), userDAO.getAuthorities());
+        User utente = new User(userDAO.getMail(), userDAO.getPassword(),userDAO.getAuthorities()/* getAuthority(userDAO)*/);
+
+        return utente;
     }
-   
-    
+  /*  
+    private Set<SimpleGrantedAuthority> getAuthority(  UserDAO userDAO ) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<SimpleGrantedAuthority>();
+        userDAO.getAuthorities().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority( role.getAuthority()));
+        });
+        return authorities;
+    }
+*/    
 }

@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @RequestMapping("/api")
 public class TagController {
 
     @Autowired
     private TagService tagService;
 
-    @CrossOrigin(origins = "*")
     @GetMapping("/public/tags")
     public ResponseEntity<List<TagDTO>> getAllTags(String field, String type) {
         List<TagDTO> list = this.tagService.findAll();

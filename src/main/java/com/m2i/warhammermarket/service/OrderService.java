@@ -19,4 +19,6 @@ public interface OrderService {
 
 	ResponseOrderDetails getOrderAndProductsByOrderId(Long id);
 
+	List<OrderDTO> findAll();
+
 }

@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @RequestMapping("/api")
 public class UniverseController {
 
     @Autowired
     private UniverseService universeService;
 
-    @CrossOrigin(origins = "*")
     @GetMapping("/public/universes")
     public ResponseEntity<List<UniverseDTO>> getAllUniverses(String field, String type) {
         List<UniverseDTO> list = this.universeService.findAll();

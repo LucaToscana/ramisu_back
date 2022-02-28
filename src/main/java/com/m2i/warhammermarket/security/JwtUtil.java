@@ -40,12 +40,15 @@ public class JwtUtil {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+        
+
+        
         Map<String, Object> claims = new HashMap<>();
         //Si besoin, on peut rajouter des donner dans le claims ci-dessous
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
-                .claim("auth", authorities)
+                .claim("AUTHORITIES_KEY", authorities)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_VALIDITY_MILLISECOND))
                 .signWith(SignatureAlgorithm.HS512, secret)

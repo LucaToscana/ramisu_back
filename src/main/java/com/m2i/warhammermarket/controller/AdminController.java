@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +30,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 @RestController
-
-@RequestMapping("/api/user/")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@PreAuthorize("hasAuthority('admin')")
+@RequestMapping("/api/admin/")
 public class AdminController {
 
 	@Autowired
@@ -59,12 +60,14 @@ public class AdminController {
 	public String helloUser() {
 		return "Hello admin";
 	}
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 
 	@GetMapping("/users")
 	public ResponseEntity<Page<UserDTO>> getAllUsers(Pageable pageable) {
 		Page<UserDTO> users = userService.findAll(pageable);
 		return ResponseEntity.ok().body(users);
 	}
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 
 	@GetMapping("/account/{id}")
 	public ProfileWrapper getuserAccount(@PathVariable Long id) {

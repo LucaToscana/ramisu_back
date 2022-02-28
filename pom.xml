@@ -92,6 +92,18 @@
 			<artifactId>modelmapper</artifactId>
 			<version>2.3.8</version>
 		</dependency>
+		
+		
+		  <!-- test patch operation need this -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.7</version>
+            <scope>test</scope>
+        </dependency>
+     
+		
+		
 <!-- https://mvnrepository.com/artifact/com.stripe/stripe-java -->
 			<dependency>
 			<groupId>com.stripe</groupId>
