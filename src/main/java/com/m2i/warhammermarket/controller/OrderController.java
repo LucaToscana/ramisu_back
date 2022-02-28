@@ -50,30 +50,16 @@ public class OrderController {
 	@GetMapping("/orders")
 	public ResponseEntity<List<OrderDTO>> getOrdersById(Principal currentUserId) {
 
-		AuthorityDAO admin = new AuthorityDAO("admin");
-		AuthorityDAO commercial = new AuthorityDAO("commercial");
-
-		boolean testAuthorityAdmin = (boolean) SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-				.contains(admin);
-		boolean testAuthorityCommercial = (boolean) SecurityContextHolder.getContext().getAuthentication()
-				.getAuthorities().contains(commercial);
-
-		if (testAuthorityAdmin == false && testAuthorityCommercial == false) {
-
+	
+/**/
 			String mail = currentUserId.getName();
 
 			Long id = userService.findOneByUserMail(mail).getId();
 
 			List<OrderDTO> orderDTO = orderService.findAllByUserId(id);
 
-			return ResponseEntity.ok(orderDTO);
-		} else {
-
-			List<OrderDTO> orderDTO = orderService.findAll();
-
-			return ResponseEntity.ok(orderDTO);
-
-		}
+			return ResponseEntity.ok(orderDTO);/**/
+		
 	}
 
 	@GetMapping("/orders/{id}")
