@@ -91,7 +91,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity.cors().and()
                 .csrf().disable().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/public/**").permitAll()
                 .antMatchers("/upload/profilePictures/**").permitAll()
                 .antMatchers("/api/user/**").hasAuthority(AuthorityConstant.ROLE_USER)

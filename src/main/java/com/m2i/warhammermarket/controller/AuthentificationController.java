@@ -45,7 +45,7 @@ public class AuthentificationController {
 	 * @return AuthenticationResponse
 	 * @throws Exception
 	 */
-	@PostMapping("/api/login")
+	@PostMapping("/api/public/login")
 	public ResponseEntity<AuthentificationResponseDTO> authenticate(@RequestBody UserSecurityDTO userSecurity)
 			throws Exception {
 
