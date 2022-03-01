@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @RestController
-@PreAuthorize("hasAuthority('user')")
+//@PreAuthorize("hasAuthority('user')")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/user")
 public class UserController {
@@ -211,8 +211,8 @@ public class UserController {
      * @return httpStatus OK || FORBIDDEN
      *
      * */
-    @CrossOrigin(origins = "*")
-    @PostMapping("/public/user/addFavorite/")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/addFavorite/")
     public ResponseEntity<HttpStatus> addFavorite(@RequestBody ProductDTO product)
     {
         try{
@@ -233,8 +233,8 @@ public class UserController {
      * @return httpStatus OK || FORBIDDEN
      *
      * */
-    @CrossOrigin(origins = "*")
-    @PostMapping("/public/user/removeFavorite/")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/removeFavorite/")
     public ResponseEntity<HttpStatus> rmFavorite(@RequestBody ProductDTO product)
     {
         try{
@@ -256,8 +256,8 @@ public class UserController {
      *
      * */
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/public/user/getFavorites/")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/getFavorites/")
     public ResponseEntity<List<ProductDTO>> getFavorites()//getFavorites(Pageable pageable)
     {
         try{
