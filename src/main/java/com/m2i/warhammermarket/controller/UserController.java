@@ -1,6 +1,7 @@
 package com.m2i.warhammermarket.controller;
 
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
+import com.m2i.warhammermarket.entity.DTO.ProductDTO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
@@ -22,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 @RestController
 @PreAuthorize("hasAuthority('user')")
@@ -200,6 +203,70 @@ public class UserController {
             return ResponseEntity.ok(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(HttpStatus.FORBIDDEN);
+    }
+
+    /**
+     *  Add product in user favorites list
+     * @param  product wrap id product
+     * @return httpStatus OK || FORBIDDEN
+     *
+     * */
+    @CrossOrigin(origins = "*")
+    @PostMapping("/public/user/addFavorite/")
+    public ResponseEntity<HttpStatus> addFavorite(@RequestBody ProductDTO product)
+    {
+        try{
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            userService.addFavorite(    userDetails.getUsername(),      product.getId()     );
+        }catch(Exception exception)
+        {
+            exception.printStackTrace();
+            return ResponseEntity.ok(HttpStatus.FORBIDDEN);
+        }
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    /**
+     *  remove product of user favorites list
+     * @param  product wrap id product
+     * @return httpStatus OK || FORBIDDEN
+     *
+     * */
+    @CrossOrigin(origins = "*")
+    @PostMapping("/public/user/removeFavorite/")
+    public ResponseEntity<HttpStatus> rmFavorite(@RequestBody ProductDTO product)
+    {
+        try{
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            userService.removeFavorite(    userDetails.getUsername(),      product.getId()     );
+        }catch(Exception exception)
+        {
+            exception.printStackTrace();
+            return ResponseEntity.ok(HttpStatus.FORBIDDEN);
+        }
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
+    /**
+     *  get list of favorites products
+     * @return List<ProductDTO>
+     *
+     * */
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/public/user/getFavorites/")
+    public ResponseEntity<List<ProductDTO>> getFavorites()//getFavorites(Pageable pageable)
+    {
+        try{
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            List<ProductDTO> list = userService.getFavorites(userDetails.getUsername());
+            return ResponseEntity.ok().body(list);
+        }catch (Exception ex) {
+            return ResponseEntity.ok(new ArrayList<>());
+        }
     }
 }
 

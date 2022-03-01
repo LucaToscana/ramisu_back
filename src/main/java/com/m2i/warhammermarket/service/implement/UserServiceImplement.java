@@ -12,43 +12,26 @@ import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
-import com.m2i.warhammermarket.repository.AddressRepository;
-import com.m2i.warhammermarket.repository.InhabitRepository;
-import com.m2i.warhammermarket.repository.UserInformationRepository;
-import com.m2i.warhammermarket.repository.UserRepository;
+import com.m2i.warhammermarket.repository.*;
 import com.m2i.warhammermarket.security.AuthorityConstant;
+import com.m2i.warhammermarket.service.ProductService;
 import com.m2i.warhammermarket.service.UserService;
+import com.m2i.warhammermarket.service.mapper.ProductMapper;
 import com.m2i.warhammermarket.service.mapper.UserInformationMapper;
 import com.m2i.warhammermarket.service.mapper.UserMapper;
 import com.m2i.warhammermarket.utils.FileUpload;
 
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -73,6 +56,12 @@ public class UserServiceImplement implements UserService {
     private InhabitRepository inhabitRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ProductMapper productMapper;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public Long save(UserSecurityDTO userSecurity) {
@@ -185,7 +174,7 @@ public class UserServiceImplement implements UserService {
     /**
      * Change the user's password and delete their password token
      *
-     * @param userSecurityDTO the information used to find the user and update their password
+     * @param userDTO the information used to find the user and update their password
      * @author Cecile
      */
     public void changeUserPasswordAndDeletePasswordToken(UserDTO userDTO, String newPassword) {
@@ -348,6 +337,43 @@ public class UserServiceImplement implements UserService {
 		 userRepository.save(user.get()); 	
 	}
 
+
+
+    /**
+     *
+     */
+    public void addFavorite(String username, Long id) throws Exception {
+        UserDAO user = userRepository.findByMail(username);
+        Set<ProductDAO> favorites = user.getFavorites();
+        ProductDAO product = favorites.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
+
+        if(product!=null) throw new Exception("Product already present in wishlist ");
+
+        product = productRepository.getById(id);
+        favorites.add(product);
+        userRepository.save(user);
+
+    }
+
+
+    public List<ProductDTO> getFavorites(String username)
+    {
+        UserDAO user = userRepository.findByMail(username);
+        List<ProductDAO> fav = new ArrayList<ProductDAO>(user.getFavorites());
+        List<ProductDTO> favDTO = productMapper.productsToProductsDTOList(fav);
+        return favDTO;
+    }
+
+     public void removeFavorite(String username, Long id)
+    {
+        UserDAO user = userRepository.findByMail(username);
+        List<ProductDAO> fav = new ArrayList<ProductDAO>(user.getFavorites());
+        fav.removeIf(e -> e.getId().equals(id));
+       user.setFavorites( new HashSet<ProductDAO>(fav));
+
+        userRepository.save(user);
+
+    }
 
 
 }
