@@ -24,22 +24,22 @@ public class WebSocketAuthenticatorService {
     @Autowired
     private AuthenticationManager authManager;
 
-    public UsernamePasswordAuthenticationToken getAuthenticatedOrFail(String username, String password) throws AuthenticationException {
+    public UsernamePasswordAuthenticationToken getAuthenticatedOrFail(String mail, String password) throws AuthenticationException {
 
-        // Check the username and password are not empty
-        if (username == null || username.trim().isEmpty()) {
-            throw new AuthenticationCredentialsNotFoundException("Username was null or empty.");
+        // Check the mail and password are not empty
+        if (mail == null || mail.trim().isEmpty()) {
+            throw new AuthenticationCredentialsNotFoundException("mail was null or empty.");
         }
         if (password == null || password.trim().isEmpty()) {
             throw new AuthenticationCredentialsNotFoundException("Password was null or empty.");
         }
         // Check that the user with that username exists
-        UserDTO user = userService.findOneByUserMail(password);
+        UserDTO user = userService.findOneByUserMail(mail);
         if(user == null){
             throw new AuthenticationCredentialsNotFoundException("User not found");
         }
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                username,
+        		mail,
                 password,
                 user.getAuthorities()
 

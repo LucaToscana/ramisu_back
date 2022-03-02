@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class AuthChannelInterceptor implements ChannelInterceptor {
 
     private final WebSocketAuthenticatorService service;
-    private static final String USERNAME_HEADER = "username";
+    private static final String MAIL_HEADER = "mail";
     private static final String PASSWORD_HEADER = "password";
 
     @Autowired
@@ -37,7 +37,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
         if(accessor.getCommand() == StompCommand.CONNECT){
 
             // retrieve the username from the headers
-            final String username = accessor.getFirstNativeHeader(USERNAME_HEADER);
+            final String username = accessor.getFirstNativeHeader(MAIL_HEADER);
             // retrieve the password from the headers
             final String password = accessor.getFirstNativeHeader(PASSWORD_HEADER);
             // authenticate the user and if that's successful add their user information to the headers
