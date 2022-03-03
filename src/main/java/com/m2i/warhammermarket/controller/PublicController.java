@@ -209,9 +209,13 @@ public class PublicController {
         	 Mail mail =  EmailSenderService.getTeamMail( message);
               try {
     			this.emailSenderService.sendEmail(mail);
+    			System.out.println(message);  
+    			System.out.println(mail);    			
+
+
     		} catch (MessagingException | IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
+System.out.println(message);    			
+e.printStackTrace();
     		}
         	
     		return ResponseEntity.ok(HttpStatus.OK);
