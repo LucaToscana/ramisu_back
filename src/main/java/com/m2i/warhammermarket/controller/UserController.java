@@ -9,6 +9,8 @@ import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.ReCaptchaValidationService;
 import com.m2i.warhammermarket.service.UserService;
+import com.m2i.warhammermarket.service.WSService;
+
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,8 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/user")
 public class UserController {
-	
+
+  
 
     @Autowired
     private UserService userService;
@@ -81,7 +84,6 @@ public class UserController {
      *  */
     @GetMapping("/profile")
     public ResponseEntity<ProfileWrapper> getProfile() {
-    	
         return ResponseEntity
                 .ok(userService.getProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }

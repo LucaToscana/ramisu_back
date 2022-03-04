@@ -1,7 +1,8 @@
 package com.m2i.warhammermarket.model;
 
-public enum Status {
+public enum StatusMessage {
     JOIN,
+    NOTIFICATION,
     MESSAGE,
     LEAVE
 }
