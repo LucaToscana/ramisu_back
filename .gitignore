@@ -226,3 +226,6 @@ buildNumber.properties
 # End of https://www.toptal.com/developers/gitignore/api/maven,eclipse,intellij,java
 /.idea/
 /target/
+src/main/resources/application.properties
+warhammermarket.iml
+src/main/java/com/m2i/warhammermarket/configuration/ApplicationConstants.java

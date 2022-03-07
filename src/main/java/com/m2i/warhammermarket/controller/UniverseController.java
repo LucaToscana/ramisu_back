@@ -4,11 +4,9 @@ import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 import com.m2i.warhammermarket.service.UniverseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,5 +22,10 @@ public class UniverseController {
     public ResponseEntity<List<UniverseDTO>> getAllUniverses(String field, String type) {
         List<UniverseDTO> list = this.universeService.findAll();
         return ResponseEntity.ok().body(list);
+    }
+
+    @RequestMapping(value = "/public/universes", method = RequestMethod.POST)
+    public String postLabelUniverse() throws Exception {
+        return "Universes posted !";
     }
 }
