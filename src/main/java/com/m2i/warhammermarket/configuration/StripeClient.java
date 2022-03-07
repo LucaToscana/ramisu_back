@@ -3,6 +3,7 @@ package com.m2i.warhammermarket.configuration;
 import com.m2i.warhammermarket.model.CreditCardModel;
 import com.m2i.warhammermarket.model.CustomerData;
 import com.m2i.warhammermarket.model.ResponseCreditCardsDetails;
+import com.m2i.warhammermarket.service.NotificationService;
 import com.stripe.Stripe;
 import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.APIException;
@@ -27,7 +28,8 @@ import java.util.Map;
 
 @Component
 public class StripeClient {
-
+	@Autowired
+	private NotificationService notificationService;
 	@Autowired
 	StripeClient() {
 		Stripe.apiKey = "sk_test_51KK9NkAvTn1DnSSq7R6P3AaDNvGrvjxE0wyhQVpwIQppedQjbYnTfgt5zbBOJETxpSTGwVn1njMs4uRRfK3rBlFn00zq3e8R1E";
@@ -41,6 +43,11 @@ public class StripeClient {
 		customerParams.put("source", token);
 		Customer c = Customer.create(customerParams);
 		idTest = c.getId();
+		if(idTest.equals("-1")==false && !idTest.equals(null)) {
+			
+			notificationService.sendCustomPrivateNotification(email, "Un nouveau moyen de paiement a été enregistré");
+			
+		}
 		return idTest;
 	}
 
@@ -179,25 +186,7 @@ public class StripeClient {
 
 	}
 
-	/* SHARED => create-parameter-for-customer */
-	public Map<String, Object> createParameter(CustomerData customerData) {
-		String date = customerData.getExpiryDate();
-		System.out.println(date);
-		String[] dateParts = date.split(" / ");
-		String month = dateParts[0];
-		String year = "20" + dateParts[1];
-		System.out.println(customerData);
-		System.out.println(month + "/" + year);
-
-		Map<String, Object> card = new HashMap<>();
-		card.put("number", customerData.getCardNumber());
-		card.put("exp_month", month);
-		card.put("exp_year", year);
-		card.put("cvc", customerData.getCvc());
-		Map<String, Object> params2 = new HashMap<>();
-		params2.put("card", card);
-		return params2;
-	}
+	
 
 	public String payWithRegistredCard(CreditCardModel card, String customer) throws AuthenticationException,
 			InvalidRequestException, APIConnectionException, CardException, APIException {
@@ -226,5 +215,24 @@ public class StripeClient {
 		}
 
 		return idTest;
+	}
+	/* SHARED => create-parameter-for-customer */
+	public Map<String, Object> createParameter(CustomerData customerData) {
+		String date = customerData.getExpiryDate();
+		System.out.println(date);
+		String[] dateParts = date.split(" / ");
+		String month = dateParts[0];
+		String year = "20" + dateParts[1];
+		System.out.println(customerData);
+		System.out.println(month + "/" + year);
+
+		Map<String, Object> card = new HashMap<>();
+		card.put("number", customerData.getCardNumber());
+		card.put("exp_month", month);
+		card.put("exp_year", year);
+		card.put("cvc", customerData.getCvc());
+		Map<String, Object> params2 = new HashMap<>();
+		params2.put("card", card);
+		return params2;
 	}
 }

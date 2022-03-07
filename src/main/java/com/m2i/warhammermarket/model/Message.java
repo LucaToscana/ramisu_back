@@ -16,8 +16,9 @@ public class Message {
 	private String message;
 	private String date = now();
 	private StatusMessage status;
+	private long idorder=0L;
 
-	public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_FORMAT_NOW = "dd-MM-yyyy HH:mm:ss";
 
 	public static String now() {
 		Calendar cal = Calendar.getInstance();
@@ -25,4 +26,16 @@ public class Message {
 		return sdf.format(cal.getTime());
 	}
 
+	public Message(String senderName, String receiverName, String message, StatusMessage status) {
+		super();
+		this.senderName = senderName;
+		this.receiverName = receiverName;
+		this.message = message;
+		this.status = status;
+		this.date =  now();
+		this.idorder=0L;
+	}
+
+	
+	
 }

@@ -5,6 +5,7 @@ import com.m2i.warhammermarket.entity.DTO.OrderDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductOrderWrapper;
 import com.m2i.warhammermarket.model.RequestAddOrderWithAddress;
 import com.m2i.warhammermarket.model.ResponseOrderDetails;
+import com.m2i.warhammermarket.model.UpdateStatusOrder;
 import com.m2i.warhammermarket.service.OrderService;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,4 +76,30 @@ public class OrderController {
 
 		return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("/all-orders")
+	public ResponseEntity<List<OrderDTO>> getAllOrders() {
+
+
+			List<OrderDTO> ordersDTO = orderService.findAll();
+
+			return ResponseEntity.ok(ordersDTO);
+		
+	}
+	
+	@PutMapping("/orders/update-status")
+	public ResponseEntity<OrderDTO> updateStatusOrder(@RequestBody UpdateStatusOrder updateStatus) {
+
+
+		OrderDTO ordersDTO = orderService.updateOrderStatus(updateStatus);
+
+			return ResponseEntity.ok(ordersDTO);
+		
+	}
+
+	
+	
+	
+	
+
 }

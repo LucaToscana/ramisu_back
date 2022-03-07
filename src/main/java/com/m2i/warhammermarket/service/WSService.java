@@ -26,8 +26,6 @@ public class WSService {
     }
 
     public void notifyUser(final String mail, final String message) {
-        ResponseMessage response = new ResponseMessage(message);
-
         notificationService.sendPrivateNotification(mail);
         messagingTemplate.convertAndSendToUser("lucatscn@gmail.com","/private",message);
     }

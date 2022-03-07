@@ -5,8 +5,11 @@ import com.m2i.warhammermarket.entity.DTO.OrderDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductOrderWrapper;
 import com.m2i.warhammermarket.model.RequestAddOrderWithAddress;
 import com.m2i.warhammermarket.model.ResponseOrderDetails;
+import com.m2i.warhammermarket.model.UpdateStatusOrder;
 import com.m2i.warhammermarket.repository.*;
+import com.m2i.warhammermarket.service.NotificationService;
 import com.m2i.warhammermarket.service.OrderService;
+import com.m2i.warhammermarket.service.WSService;
 import com.m2i.warhammermarket.service.mapper.OrderMapper;
 import com.m2i.warhammermarket.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderServiceImplement implements OrderService {
+
+	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
+	private StatusRepository statusRepository;
 
 	@Autowired
 	private AddressRepository addressRepository;
@@ -46,26 +55,17 @@ public class OrderServiceImplement implements OrderService {
 	@Override
 	public void createOrder(List<ProductOrderWrapper> productsOrder, String login,
 			RequestAddOrderWithAddress orderNew) {
-System.out.println("1"+orderNew);
 		OrderDAO orderDao = order(productsOrder, login, orderNew);
-		System.out.println("2"+orderDao);
-
 		OrderDAO order = orderRepository.save(orderDao);
-		
 		for (ProductOrderWrapper p : productsOrder) {
-
 			ProductDAO productGet = productRepository.getById(p.getId());
-
 			lineOfOrderRepository.save(new LineOfOrderDAO(new LineOfOrderId(p.getId(), order.getId()), p.getQuantite(),
 					productGet, order));
-			
-			
-			System.out.println("save-line");
-
 			ProductDAO product = productRepository.getById(p.getId());
 			product.setStock(product.getStock() - p.getQuantite());
 			productRepository.save(product);
 		}
+		notificationService.sendCustomPrivateNotification(login, "Vous venez d'envoyer une nouvelle commande !");
 	}
 
 	/**
@@ -91,9 +91,8 @@ System.out.println("1"+orderNew);
 
 	@Override
 	public List<OrderDTO> findAllByUserId(Long id) {
-		
-		List<OrderDAO> orderDAOS = orderRepository.findAllByUserUserId(id, Sort
-		         .by(Sort.Direction.DESC, "id"));
+
+		List<OrderDAO> orderDAOS = orderRepository.findAllByUserUserId(id, Sort.by(Sort.Direction.DESC, "id"));
 		return orderDAOS.stream().map(orderDAO -> orderMapper.OrderDAOtoOrderDTO(orderDAO))
 				.collect(Collectors.toList());
 	}
@@ -118,21 +117,18 @@ System.out.println("1"+orderNew);
 	private OrderDAO order(List<ProductOrderWrapper> productsOrder, String login, RequestAddOrderWithAddress orderNew) {
 		OrderDAO order = new OrderDAO();
 		UsersInformationDAO user = userInformationRepository.getByMail(login);
-		
-		
-		
+
 		Set<InhabitDAO> setInhabit = inhabitRepository.findAllByUserUserId(user.getId());
 
 		order.setUser(user);
 		order.setDate(new Date(System.currentTimeMillis()));
 		order.setTotal(sumTotal(productsOrder));
-		
-		
+
 		StatusDAO status = new StatusDAO();
 		status.setId(1L);
 		order.setStatus(status);
 		AddressDAO add = orderNew.getAddress();
-		System.out.println("order3"+ add);
+		System.out.println("order3" + add);
 
 		AddressDAO addTest = addressRepository.findById(add.getId()).orElse(null);
 		if (orderNew.getType().equals("domicile")) {
@@ -144,8 +140,6 @@ System.out.println("1"+orderNew);
 			res = order.getTotal().compareTo(bg25); // compare bg1 with bg2
 
 			if (res != 1) {
-				
-				
 
 				BigDecimal sum = order.getTotal().add(bg10);
 
@@ -196,12 +190,23 @@ System.out.println("1"+orderNew);
 
 	@Override
 	public List<OrderDTO> findAll() {
-		
-		List<OrderDAO> orderDAOS = orderRepository.findAll( Sort
-		         .by(Sort.Direction.DESC, "id"));
+
+		List<OrderDAO> orderDAOS = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 		return orderDAOS.stream().map(orderDAO -> orderMapper.OrderDAOtoOrderDTO(orderDAO))
 				.collect(Collectors.toList());
 	}
 
-	
+	@Override
+	public OrderDTO updateOrderStatus(UpdateStatusOrder updateStatus) {
+
+		OrderDAO order = orderRepository.findById(updateStatus.getIdOrder()).orElse(null);
+
+		StatusDAO status = statusRepository.findByLabel(updateStatus.getStatus());
+
+		order.setStatus(status);
+		OrderDAO orderUpdate = orderRepository.save(order);
+		notificationService.sendOrderStatusNotification(updateStatus.getIdOrder(), order.getUser().getUser().getMail());
+		return orderMapper.OrderDAOtoOrderDTO(orderUpdate);
+	}
+
 }

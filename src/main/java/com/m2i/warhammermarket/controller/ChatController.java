@@ -35,7 +35,7 @@ public class ChatController {
     @MessageMapping("/private-message")
     public Message recMessage(@Payload Message message){
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(),"/private",message);
-        notificationService.sendPrivateNotification(message.getReceiverName());
+        notificationService.sendPrivateNotificationForNewMessange(message.getReceiverName(), message.getSenderName());
         System.out.println(message.toString());
         return message;
     }

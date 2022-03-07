@@ -4,6 +4,7 @@ import com.m2i.warhammermarket.entity.DTO.OrderDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductOrderWrapper;
 import com.m2i.warhammermarket.model.RequestAddOrderWithAddress;
 import com.m2i.warhammermarket.model.ResponseOrderDetails;
+import com.m2i.warhammermarket.model.UpdateStatusOrder;
 
 import java.util.List;
 
@@ -20,5 +21,7 @@ public interface OrderService {
 	ResponseOrderDetails getOrderAndProductsByOrderId(Long id);
 
 	List<OrderDTO> findAll();
+
+	OrderDTO updateOrderStatus(UpdateStatusOrder updateStatus);
 
 }
