@@ -1,6 +1,7 @@
 package com.m2i.warhammermarket.controller;
 
 import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
+import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.service.UniverseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,9 @@ public class UniverseController {
         return ResponseEntity.ok().body(list);
     }
 
-    @RequestMapping(value = "/public/universes", method = RequestMethod.POST)
-    public String postLabelUniverse() throws Exception {
-        return "Universes posted !";
+    @RequestMapping(value = "/public/universes", method = RequestMethod.POST) //passer en admin
+    public ResponseEntity <UniverseDTO> postLabelUniverse(@RequestBody UniverseDTO universeDTO) throws Exception {
+        UniverseDTO universe = universeService.save(universeDTO);
+        return ResponseEntity.ok().body(universe);
     }
 }

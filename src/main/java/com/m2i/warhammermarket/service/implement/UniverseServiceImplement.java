@@ -28,7 +28,7 @@ public class UniverseServiceImplement implements UniverseService {
 
     @Override
     public UniverseDTO save(UniverseDTO universe) {
-        return null;
+        return Optional.ofNullable(this.modelMapper.universeToUniverseDTO(this.universeRepository.findById(id).orElse(null)));
     }
 
     @Override
