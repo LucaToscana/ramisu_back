@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderServiceImplement implements OrderService {
+	private final String NEW_COMMANDE = "Vous venez d'envoyer une nouvelle commande !";
+	private final String MESSAGE_STATUS = "Le statut d'une commande vient de changer !";
 
 	@Autowired
 	private NotificationService notificationService;
@@ -64,8 +66,8 @@ public class OrderServiceImplement implements OrderService {
 			ProductDAO product = productRepository.getById(p.getId());
 			product.setStock(product.getStock() - p.getQuantite());
 			productRepository.save(product);
-		}
-		notificationService.sendCustomPrivateNotification(login, "Vous venez d'envoyer une nouvelle commande !");
+		}		notificationService.sendOrderStatusNotification(order.getId(),login,NEW_COMMANDE);
+
 	}
 
 	/**
@@ -123,32 +125,23 @@ public class OrderServiceImplement implements OrderService {
 		order.setUser(user);
 		order.setDate(new Date(System.currentTimeMillis()));
 		order.setTotal(sumTotal(productsOrder));
-
 		StatusDAO status = new StatusDAO();
 		status.setId(1L);
 		order.setStatus(status);
 		AddressDAO add = orderNew.getAddress();
-		System.out.println("order3" + add);
-
 		AddressDAO addTest = addressRepository.findById(add.getId()).orElse(null);
 		if (orderNew.getType().equals("domicile")) {
 			BigDecimal bg25 = new BigDecimal("25");
 			BigDecimal bg10 = new BigDecimal("10");
 			// create int object
 			int res;
-
 			res = order.getTotal().compareTo(bg25); // compare bg1 with bg2
-
 			if (res != 1) {
-
 				BigDecimal sum = order.getTotal().add(bg10);
-
 				order.setTotal(sum);
-
 			}
 			if (addTest.equals(add) == false) {
 				add.setId(null);
-
 				AddressDAO newAddress = addressRepository.save(add);
 				order.setAddress(newAddress);
 				if (orderNew.getIsMain().equals("true")) {
@@ -183,7 +176,6 @@ public class OrderServiceImplement implements OrderService {
 		List<ProductOrderWrapper> listProductsOrderById = findAllByOrderId(id);
 
 		OrderDTO order = orderMapper.OrderDAOtoOrderDTO(orderRepository.getById(id));
-		// order.setUsersInformation(null);
 		ResponseOrderDetails newResponse = new ResponseOrderDetails(order, listProductsOrderById);
 		return newResponse;
 	}
@@ -205,7 +197,7 @@ public class OrderServiceImplement implements OrderService {
 
 		order.setStatus(status);
 		OrderDAO orderUpdate = orderRepository.save(order);
-		notificationService.sendOrderStatusNotification(updateStatus.getIdOrder(), order.getUser().getUser().getMail());
+		notificationService.sendOrderStatusNotification(updateStatus.getIdOrder(), order.getUser().getUser().getMail(),MESSAGE_STATUS);
 		return orderMapper.OrderDAOtoOrderDTO(orderUpdate);
 	}
 

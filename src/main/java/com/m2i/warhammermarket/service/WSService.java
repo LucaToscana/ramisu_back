@@ -1,5 +1,7 @@
 package com.m2i.warhammermarket.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,6 @@ public class WSService {
 
     public void notifyUser(final String mail, final String message) {
         notificationService.sendPrivateNotification(mail);
-        messagingTemplate.convertAndSendToUser("lucatscn@gmail.com","/private",message);
+    	
     }
 }

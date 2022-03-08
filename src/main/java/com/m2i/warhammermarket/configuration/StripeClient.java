@@ -182,7 +182,8 @@ public class StripeClient {
 				DeletedCustomer cust = customer.delete();
 
 			}
-		}
+		}			notificationService.sendCustomPrivateNotification(customerMail, "Un  moyen de paiement a été supprimé");
+
 
 	}
 

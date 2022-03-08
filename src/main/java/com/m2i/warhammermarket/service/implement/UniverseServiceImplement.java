@@ -38,7 +38,6 @@ public class UniverseServiceImplement implements UniverseService {
 
     @Override
     public Optional<UniverseDTO> findOne(Long id) {
-//        return Optional.ofNullable(this.modelMapper.universeToUniverseDTO(this.universeRepository.findById(id).orElse(null)));
         return Optional.ofNullable(modelMapper.map(this.universeRepository.findById(id), UniverseDTO.class));
     }
 

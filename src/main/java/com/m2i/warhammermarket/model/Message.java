@@ -18,7 +18,7 @@ public class Message {
 	private StatusMessage status;
 	private long idorder=0L;
 
-	public static final String DATE_FORMAT_NOW = "dd-MM-yyyy HH:mm:ss";
+	public static final String DATE_FORMAT_NOW = "dd-MM-yyyy HH:mm:ss.SSS";
 
 	public static String now() {
 		Calendar cal = Calendar.getInstance();

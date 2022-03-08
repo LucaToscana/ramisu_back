@@ -54,4 +54,9 @@ public class UsersInformationDAO implements Serializable {
 
     
     
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+	Set<NotificationDAO> notificationDAO;
+    
+    
 }
