@@ -1,5 +1,6 @@
 package com.m2i.warhammermarket.service.implement;
 
+import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 import com.m2i.warhammermarket.repository.UniverseRepository;
 import com.m2i.warhammermarket.service.UniverseService;
@@ -27,8 +28,8 @@ public class UniverseServiceImplement implements UniverseService {
     }
 
     @Override
-    public UniverseDTO save(UniverseDTO universe) {
-        return Optional.ofNullable(this.modelMapper.universeToUniverseDTO(this.universeRepository.findById(id).orElse(null)));
+    public Optional<UniverseDTO> save(Long id) {
+        return Optional.ofNullable(modelMapper.map(this.universeRepository.findById(id), UniverseDTO.class));
     }
 
     @Override
@@ -45,5 +46,10 @@ public class UniverseServiceImplement implements UniverseService {
     @Override
     public void delete(Long id) {
 
+    }
+
+    @Override
+    public List<UniverseDAO> save(UniverseDTO universeDTO) {
+        return null;
     }
 }

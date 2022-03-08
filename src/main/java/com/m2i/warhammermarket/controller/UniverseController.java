@@ -1,14 +1,14 @@
 package com.m2i.warhammermarket.controller;
 
+import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
-import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.service.UniverseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -26,8 +26,8 @@ public class UniverseController {
     }
 
     @RequestMapping(value = "/public/universes", method = RequestMethod.POST) //passer en admin
-    public ResponseEntity <UniverseDTO> postLabelUniverse(@RequestBody UniverseDTO universeDTO) throws Exception {
-        UniverseDTO universe = universeService.save(universeDTO);
+    public ResponseEntity<List<UniverseDAO>> postLabelUniverse(@RequestBody UniverseDTO universeDTO) throws Exception {
+        List<UniverseDAO> universe = universeService.save(universeDTO);
         return ResponseEntity.ok().body(universe);
     }
 }
