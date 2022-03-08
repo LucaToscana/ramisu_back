@@ -5,6 +5,8 @@ import lombok.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import com.m2i.warhammermarket.entity.enumeration.TypeMessage;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -15,7 +17,7 @@ public class Message {
 	private String receiverName;
 	private String message;
 	private String date = now();
-	private StatusMessage status;
+	private TypeMessage status;
 	private long idorder=0L;
 
 	public static final String DATE_FORMAT_NOW = "dd-MM-yyyy HH:mm:ss.SSS";
@@ -26,7 +28,7 @@ public class Message {
 		return sdf.format(cal.getTime());
 	}
 
-	public Message(String senderName, String receiverName, String message, StatusMessage status) {
+	public Message(String senderName, String receiverName, String message, TypeMessage status) {
 		super();
 		this.senderName = senderName;
 		this.receiverName = receiverName;

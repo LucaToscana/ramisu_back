@@ -267,7 +267,7 @@ public class UserController {
 		try {
 			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
 					.getPrincipal();
-			notificationService.sendAllUserNotification(userDetails.getUsername());
+			notificationService.sendAllUserNotifications(userDetails.getUsername());
 			return ResponseEntity.ok(HttpStatus.OK);
 		} catch (Exception ex) {
 			return ResponseEntity.ok(HttpStatus.FORBIDDEN);
@@ -286,7 +286,7 @@ public class UserController {
 			try {
 
 
-				notificationService.deleteNotificationStatusOrder(date, userDetails.getUsername());
+				notificationService.deleteNotification(date, userDetails.getUsername());
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				return ResponseEntity.ok(HttpStatus.FORBIDDEN);

@@ -6,10 +6,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import com.m2i.warhammermarket.controller.exception.NotificationAlreadyExistsException;
 import com.m2i.warhammermarket.controller.exception.NotificationNotFoundException;
 import com.m2i.warhammermarket.entity.DAO.NotificationDAO;
@@ -17,9 +14,8 @@ import com.m2i.warhammermarket.entity.DAO.NotificationId;
 import com.m2i.warhammermarket.entity.DAO.OrderDAO;
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
+import com.m2i.warhammermarket.entity.enumeration.TypeMessage;
 import com.m2i.warhammermarket.model.Message;
-import com.m2i.warhammermarket.model.ResponseMessage;
-import com.m2i.warhammermarket.model.StatusMessage;
 import com.m2i.warhammermarket.repository.NotificationRepository;
 import com.m2i.warhammermarket.repository.OrderRepository;
 import com.m2i.warhammermarket.repository.UserInformationRepository;
@@ -46,20 +42,20 @@ public class NotificationServiceImplement implements NotificationService {
 
 
 	public void sendGlobalNotification(String messageNotification) {
-		ResponseMessage message = new ResponseMessage(messageNotification);
-
+		Message message = new Message();
+		message.setMessage(messageNotification);
 		messagingTemplate.convertAndSend("/topic/global-notifications", message);
 	}
 
 	public void sendPrivateNotification(final String email) {
-		Message message = new Message("Private Notification", "warhammermarket", email, StatusMessage.NOTIFICATION);
+		Message message = new Message("Private Notification", "warhammermarket", email, TypeMessage.NOTIFICATION);
 		messagingTemplate.convertAndSendToUser(email, "/notifications/private-messages", message);
 
 	}
 
 	public void sendCustomPrivateNotification(final String email, String messageNotification) {
 		
-		Message message = new Message("warhammermarket", email, messageNotification, StatusMessage.NOTIFICATION);
+		Message message = new Message("warhammermarket", email, messageNotification, TypeMessage.NOTIFICATION);
 		messagingTemplate.convertAndSendToUser(email, "/notifications/private-messages", message);
 
 	}
@@ -68,7 +64,7 @@ public class NotificationServiceImplement implements NotificationService {
 		Message message = new Message();
 		message.setReceiverName(email);
 		message.setSenderName(emailSender);
-		message.setStatus(StatusMessage.NOTIFICATION);
+		message.setStatus(TypeMessage.NOTIFICATION);
 		message.setMessage(emailSender + "   vous a envoyé un nouveau message");
 		messagingTemplate.convertAndSendToUser(email, "/notifications/private-messages", message);
 
@@ -78,15 +74,15 @@ public class NotificationServiceImplement implements NotificationService {
 		Message message = new Message();
 		message.setReceiverName(email);
 		message.setSenderName("warhammermarket");
-		message.setStatus(StatusMessage.NOTIFICATION);
+		message.setStatus(TypeMessage.NOTIFICATION);
 		message.setMessage(messageOrder);
 		message.setIdorder(idOrder);
 		messagingTemplate.convertAndSendToUser(email, "/notifications/private-messages", message);
-		saveNotificationStatusOrder(idOrder, email, message.getDate(), message.getMessage());
+		saveNotificationOrder(idOrder, email, message.getDate(), message.getMessage());
 
 	}
 
-	public void saveNotificationStatusOrder(long idOrder, String email, String date, String message) {
+	public void saveNotificationOrder(long idOrder, String email, String date, String message) {
 		UserDAO user = userRepository.findByMail(email);
 		UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
 		OrderDAO order = orderRepository.getById(idOrder);
@@ -99,7 +95,7 @@ public class NotificationServiceImplement implements NotificationService {
 		notificationRepository.save(notification);
 	}
 
-	public void deleteNotificationStatusOrder(String date, String mail) {
+	public void deleteNotification(String date, String mail) {
 
 		UserDAO user = userRepository.findByMail(mail);
 		UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
@@ -107,9 +103,7 @@ public class NotificationServiceImplement implements NotificationService {
 			throw new NotificationNotFoundException();
 		}
 		NotificationDAO not = notificationRepository.getById(new NotificationId(userInfo.getId(), date));
-
 		OrderDAO order = not.getOrder();
-
 		if (!order.equals(null)) {
 			Set<NotificationDAO> notificatios = userInfo.getNotificationDAO();
 
@@ -117,14 +111,11 @@ public class NotificationServiceImplement implements NotificationService {
 				if (n.getOrder().equals(order)) {
 					notificationRepository.delete(n);
 				}
-
 			}
-
 		}
-
 	}
 
-	public void sendAllUserNotification(String mail) {
+	public void sendAllUserNotifications(String mail) {
 		if (mail != null) {
 			UserDAO user = userRepository.findByMail(mail);
 			UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
@@ -135,7 +126,7 @@ public class NotificationServiceImplement implements NotificationService {
 					Message message = new Message();
 					message.setReceiverName(mail);
 					message.setSenderName("warhammermarket");
-					message.setStatus(StatusMessage.NOTIFICATION);
+					message.setStatus(TypeMessage.NOTIFICATION);
 					message.setMessage(n.getMessage());
 					message.setIdorder(n.getOrder().getId());
 					message.setDate(n.getId().getDate());
@@ -145,5 +136,7 @@ public class NotificationServiceImplement implements NotificationService {
 		}
 	}
 
-
+	
+	
+ 
 }
