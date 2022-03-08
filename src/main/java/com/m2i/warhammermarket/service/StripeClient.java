@@ -30,6 +30,12 @@ import java.util.Map;
 
 public class StripeClient {
 	
+	static String newCard = "Un nouveau moyen de paiement a été enregistré";
+	static String limitCardPay= 	"Vous avez atteint la limite de cartes enregistrées, effectuez le paiement sans enregistrer la carte ou supprimez un ancien mode de paiement";
+	static String  limitCard = "Vous avez dépassé la limite de cartes enregistrées, supprimez un ancien mode de paiement";
+	static String deleteCard = "Un  moyen de paiement a été supprimé";
+	static String errorCard = "Un problème s'est produit lors du paiement";
+	
 	
 	@Autowired
 	private NotificationService notificationService;
@@ -50,7 +56,7 @@ public class StripeClient {
 		idTest = c.getId();
 		if(idTest.equals("-1")==false && !idTest.equals(null)) {
 			
-			notificationService.sendCustomPrivateNotification(email, "Un nouveau moyen de paiement a été enregistré");
+			notificationService.sendCustomPrivateNotification(email, newCard);
 			
 		}
 		return idTest;
@@ -84,7 +90,7 @@ public class StripeClient {
 	/* STRIPE-CUSTOM-FORM */
 	public String newCustomerAndPay(CustomerData customerData) throws AuthenticationException, InvalidRequestException,
 			APIConnectionException, CardException, APIException, StripeException, Exception {
-		String idTest = "Vous avez atteint la limite de cartes enregistrées, effectuez le paiement sans enregistrer la carte ou supprimez un ancien mode de paiement";
+		String idTest = limitCardPay;
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", customerData.getEmail());
@@ -115,7 +121,7 @@ public class StripeClient {
 
 	public String newCustomer(CustomerData customerData) throws AuthenticationException, InvalidRequestException,
 			APIConnectionException, CardException, APIException, StripeException, Exception {
-		String idTest = "Vous avez dépassé la limite de cartes enregistrées, supprimez un ancien mode de paiement";
+		String idTest = limitCard;
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", customerData.getEmail());
@@ -187,7 +193,7 @@ public class StripeClient {
 				DeletedCustomer cust = customer.delete();
 
 			}
-		}			notificationService.sendCustomPrivateNotification(customerMail, "Un  moyen de paiement a été supprimé");
+		}			notificationService.sendCustomPrivateNotification(customerMail, deleteCard);
 
 
 	}
@@ -196,8 +202,7 @@ public class StripeClient {
 
 	public String payWithRegistredCard(CreditCardModel card, String customer) throws AuthenticationException,
 			InvalidRequestException, APIConnectionException, CardException, APIException {
-		String idTest = "Un problème s'est produit lors du paiement";
-
+		String idTest = errorCard;
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", customer);
