@@ -1,9 +1,8 @@
-package com.m2i.warhammermarket.configuration;
+package com.m2i.warhammermarket.service;
 
 import com.m2i.warhammermarket.model.CreditCardModel;
 import com.m2i.warhammermarket.model.CustomerData;
 import com.m2i.warhammermarket.model.ResponseCreditCardsDetails;
-import com.m2i.warhammermarket.service.NotificationService;
 import com.stripe.Stripe;
 import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.APIException;
@@ -20,6 +19,7 @@ import com.stripe.model.Token;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,9 +27,14 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+
 public class StripeClient {
+	
+	
 	@Autowired
 	private NotificationService notificationService;
+	
+	
 	@Autowired
 	StripeClient() {
 		Stripe.apiKey = "sk_test_51KK9NkAvTn1DnSSq7R6P3AaDNvGrvjxE0wyhQVpwIQppedQjbYnTfgt5zbBOJETxpSTGwVn1njMs4uRRfK3rBlFn00zq3e8R1E";

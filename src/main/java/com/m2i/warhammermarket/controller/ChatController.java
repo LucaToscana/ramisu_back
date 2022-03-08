@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.m2i.warhammermarket.model.Message;
 import com.m2i.warhammermarket.service.NotificationService;
-import com.m2i.warhammermarket.service.WSService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ChatController {
-	@Autowired
-	private WSService service;
+	
 	@Autowired
 	private NotificationService notificationService;
 	@Autowired
@@ -27,7 +25,7 @@ public class ChatController {
 	@SendTo("/chatroom/public")
 	public Message receiveMessage(@Payload Message message) {
 
-		service.notifyFrontend("benvenuto");
+		//service.notifyFrontend("benvenuto");
 		return message;
 	}
 

@@ -9,7 +9,6 @@ import com.m2i.warhammermarket.model.UpdateStatusOrder;
 import com.m2i.warhammermarket.repository.*;
 import com.m2i.warhammermarket.service.NotificationService;
 import com.m2i.warhammermarket.service.OrderService;
-import com.m2i.warhammermarket.service.WSService;
 import com.m2i.warhammermarket.service.mapper.OrderMapper;
 import com.m2i.warhammermarket.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
