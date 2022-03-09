@@ -16,6 +16,7 @@ public interface UniverseService {
 
     void delete(Long id);
 
-
     List<UniverseDAO> save(UniverseDTO universeDTO);
+
+    List<UniverseDAO> save(UniverseDAO universeDAO);
 }

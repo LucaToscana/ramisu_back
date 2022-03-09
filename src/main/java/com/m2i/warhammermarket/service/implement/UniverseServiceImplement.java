@@ -52,4 +52,7 @@ public class UniverseServiceImplement implements UniverseService {
     public List<UniverseDAO> save(UniverseDTO universeDTO) {
         return null;
     }
+
+    @Override
+    public List<UniverseDAO> save(UniverseDAO universeDAO) { return null; }
 }

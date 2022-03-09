@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface UniverseRepository extends JpaRepository<UniverseDAO, Long> {
-    UniverseDAO postLabelUniverse(@Param("idUniverse") Long idUniverse);
+    // UniverseDAO postLabelUniverse(@Param("id") Long idUniverse);
 
-    Optional<CategoryDAO> findById(UniverseDTO universe);
+    List<CategoryDAO> findById(UniverseDTO universe);
 }
