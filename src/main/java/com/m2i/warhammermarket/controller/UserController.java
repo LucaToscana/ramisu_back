@@ -284,15 +284,11 @@ public class UserController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (userDetails != null) {
 			try {
-
-
 				notificationService.deleteNotification(date, userDetails.getUsername());
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				return ResponseEntity.ok(HttpStatus.FORBIDDEN);
-			}
-
-			
+			}			
 		}
 		return ResponseEntity.ok(HttpStatus.OK);
 

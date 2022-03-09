@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImplement implements OrderService {
 	private final String NEW_COMMANDE = "Vous venez d'envoyer une nouvelle commande !";
 	private final String MESSAGE_STATUS = "Le statut d'une commande vient de changer !";
+	private final String MESSAGE_ADDRESS = "Une nouvelle adresse postale a été enregistrée";
 
 	@Autowired
 	private NotificationService notificationService;
@@ -65,7 +66,8 @@ public class OrderServiceImplement implements OrderService {
 			ProductDAO product = productRepository.getById(p.getId());
 			product.setStock(product.getStock() - p.getQuantite());
 			productRepository.save(product);
-		}		notificationService.sendOrderStatusNotification(order.getId(),login,NEW_COMMANDE);
+		}
+		notificationService.sendOrderStatusNotification(order.getId(), login, NEW_COMMANDE);
 
 	}
 
@@ -118,9 +120,7 @@ public class OrderServiceImplement implements OrderService {
 	private OrderDAO order(List<ProductOrderWrapper> productsOrder, String login, RequestAddOrderWithAddress orderNew) {
 		OrderDAO order = new OrderDAO();
 		UsersInformationDAO user = userInformationRepository.getByMail(login);
-
 		Set<InhabitDAO> setInhabit = inhabitRepository.findAllByUserUserId(user.getId());
-
 		order.setUser(user);
 		order.setDate(new Date(System.currentTimeMillis()));
 		order.setTotal(sumTotal(productsOrder));
@@ -128,34 +128,15 @@ public class OrderServiceImplement implements OrderService {
 		status.setId(1L);
 		order.setStatus(status);
 		AddressDAO add = orderNew.getAddress();
-		AddressDAO addTest = addressRepository.findById(add.getId()).orElse(null);
-		if (orderNew.getType().equals("domicile")) {
-			BigDecimal bg25 = new BigDecimal("25");
-			BigDecimal bg10 = new BigDecimal("10");
-			// create int object
-			int res;
-			res = order.getTotal().compareTo(bg25); // compare bg1 with bg2
-			if (res != 1) {
-				BigDecimal sum = order.getTotal().add(bg10);
-				order.setTotal(sum);
-			}
-			if (addTest.equals(add) == false) {
-				add.setId(null);
-				AddressDAO newAddress = addressRepository.save(add);
-				order.setAddress(newAddress);
-				if (orderNew.getIsMain().equals("true")) {
-					inhabitRepository.save(InhabitDAO.getInhabit(newAddress, user, user.getUser().getId()));
-					for (InhabitDAO i : setInhabit) {
-						i.setIsMain(0);
-					}
-					System.out.println("orde6");
+		AddressDAO addTest = null;
+		if (add.getId() != null) {
+			addTest = addressRepository.findById(add.getId()).orElse(null);
+		}
 
-					inhabitRepository.saveAll(setInhabit);
-				}
-			} else {
-				order.setAddress(add);
-			}
-		} else {
+		if (orderNew.getType().equals("domicile")) {
+			setOrderDomicile( order,  orderNew,  addTest,
+					 add, setInhabit,  user, login);
+		} else {//En magasin
 			order.setAddress(add);
 		}
 		return order;
@@ -196,8 +177,40 @@ public class OrderServiceImplement implements OrderService {
 
 		order.setStatus(status);
 		OrderDAO orderUpdate = orderRepository.save(order);
-		notificationService.sendOrderStatusNotification(updateStatus.getIdOrder(), order.getUser().getUser().getMail(),MESSAGE_STATUS);
+		notificationService.sendOrderStatusNotification(updateStatus.getIdOrder(), order.getUser().getUser().getMail(),
+				MESSAGE_STATUS);
 		return orderMapper.OrderDAOtoOrderDTO(orderUpdate);
+	}
+
+	public void setOrderDomicile(OrderDAO order, RequestAddOrderWithAddress orderNew, AddressDAO addTest,
+			AddressDAO add, Set<InhabitDAO> setInhabit, UsersInformationDAO user,String login) {
+
+		BigDecimal bg25 = new BigDecimal("25");
+		BigDecimal bg10 = new BigDecimal("10");
+		// create int object
+		int res;
+		res = order.getTotal().compareTo(bg25); // compare bg1 with bg2
+		if (res != 1) {
+			BigDecimal sum = order.getTotal().add(bg10);
+			order.setTotal(sum);
+		}
+		if (!addTest.equals(add)) {
+			add.setId(null);
+			AddressDAO newAddress = addressRepository.save(add);
+			
+			order.setAddress(newAddress);
+			if (orderNew.getIsMain().equals("true")) {//set boolean!!
+				notificationService.sendCustomPrivateNotification(login, MESSAGE_ADDRESS);
+				inhabitRepository.save(InhabitDAO.getInhabit(newAddress, user, user.getUser().getId()));
+				for (InhabitDAO i : setInhabit) {
+					i.setIsMain(0);
+				}
+				inhabitRepository.saveAll(setInhabit);
+			}
+		} else {
+			order.setAddress(add);
+		}
+
 	}
 
 }

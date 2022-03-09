@@ -35,6 +35,13 @@ public class OrderController {
 	public ResponseEntity<Boolean> createOrder(@RequestBody RequestAddOrderWithAddress order) {
 		List<ProductOrderWrapper> productsFilter = order.getProductsOrder().stream().filter(c -> c.getQuantite() > 0)
 				.collect(Collectors.toList());
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+
 		if (productsFilter.size() > 0 && orderService.checkStock(productsFilter)) {
 			try {
 				orderService.createOrder(productsFilter,
@@ -43,8 +50,7 @@ public class OrderController {
 			} catch (Exception e) {
 				System.out.println("Exception dans createOrder");
 				return ResponseEntity.ok(false);
-			}
-		}
+			}	}
 		return ResponseEntity.ok(false);
 	}
 
