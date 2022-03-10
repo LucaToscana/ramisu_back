@@ -107,28 +107,14 @@ public class NotificationServiceImplement implements NotificationService {
 	}
 
 	public void deleteNotification(String date, String mail) {
-		System.out.println("1");
 		UserDAO user = userRepository.findByMail(mail);
-		System.out.println("2");
-
 		UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
-		System.out.println("3");
-
 		if (!notificationRepository.existsById(new NotificationId(userInfo.getId(), date))) {
-			System.out.println("error1");
-
 			throw new NotificationNotFoundException();
 		}
 		NotificationDAO not = notificationRepository.getById(new NotificationId(userInfo.getId(), date));
-		System.out.println("not");
-
 		OrderDAO order = not.getOrder();
-
-		System.out.println("order");
-
 		if (order != null) {
-			System.out.println("equals");
-
 			Set<NotificationDAO> notificatios = userInfo.getNotificationDAO();
 
 			for (NotificationDAO n : notificatios) {
@@ -137,7 +123,6 @@ public class NotificationServiceImplement implements NotificationService {
 				}
 			}
 		} else {
-			System.out.println("not equal");
 			notificationRepository.delete(not);
 		}
 	}
