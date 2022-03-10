@@ -3,6 +3,7 @@ package com.m2i.warhammermarket.service.implement;
 import com.m2i.warhammermarket.entity.DAO.*;
 import com.m2i.warhammermarket.entity.DTO.OrderDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductOrderWrapper;
+import com.m2i.warhammermarket.model.Message;
 import com.m2i.warhammermarket.model.RequestAddOrderWithAddress;
 import com.m2i.warhammermarket.model.ResponseOrderDetails;
 import com.m2i.warhammermarket.model.UpdateStatusOrder;
@@ -134,9 +135,8 @@ public class OrderServiceImplement implements OrderService {
 		}
 
 		if (orderNew.getType().equals("domicile")) {
-			setOrderDomicile( order,  orderNew,  addTest,
-					 add, setInhabit,  user, login);
-		} else {//En magasin
+			setOrderDomicile(order, orderNew, addTest, add, setInhabit, user, login);
+		} else {// En magasin
 			order.setAddress(add);
 		}
 		return order;
@@ -183,7 +183,7 @@ public class OrderServiceImplement implements OrderService {
 	}
 
 	public void setOrderDomicile(OrderDAO order, RequestAddOrderWithAddress orderNew, AddressDAO addTest,
-			AddressDAO add, Set<InhabitDAO> setInhabit, UsersInformationDAO user,String login) {
+			AddressDAO add, Set<InhabitDAO> setInhabit, UsersInformationDAO user, String login) {
 
 		BigDecimal bg25 = new BigDecimal("25");
 		BigDecimal bg10 = new BigDecimal("10");
@@ -197,10 +197,11 @@ public class OrderServiceImplement implements OrderService {
 		if (!addTest.equals(add)) {
 			add.setId(null);
 			AddressDAO newAddress = addressRepository.save(add);
-			
+
 			order.setAddress(newAddress);
-			if (orderNew.getIsMain().equals("true")) {//set boolean!!
-				notificationService.sendCustomPrivateNotification(login, MESSAGE_ADDRESS);
+			if (orderNew.getIsMain().equals("true")) {// set boolean!!
+				Message m = notificationService.sendCustomPrivateNotification(login, MESSAGE_ADDRESS);
+				notificationService.saveNotification(login, m.getDate(), m.getMessage());
 				inhabitRepository.save(InhabitDAO.getInhabit(newAddress, user, user.getUser().getId()));
 				for (InhabitDAO i : setInhabit) {
 					i.setIsMain(0);

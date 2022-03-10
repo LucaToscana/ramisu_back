@@ -40,7 +40,6 @@ public class NotificationServiceImplement implements NotificationService {
 	@Autowired
 	private NotificationRepository notificationRepository;
 
-
 	public void sendGlobalNotification(String messageNotification) {
 		Message message = new Message();
 		message.setMessage(messageNotification);
@@ -53,11 +52,11 @@ public class NotificationServiceImplement implements NotificationService {
 
 	}
 
-	public void sendCustomPrivateNotification(final String email, String messageNotification) {
-		
+	public Message sendCustomPrivateNotification(final String email, String messageNotification) {
+
 		Message message = new Message("warhammermarket", email, messageNotification, TypeMessage.NOTIFICATION);
 		messagingTemplate.convertAndSendToUser(email, "/notifications/private-messages", message);
-
+		return message;
 	}
 
 	public void sendPrivateNotificationForNewMessange(String email, String emailSender) {
@@ -95,16 +94,41 @@ public class NotificationServiceImplement implements NotificationService {
 		notificationRepository.save(notification);
 	}
 
-	public void deleteNotification(String date, String mail) {
-
-		UserDAO user = userRepository.findByMail(mail);
+	public void saveNotification(String email, String date, String message) {
+		UserDAO user = userRepository.findByMail(email);
 		UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
+		NotificationDAO notification = new NotificationDAO(new NotificationId(userInfo.getId(), date), userInfo, null,
+				message);
+
+		if (notificationRepository.existsById(notification.getId())) {
+			throw new NotificationAlreadyExistsException();
+		}
+		notificationRepository.save(notification);
+	}
+
+	public void deleteNotification(String date, String mail) {
+		System.out.println("1");
+		UserDAO user = userRepository.findByMail(mail);
+		System.out.println("2");
+
+		UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
+		System.out.println("3");
+
 		if (!notificationRepository.existsById(new NotificationId(userInfo.getId(), date))) {
+			System.out.println("error1");
+
 			throw new NotificationNotFoundException();
 		}
 		NotificationDAO not = notificationRepository.getById(new NotificationId(userInfo.getId(), date));
+		System.out.println("not");
+
 		OrderDAO order = not.getOrder();
-		if (!order.equals(null)) {
+
+		System.out.println("order");
+
+		if (order != null) {
+			System.out.println("equals");
+
 			Set<NotificationDAO> notificatios = userInfo.getNotificationDAO();
 
 			for (NotificationDAO n : notificatios) {
@@ -112,6 +136,9 @@ public class NotificationServiceImplement implements NotificationService {
 					notificationRepository.delete(n);
 				}
 			}
+		} else {
+			System.out.println("not equal");
+			notificationRepository.delete(not);
 		}
 	}
 
@@ -121,22 +148,21 @@ public class NotificationServiceImplement implements NotificationService {
 			UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
 			Set<NotificationDAO> userNotifications = userInfo.getNotificationDAO();
 			for (NotificationDAO n : userNotifications) {
-
+				Message message = new Message();
+				message.setReceiverName(mail);
+				message.setSenderName("warhammermarket");
+				message.setStatus(TypeMessage.NOTIFICATION);
+				message.setMessage(n.getMessage());
+				message.setDate(n.getId().getDate());
 				if (n.getOrder() != null) {
-					Message message = new Message();
-					message.setReceiverName(mail);
-					message.setSenderName("warhammermarket");
-					message.setStatus(TypeMessage.NOTIFICATION);
-					message.setMessage(n.getMessage());
+
 					message.setIdorder(n.getOrder().getId());
-					message.setDate(n.getId().getDate());
-					messagingTemplate.convertAndSendToUser(mail, "/notifications/private-messages", message);
+
 				}
+
+				messagingTemplate.convertAndSendToUser(mail, "/notifications/private-messages", message);
 			}
 		}
 	}
 
-	
-	
- 
 }

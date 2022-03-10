@@ -2,6 +2,7 @@ package com.m2i.warhammermarket.service;
 
 import com.m2i.warhammermarket.model.CreditCardModel;
 import com.m2i.warhammermarket.model.CustomerData;
+import com.m2i.warhammermarket.model.Message;
 import com.m2i.warhammermarket.model.ResponseCreditCardsDetails;
 import com.stripe.Stripe;
 import com.stripe.exception.APIConnectionException;
@@ -29,18 +30,16 @@ import java.util.Map;
 @Component
 
 public class StripeClient {
-	
+
 	static String newCard = "Un nouveau moyen de paiement a été enregistré";
-	static String limitCardPay= 	"Vous avez atteint la limite de cartes enregistrées, effectuez le paiement sans enregistrer la carte ou supprimez un ancien mode de paiement";
-	static String  limitCard = "Vous avez dépassé la limite de cartes enregistrées, supprimez un ancien mode de paiement";
+	static String limitCardPay = "Vous avez atteint la limite de cartes enregistrées, effectuez le paiement sans enregistrer la carte ou supprimez un ancien mode de paiement";
+	static String limitCard = "Vous avez dépassé la limite de cartes enregistrées, supprimez un ancien mode de paiement";
 	static String deleteCard = "Un  moyen de paiement a été supprimé";
 	static String errorCard = "Un problème s'est produit lors du paiement";
-	
-	
+
 	@Autowired
 	private NotificationService notificationService;
-	
-	
+
 	@Autowired
 	StripeClient() {
 		Stripe.apiKey = "sk_test_51KK9NkAvTn1DnSSq7R6P3AaDNvGrvjxE0wyhQVpwIQppedQjbYnTfgt5zbBOJETxpSTGwVn1njMs4uRRfK3rBlFn00zq3e8R1E";
@@ -54,10 +53,10 @@ public class StripeClient {
 		customerParams.put("source", token);
 		Customer c = Customer.create(customerParams);
 		idTest = c.getId();
-		if(idTest.equals("-1")==false && !idTest.equals(null)) {
-			
-			notificationService.sendCustomPrivateNotification(email, newCard);
-			
+		if (idTest.equals("-1") == false && !idTest.equals(null)) {
+
+			Message m = notificationService.sendCustomPrivateNotification(email, newCard);
+			notificationService.saveNotification(email, m.getDate(), m.getMessage());
 		}
 		return idTest;
 	}
@@ -157,7 +156,6 @@ public class StripeClient {
 				retrieveParams.put("expand", expandList);
 				Customer customer = Customer.retrieve(idCustomer, retrieveParams, null);
 				Card card = (Card) customer.getSources().retrieve(idCard);
-				System.out.println(card);
 
 				CreditCardModel cb = new CreditCardModel(card.getId(), card.getLast4(), card.getExpMonth().toString(),
 						card.getExpYear().toString(), card.getBrand());
@@ -193,12 +191,11 @@ public class StripeClient {
 				DeletedCustomer cust = customer.delete();
 
 			}
-		}			notificationService.sendCustomPrivateNotification(customerMail, deleteCard);
-
+		}
+	Message m =	notificationService.sendCustomPrivateNotification(customerMail, deleteCard);
+		notificationService.saveNotification(customerMail, m.getDate(), m.getMessage());
 
 	}
-
-	
 
 	public String payWithRegistredCard(CreditCardModel card, String customer) throws AuthenticationException,
 			InvalidRequestException, APIConnectionException, CardException, APIException {
@@ -227,6 +224,7 @@ public class StripeClient {
 
 		return idTest;
 	}
+
 	/* SHARED => create-parameter-for-customer */
 	public Map<String, Object> createParameter(CustomerData customerData) {
 		String date = customerData.getExpiryDate();
