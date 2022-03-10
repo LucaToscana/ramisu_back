@@ -76,7 +76,7 @@ public interface EmailSenderService {
 
 
 	/*
-	* 	 compose the contact us email
+	* 	 compose the welcome email
 	* 		@param UserMessage wrapper
 	*		@return Mail
 	* */

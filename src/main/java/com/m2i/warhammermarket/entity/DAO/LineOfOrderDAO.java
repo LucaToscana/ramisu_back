@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -18,6 +19,9 @@ public class LineOfOrderDAO implements Serializable {
 
     @Column (name = "quantity", nullable = false)
     private int quantity;
+
+    @Column (name = "order_price", nullable = false)
+    private BigDecimal orderTotal;
   
     
     
@@ -33,8 +37,10 @@ public class LineOfOrderDAO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "LineOfOrderDAO [id=" + id + ", quantity=" + quantity + "]";
+		return "LineOfOrderDAO [id=" + id + ", quantity=" + quantity + ", orderTotal=" + orderTotal + "]";
 	}
+
+
     
     
     

@@ -56,7 +56,7 @@ System.out.println("1"+orderNew);
 
 			ProductDAO productGet = productRepository.getById(p.getId());
 
-			lineOfOrderRepository.save(new LineOfOrderDAO(new LineOfOrderId(p.getId(), order.getId()), p.getQuantite(),
+			lineOfOrderRepository.save(new LineOfOrderDAO(new LineOfOrderId(p.getId(), order.getId(), order.getTotal()), p.getQuantite(),
 					productGet, order));
 			
 			

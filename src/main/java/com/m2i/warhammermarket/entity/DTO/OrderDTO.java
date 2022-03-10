@@ -1,9 +1,6 @@
 package com.m2i.warhammermarket.entity.DTO;
 
-import com.m2i.warhammermarket.entity.DAO.AddressDAO;
-import com.m2i.warhammermarket.entity.DAO.OrderDAO;
-import com.m2i.warhammermarket.entity.DAO.StatusDAO;
-import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
+import com.m2i.warhammermarket.entity.DAO.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,13 +22,14 @@ public class OrderDTO implements Serializable {
     private UsersInformationDAO usersInformation;
     private StatusDAO status;
     private AddressDAO livraisonAddress;
+    private LineOfOrderDAO lineOfOrderDAO;
     
     
     
     public OrderDTO(OrderDAO orderDAO) {
         this.id = orderDAO.getId();
         this.date = orderDAO.getDate();
-        this.total = orderDAO.getTotal();
+        this.total = lineOfOrderDAO.getOrderTotal();
         this.usersInformation = orderDAO.getUser();
         this.status = orderDAO.getStatus();
         this.livraisonAddress= orderDAO.getAddress();

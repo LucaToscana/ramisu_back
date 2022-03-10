@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Embeddable
 @Getter
@@ -18,4 +19,7 @@ public class LineOfOrderId implements Serializable {
 
     @Column(name = "id_orders", nullable = false)
     private Long idOrder;
+
+    @Column(name = "order_price", nullable = false)
+    private BigDecimal orderTotal;
 }
