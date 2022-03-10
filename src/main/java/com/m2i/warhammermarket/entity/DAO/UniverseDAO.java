@@ -1,14 +1,11 @@
 package com.m2i.warhammermarket.entity.DAO;
 
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,8 +18,6 @@ public class UniverseDAO implements Serializable {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column (name ="ref_code")
@@ -30,4 +25,9 @@ public class UniverseDAO implements Serializable {
 
     @Column (name ="label", nullable = false)
     private String label;
+
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER , mappedBy="Universes")
+    private Set<UniverseDAO> universes;
 }

@@ -8,15 +8,11 @@ import java.util.Optional;
 
 public interface UniverseService {
 
-    Optional<UniverseDTO> save(Long id);
-
     List<UniverseDTO> findAll();
 
     Optional<UniverseDTO> findOne(Long id);
 
     void delete(Long id);
 
-    List<UniverseDAO> save(UniverseDTO universeDTO);
-
-    List<UniverseDAO> save(UniverseDAO universeDAO);
+    List<UniverseDTO> saveUniverseDTO(UniverseDTO universeDAO);
 }

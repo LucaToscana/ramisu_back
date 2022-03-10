@@ -14,11 +14,11 @@ public class UniverseMapper {
     public List<UniverseDTO> universesToUniversesDTOList(List<UniverseDAO> universeDAOS) {
         return universeDAOS.stream()
                 .filter(Objects::nonNull)
-                .map(this::universeToUniverseDTO)
+                .map(this::universeDAOToUniverseDTO)
                 .collect(Collectors.toList());
     }
 
-    public UniverseDTO universeToUniverseDTO(UniverseDAO universeDAO) {
+    public UniverseDTO universeDAOToUniverseDTO(UniverseDAO universeDAO) {
         return new UniverseDTO(universeDAO);
     }
 

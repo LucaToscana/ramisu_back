@@ -4,7 +4,7 @@ import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 import com.m2i.warhammermarket.repository.UniverseRepository;
 import com.m2i.warhammermarket.service.UniverseService;
-import org.modelmapper.ModelMapper;
+import com.m2i.warhammermarket.service.mapper.UniverseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,26 +21,24 @@ public class UniverseServiceImplement implements UniverseService {
     private UniverseRepository universeRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private UniverseMapper universeMapper;
+
+    @Autowired
+    private UniverseDAO universeDAO;
 
     public UniverseServiceImplement() {
 
     }
 
     @Override
-    public Optional<UniverseDTO> save(Long id) {
-        return Optional.ofNullable(modelMapper.map(this.universeRepository.findById(id), UniverseDTO.class));
-    }
-
-    @Override
     public List<UniverseDTO> findAll() {
-        return this.universeRepository.findAll().stream().map(e->modelMapper.map(e, UniverseDTO.class)).collect(Collectors.toList());
+        return this.universeRepository.findAll().stream().map(e->universeMapper.universeDAOToUniverseDTO(universeDAO)).collect(Collectors.toList());
     }
 
     @Override
     public Optional<UniverseDTO> findOne(Long id) {
 //        return Optional.ofNullable(this.modelMapper.universeToUniverseDTO(this.universeRepository.findById(id).orElse(null)));
-        return Optional.ofNullable(modelMapper.map(this.universeRepository.findById(id), UniverseDTO.class));
+        return Optional.ofNullable(universeMapper.universeDAOToUniverseDTO(universeDAO));
     }
 
     @Override
@@ -49,10 +47,5 @@ public class UniverseServiceImplement implements UniverseService {
     }
 
     @Override
-    public List<UniverseDAO> save(UniverseDTO universeDTO) {
-        return null;
-    }
-
-    @Override
-    public List<UniverseDAO> save(UniverseDAO universeDAO) { return null; }
+    public List<UniverseDTO> saveUniverseDTO(UniverseDTO universeDTO) { return null; }
 }
