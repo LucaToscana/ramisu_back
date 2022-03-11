@@ -1,6 +1,5 @@
 package com.m2i.warhammermarket.service;
 
-import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 
 import java.util.List;
@@ -14,5 +13,5 @@ public interface UniverseService {
 
     void delete(Long id);
 
-    List<UniverseDTO> saveUniverseDTO(UniverseDTO universeDAO);
+    UniverseDTO saveUniverseDTO(UniverseDTO universeDTO);
 }

@@ -34,9 +34,9 @@ public class UniverseMapper {
             return null;
         } else {
             UniverseDAO universeDAO = new UniverseDAO();
-            universeDAO.setId(universeDAO.getId());
+            universeDAO.setId(universeDTO.getId());
             universeDAO.setRefCode(universeDTO.getRefCode());
-            universeDAO.setLabel(universeDAO.getLabel());
+            universeDAO.setLabel(universeDTO.getLabel());
             return universeDAO;
         }
     }

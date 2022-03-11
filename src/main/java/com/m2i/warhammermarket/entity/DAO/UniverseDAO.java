@@ -7,12 +7,17 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
+// Getter and setter - Lombok
 @Getter
 @Setter
+// Constructor with and without parameters - Lombok
 @NoArgsConstructor
 @AllArgsConstructor
+// Recover the information to String
 @ToString
+// Make Entity
 @Entity
+// Specifies the primary table for the annotated entity. (Ref: docs.oracle)
 @Table(name = "universes")
 public class UniverseDAO implements Serializable {
 

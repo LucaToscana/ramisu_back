@@ -54,13 +54,13 @@ public class UniverseServiceImplement implements UniverseService {
      *  This method is used to create a new universe for the administrator
      *  @return universe
      * @author Brice
-     */
+     *//*
     @Override
     public UniverseDAO saveUniverseDTO(UniverseDTO universeDTO) {
 
         UniverseDAO universe= new UniverseDAO();
-        universe.setId(universeMapper.getIdCategory());
-        universe.setLabel(universeMapper.getLabelCategory());
+        universe.setId(universeMapper.getIdUniverse());
+        universe.setLabel(universeMapper.getLabelUniverse());
         universe.setRefCode(universeMapper.getRefCode());
 
         //here we are checking if the category already exist by his name(label)
@@ -71,5 +71,17 @@ public class UniverseServiceImplement implements UniverseService {
         }
 
         return universeRepository.save(universe);
+    }*/
+    @Override
+    public UniverseDTO saveUniverseDTO(UniverseDTO universeDTO) {
+        //return modelMapper.map(universeRepository.save(modelMapper.map(universeDTO, universeDAO)), universeDAO);
+        System.out.println(universeDTO + "1");
+        UniverseDAO universe = universeMapper.universeDTOToUniverse(universeDTO);
+        System.out.println(universeDTO + "2" + universe);
+        UniverseDAO universeSave = universeRepository.save(universe);
+        System.out.println(universeDTO + "3");
+        UniverseDTO universeResult = universeMapper.universeDAOToUniverseDTO(universeSave);
+        System.out.println(universeDTO + "4");
+        return universeResult;
     }
 }
