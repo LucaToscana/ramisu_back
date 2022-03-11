@@ -19,14 +19,8 @@ public class UniverseController {
 
     @GetMapping("/public/universes")
     public ResponseEntity<List<UniverseDTO>> getAllUniverses(String field, String type) {
-        try {
             List<UniverseDTO> list = this.universeService.findAll();
             return ResponseEntity.ok().body(list);
-        }
-        catch (Exception e) {
-            System.out.println("Exception dans getAllUniverses");
-            return ResponseEntity.ok().body(null);
-        }
     }
 
     @RequestMapping(value = "/public/universes", method = RequestMethod.POST) //passer en admin
