@@ -295,10 +295,11 @@ public class UserServiceImplement implements UserService {
         Long userSecID = save(userSecDTO);
         	 userInfo.setUser( userRepository.findById(userSecID).get());
         
-        userInfo.setId(userInformationRepository.save(userInfo).getId());
-        AddressDAO address = addressRepository.save(userProfile.getAddress());
+
        
         try {
+            userInfo.setId(userInformationRepository.save(userInfo).getId());
+            AddressDAO address = addressRepository.save(userProfile.getAddress());
         	inhabitRepository.save(InhabitDAO.getInhabit(address , userInfo , userSecID));
         	
         }catch(Exception e) {

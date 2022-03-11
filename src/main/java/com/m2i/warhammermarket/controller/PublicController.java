@@ -1,15 +1,11 @@
 package com.m2i.warhammermarket.controller;
 
-import com.m2i.warhammermarket.controller.exception.UserMailAlreadyExistException;
-import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
-import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.entity.wrapper.RegistrationProfile;
 import com.m2i.warhammermarket.entity.wrapper.UserMessage;
 import com.m2i.warhammermarket.model.KeyAndPassword;
 import com.m2i.warhammermarket.model.Mail;
-import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.ReCaptchaValidationService;
 import com.m2i.warhammermarket.service.UserService;
@@ -144,22 +140,19 @@ public class PublicController {
     /**
      * Send welcome mail upon registration
      *
-     * @param email the user email address provided upon registration
-     * @return a ResponseEntity
+     * @param UserDTO The new user who must be notified of the registration
+     *
      * @author Loic
      */
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping("/welcome")
-    public ResponseEntity<String> mailBienvenue(String email) {
 
-        UserDTO userDTO = userService.findOneByUserMail(email);
+    public void mailWelcome(UserDTO userDTO) {
+
         Optional<UserInformationDTO> userInformationDTO = null;
 
         if (userDTO != null && userDTO.isActive()) {
-            userInformationDTO = this.userService.findUserInfoByUserMail(email);
-        Mail mail = EmailSenderService.getWelcomeMail(userInformationDTO.get().getFirstName(),userInformationDTO.get().getLastName(),userDTO.getMail());
-
             try {
+                userInformationDTO = this.userService.findUserInfoByUserMail(userDTO.getMail());
+                Mail mail = EmailSenderService.getWelcomeMail(userInformationDTO.get().getFirstName(),userInformationDTO.get().getLastName(),userDTO.getMail());
                 this.emailSenderService.sendEmail(mail);
             } catch (MessagingException e) {
                 e.printStackTrace();
@@ -168,7 +161,7 @@ public class PublicController {
             }
         }
 
-        return ResponseEntity.ok("Mail envoyé");
+
     }
 
     /**
@@ -180,16 +173,15 @@ public class PublicController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/register")
 	public ResponseEntity<Long> inscription(@RequestBody RegistrationProfile userProfile) {
-	System.out.println("catpcha"+userProfile.getCaptchaToken());
+
 		Long idSaved = 0L;
 		if (validator.validateCaptcha(userProfile.getCaptchaToken())) {
 
 			UserDTO userDTO = userService.findOneByUserMail(userProfile.getMail());
-			if (userDTO != null) {
-				throw new UserMailAlreadyExistException();
-			}
+            if (userDTO != null) return ResponseEntity.ok(-1L);//return -1 UserMailAlreadyExist in database
+
 			idSaved = userService.save(userProfile);
-            this.mailBienvenue(userProfile.getMail());
+            this.mailWelcome(userDTO);
 		}
 		return ResponseEntity.ok(idSaved);
 	}
