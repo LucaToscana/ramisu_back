@@ -49,6 +49,27 @@ public class UniverseServiceImplement implements UniverseService {
 
     }
 
+    /**
+     * @param universeDTO object
+     *  This method is used to create a new universe for the administrator
+     *  @return universe
+     * @author Brice
+     */
     @Override
-    public List<UniverseDTO> saveUniverseDTO(UniverseDTO universeDTO) { return null; }
+    public UniverseDAO saveUniverseDTO(UniverseDTO universeDTO) {
+
+        UniverseDAO universe= new UniverseDAO();
+        universe.setId(universeMapper.getIdCategory());
+        universe.setLabel(universeMapper.getLabelCategory());
+        universe.setRefCode(universeMapper.getRefCode());
+
+        //here we are checking if the category already exist by his name(label)
+        String label=universe.getLabel();
+
+        if(universeRepository.findByLabel(label).isPresent()) {
+            return null;
+        }
+
+        return universeRepository.save(universe);
+    }
 }
