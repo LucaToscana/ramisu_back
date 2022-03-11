@@ -23,7 +23,6 @@ public class UniverseServiceImplement implements UniverseService {
     @Autowired
     private UniverseMapper universeMapper;
 
-    @Autowired
     private UniverseDAO universeDAO;
 
     public UniverseServiceImplement() {

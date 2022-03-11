@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "Universes")
+@Table(name = "universes")
 public class UniverseDAO implements Serializable {
 
     @Id
@@ -28,6 +28,6 @@ public class UniverseDAO implements Serializable {
 
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER , mappedBy="Universes")
+    @OneToMany(fetch = FetchType.EAGER , mappedBy="universes")
     private Set<UniverseDAO> universes;
 }
