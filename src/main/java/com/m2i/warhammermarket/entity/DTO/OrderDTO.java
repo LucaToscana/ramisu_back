@@ -29,7 +29,7 @@ public class OrderDTO implements Serializable {
     public OrderDTO(OrderDAO orderDAO) {
         this.id = orderDAO.getId();
         this.date = orderDAO.getDate();
-        this.total = lineOfOrderDAO.getOrderTotal();
+        /*this.total = lineOfOrderDAO.getOrderTotal();*/
         this.usersInformation = orderDAO.getUser();
         this.status = orderDAO.getStatus();
         this.livraisonAddress= orderDAO.getAddress();

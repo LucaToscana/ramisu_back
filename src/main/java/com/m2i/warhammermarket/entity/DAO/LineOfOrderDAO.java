@@ -20,8 +20,8 @@ public class LineOfOrderDAO implements Serializable {
     @Column (name = "quantity", nullable = false)
     private int quantity;
 
-    @Column (name = "order_price", nullable = false)
-    private BigDecimal orderTotal;
+    /*@Column (name = "order_price", nullable = false /*, insertable = false, updatable = false)
+    private double orderTotal;*/
   
     
     
@@ -37,7 +37,7 @@ public class LineOfOrderDAO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "LineOfOrderDAO [id=" + id + ", quantity=" + quantity + ", orderTotal=" + orderTotal + "]";
+		return "LineOfOrderDAO [id=" + id + ", quantity=" + quantity + /*", orderTotal=" + orderTotal +*/ "]";
 	}
 
 
