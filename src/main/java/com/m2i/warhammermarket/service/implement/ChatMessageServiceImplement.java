@@ -2,49 +2,31 @@ package com.m2i.warhammermarket.service.implement;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import com.m2i.warhammermarket.controller.exception.NotificationAlreadyExistsException;
-import com.m2i.warhammermarket.controller.exception.NotificationNotFoundException;
-import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
+
 import com.m2i.warhammermarket.entity.DAO.ChatMessageDAO;
 import com.m2i.warhammermarket.entity.DAO.ChatMessageId;
 import com.m2i.warhammermarket.entity.DAO.ChatsDAO;
-import com.m2i.warhammermarket.entity.DAO.NotificationDAO;
-import com.m2i.warhammermarket.entity.DAO.NotificationId;
-import com.m2i.warhammermarket.entity.DAO.OrderDAO;
+
 import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import com.m2i.warhammermarket.entity.enumeration.TypeMessage;
 import com.m2i.warhammermarket.model.Message;
-import com.m2i.warhammermarket.repository.AuthorityRepository;
 import com.m2i.warhammermarket.repository.ChatMessageRepository;
 import com.m2i.warhammermarket.repository.ChatsRepository;
-import com.m2i.warhammermarket.repository.NotificationRepository;
-import com.m2i.warhammermarket.repository.OrderRepository;
 import com.m2i.warhammermarket.repository.UserInformationRepository;
 import com.m2i.warhammermarket.repository.UserRepository;
-import com.m2i.warhammermarket.security.AuthorityConstant;
 import com.m2i.warhammermarket.service.ChatMessageService;
-import com.m2i.warhammermarket.service.NotificationService;
-import com.m2i.warhammermarket.service.UserService;
-import com.m2i.warhammermarket.service.mapper.UserInformationMapper;
+
 
 @Service
 @Transactional
@@ -70,32 +52,23 @@ public class ChatMessageServiceImplement implements ChatMessageService {
 		String client = message.getReceiverName();
 		
 		UserDAO user = userRepository.findByMail(message.getSenderName());
-		System.out.println(client);
 
 		UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
-		System.out.println(client);
 
 		UserDAO userReceiver = userRepository.findByMail(client);
-		System.out.println(client);
 
 		UsersInformationDAO userInfoReceiver = userInfoRepository.findByUser(userReceiver);
-		System.out.println(client);
 
 		ChatsDAO newChat = new ChatsDAO();
 
 		try {
 			newChat = chatTopicRepository.findByUserCustomers(userInfoReceiver).get(0);
-			System.out.println("FIND");
 
 		} catch (Exception e) {
-			System.out.println(message.getSenderName() + "     CATCH");
-
+		
 			ChatsDAO newChatSave = new ChatsDAO(userInfo);
-
 			newChat = chatTopicRepository.save(newChatSave);
-			System.out.println("SAVE");
-
-			// }
+			
 		}
 		ChatMessageDAO messageDao = new ChatMessageDAO(
 				new ChatMessageId(userInfo.getId(), userInfoReceiver.getId(), message.getDate()), userInfo,
