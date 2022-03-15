@@ -32,7 +32,7 @@ public class UniverseController {
      * @author Brice Bayard
      * Add a new universe in table
      */
-    @RequestMapping(value = "/public/addUniverse", method = RequestMethod.POST) //passer en admin
+    @RequestMapping(value = "/admin/addUniverse", method = RequestMethod.POST)
     public ResponseEntity<UniverseDTO> createLabelUniverse(@RequestBody UniverseDTO universeDTO) {
         try {
             UniverseDTO universe = universeService.saveUniverseDTO(universeDTO);
