@@ -16,11 +16,18 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Entity
 @Table(name = "Inhabit")
 public class InhabitDAO implements Serializable {
-    @EmbeddedId
+    @Override
+	public String toString() {
+		return "InhabitDAO [id=" + id + ", isMain=" + isMain + "]";
+	}
+
+
+
+	@EmbeddedId
     private InhabitId id;
 
     @Column (name = "is_main")

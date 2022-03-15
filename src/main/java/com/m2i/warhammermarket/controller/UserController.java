@@ -6,6 +6,7 @@ import com.m2i.warhammermarket.entity.DTO.UserDTO;
 import com.m2i.warhammermarket.entity.DTO.UserInformationDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProfileWrapper;
 import com.m2i.warhammermarket.repository.UserRepository;
+import com.m2i.warhammermarket.service.ChatMessageService;
 import com.m2i.warhammermarket.service.EmailSenderService;
 import com.m2i.warhammermarket.service.NotificationService;
 import com.m2i.warhammermarket.service.UserService;
@@ -32,6 +33,9 @@ import java.util.Optional;
 @RequestMapping("/api/user")
 public class UserController {
 
+	
+	@Autowired
+	private ChatMessageService chatService;
 	@Autowired
 	private NotificationService notificationService;
 
@@ -268,6 +272,14 @@ public class UserController {
 			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
 					.getPrincipal();
 			notificationService.sendAllUserNotifications(userDetails.getUsername());
+			
+			
+			if (userDetails != null && userDetails.getAuthorities().stream()
+				      .anyMatch(a -> a.getAuthority().equals("commercial"))) {
+			
+			chatService.sendAllChats(userDetails.getUsername());}else {
+
+			chatService.sendAllUserChats(userDetails.getUsername());}
 			return ResponseEntity.ok(HttpStatus.OK);
 		} catch (Exception ex) {
 			return ResponseEntity.ok(HttpStatus.FORBIDDEN);
