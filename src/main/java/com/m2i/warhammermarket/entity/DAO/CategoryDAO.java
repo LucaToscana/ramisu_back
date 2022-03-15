@@ -17,19 +17,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Set;
 
+// Getter and setter - Lombok
 @Getter
 @Setter
+// Constructor with and without parameters - Lombok
 @NoArgsConstructor
 @AllArgsConstructor
-
+// Recover the information to String
+@ToString
+// Make Entity
 @Entity
-@Table(name = "Categories")
+// Specifies the primary table for the annotated entity. (Ref: docs.oracle)
+@Table(name = "categories")
 public class CategoryDAO implements Serializable {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column (name ="ref_code")
@@ -43,10 +46,10 @@ public class CategoryDAO implements Serializable {
     @OneToMany(fetch = FetchType.EAGER , mappedBy="categorie")
     private Set<ProductDAO> products;
 
-
+    /* the annotation @ToString replace it
 	@Override
 	public String toString() {
 		return "CategoryDAO [id=" + id + ", refCode=" + refCode + ", label=" + label + "]";
-	}
+	}*/
 
 }

@@ -2,7 +2,9 @@ package com.m2i.warhammermarket.service.mapper;
 
 
 import com.m2i.warhammermarket.entity.DAO.CategoryDAO;
+import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import com.m2i.warhammermarket.entity.DTO.CategoryDTO;
+import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +19,10 @@ public class CategoryMapper {
                 .filter(Objects::nonNull)
                 .map(this::categoryToCategoryDTO)
                 .collect(Collectors.toList());
+    }
+
+    public CategoryDTO categoryDAOToCategoryDTO(CategoryDAO categoryDAO) {
+        return new CategoryDTO(categoryDAO);
     }
 
     public CategoryDTO categoryToCategoryDTO(CategoryDAO categoryDAO) {
@@ -38,6 +44,18 @@ public class CategoryMapper {
             categoryDAO.setId(categoryDAO.getId());
             categoryDAO.setRefCode(categoryDAO.getRefCode());
             categoryDAO.setLabel(categoryDAO.getLabel());
+            return categoryDAO;
+        }
+    }
+
+    public CategoryDAO categoryDTOToCategoryDAO(CategoryDTO categoryDTO) {
+        if (categoryDTO == null) {
+            return null;
+        } else {
+            CategoryDAO categoryDAO = new CategoryDAO();
+            categoryDAO.setId(categoryDTO.getId());
+            categoryDAO.setRefCode(categoryDTO.getRefCode());
+            categoryDAO.setLabel(categoryDTO.getLabel());
             return categoryDAO;
         }
     }

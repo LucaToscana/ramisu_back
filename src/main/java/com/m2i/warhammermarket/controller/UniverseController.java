@@ -20,7 +20,6 @@ public class UniverseController {
     @GetMapping("/public/universes")
     public ResponseEntity<List<UniverseDTO>> getAllUniverses(String field, String type) {
         try {
-            System.out.println("Exception dans getAllUniverses");
             List<UniverseDTO> list = this.universeService.findAll();
             return ResponseEntity.ok().body(list);
         } catch (Exception e) {
@@ -29,10 +28,18 @@ public class UniverseController {
         }
     }
 
-    @RequestMapping(value = "/public/universes", method = RequestMethod.POST) //passer en admin
-    public ResponseEntity<UniverseDTO> createLabelUniverse(@RequestBody UniverseDTO universeDTO) throws Exception {
-            System.out.println(universeDTO);
+    /**
+     * @author Brice Bayard
+     * Add a new universe in table
+     */
+    @RequestMapping(value = "/public/addUniverse", method = RequestMethod.POST) //passer en admin
+    public ResponseEntity<UniverseDTO> createLabelUniverse(@RequestBody UniverseDTO universeDTO) {
+        try {
             UniverseDTO universe = universeService.saveUniverseDTO(universeDTO);
             return ResponseEntity.ok().body(universe);
+        } catch (Exception e) {
+            System.out.println("Exception dans createLabelUniverse");
+            return ResponseEntity.ok().body(null);
+        }
     }
 }

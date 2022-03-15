@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface CategoryService {
 
-    CategoryDTO save (CategoryDTO category);
-
     List<CategoryDTO> findAll();
 
     Optional<CategoryDTO> findOne(Long id);
 
     void delete(Long id);
+
+    CategoryDTO saveCategoryDTO(CategoryDTO categoryDTO);
 }

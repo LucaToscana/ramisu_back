@@ -27,8 +27,6 @@ public class UniverseServiceImplement implements UniverseService {
     @Autowired
     private UniverseMapper universeMapper;
 
-    private UniverseDAO universeDAO;
-
     public UniverseServiceImplement() {
 
     }
@@ -41,7 +39,7 @@ public class UniverseServiceImplement implements UniverseService {
     @Override
     public Optional<UniverseDTO> findOne(Long id) {
 //        return Optional.ofNullable(this.modelMapper.universeToUniverseDTO(this.universeRepository.findById(id).orElse(null)));
-        return Optional.ofNullable(modelMapper.map(this.universeRepository.findById(id), UniverseDTO.class));
+        return Optional.ofNullable(modelMapper.map(this.universeRepository.findById(id).orElse(null), UniverseDTO.class));
     }
 
     @Override
@@ -51,37 +49,19 @@ public class UniverseServiceImplement implements UniverseService {
 
     /**
      * @param universeDTO object
-     *  This method is used to create a new universe for the administrator
+     *  This method is used to create a new universe from the administrator
      *  @return universe
      * @author Brice
-     *//*
-    @Override
-    public UniverseDAO saveUniverseDTO(UniverseDTO universeDTO) {
-
-        UniverseDAO universe= new UniverseDAO();
-        universe.setId(universeMapper.getIdUniverse());
-        universe.setLabel(universeMapper.getLabelUniverse());
-        universe.setRefCode(universeMapper.getRefCode());
-
-        //here we are checking if the category already exist by his name(label)
-        String label=universe.getLabel();
-
-        if(universeRepository.findByLabel(label).isPresent()) {
-            return null;
-        }
-
-        return universeRepository.save(universe);
-    }*/
+     */
     @Override
     public UniverseDTO saveUniverseDTO(UniverseDTO universeDTO) {
-        //return modelMapper.map(universeRepository.save(modelMapper.map(universeDTO, universeDAO)), universeDAO);
-        System.out.println(universeDTO + "1");
-        UniverseDAO universe = universeMapper.universeDTOToUniverse(universeDTO);
-        System.out.println(universeDTO + "2" + universe);
+        // Instantiates the recovered object in the DAO to attach the attributes/fields to it
+        UniverseDAO universe = universeMapper.universeDTOToUniverseDAO(universeDTO);
+        // Use Hibernate.SQL to prepare insert into table
         UniverseDAO universeSave = universeRepository.save(universe);
-        System.out.println(universeDTO + "3");
+        //
         UniverseDTO universeResult = universeMapper.universeDAOToUniverseDTO(universeSave);
-        System.out.println(universeDTO + "4");
+        // Return the result
         return universeResult;
     }
 }
