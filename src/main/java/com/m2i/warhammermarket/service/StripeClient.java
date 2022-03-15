@@ -1,7 +1,8 @@
-package com.m2i.warhammermarket.configuration;
+package com.m2i.warhammermarket.service;
 
 import com.m2i.warhammermarket.model.CreditCardModel;
 import com.m2i.warhammermarket.model.CustomerData;
+import com.m2i.warhammermarket.model.Message;
 import com.m2i.warhammermarket.model.ResponseCreditCardsDetails;
 import com.stripe.Stripe;
 import com.stripe.exception.APIConnectionException;
@@ -19,6 +20,7 @@ import com.stripe.model.Token;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +28,17 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+
 public class StripeClient {
+
+	static String newCard = "Un nouveau moyen de paiement a été enregistré";
+	static String limitCardPay = "Vous avez atteint la limite de cartes enregistrées, effectuez le paiement sans enregistrer la carte ou supprimez un ancien mode de paiement";
+	static String limitCard = "Vous avez dépassé la limite de cartes enregistrées, supprimez un ancien mode de paiement";
+	static String deleteCard = "Un  moyen de paiement a été supprimé";
+	static String errorCard = "Un problème s'est produit lors du paiement";
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@Autowired
 	StripeClient() {
@@ -41,6 +53,11 @@ public class StripeClient {
 		customerParams.put("source", token);
 		Customer c = Customer.create(customerParams);
 		idTest = c.getId();
+		if (idTest.equals("-1") == false && !idTest.equals(null)) {
+
+			Message m = notificationService.sendCustomPrivateNotification(email, newCard);
+			notificationService.saveNotification(email, m.getDate(), m.getMessage());
+		}
 		return idTest;
 	}
 
@@ -72,7 +89,7 @@ public class StripeClient {
 	/* STRIPE-CUSTOM-FORM */
 	public String newCustomerAndPay(CustomerData customerData) throws AuthenticationException, InvalidRequestException,
 			APIConnectionException, CardException, APIException, StripeException, Exception {
-		String idTest = "Vous avez atteint la limite de cartes enregistrées, effectuez le paiement sans enregistrer la carte ou supprimez un ancien mode de paiement";
+		String idTest = limitCardPay;
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", customerData.getEmail());
@@ -103,7 +120,7 @@ public class StripeClient {
 
 	public String newCustomer(CustomerData customerData) throws AuthenticationException, InvalidRequestException,
 			APIConnectionException, CardException, APIException, StripeException, Exception {
-		String idTest = "Vous avez dépassé la limite de cartes enregistrées, supprimez un ancien mode de paiement";
+		String idTest = limitCard;
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", customerData.getEmail());
@@ -139,7 +156,6 @@ public class StripeClient {
 				retrieveParams.put("expand", expandList);
 				Customer customer = Customer.retrieve(idCustomer, retrieveParams, null);
 				Card card = (Card) customer.getSources().retrieve(idCard);
-				System.out.println(card);
 
 				CreditCardModel cb = new CreditCardModel(card.getId(), card.getLast4(), card.getExpMonth().toString(),
 						card.getExpYear().toString(), card.getBrand());
@@ -176,33 +192,14 @@ public class StripeClient {
 
 			}
 		}
+	Message m =	notificationService.sendCustomPrivateNotification(customerMail, deleteCard);
+		notificationService.saveNotification(customerMail, m.getDate(), m.getMessage());
 
-	}
-
-	/* SHARED => create-parameter-for-customer */
-	public Map<String, Object> createParameter(CustomerData customerData) {
-		String date = customerData.getExpiryDate();
-		System.out.println(date);
-		String[] dateParts = date.split(" / ");
-		String month = dateParts[0];
-		String year = "20" + dateParts[1];
-		System.out.println(customerData);
-		System.out.println(month + "/" + year);
-
-		Map<String, Object> card = new HashMap<>();
-		card.put("number", customerData.getCardNumber());
-		card.put("exp_month", month);
-		card.put("exp_year", year);
-		card.put("cvc", customerData.getCvc());
-		Map<String, Object> params2 = new HashMap<>();
-		params2.put("card", card);
-		return params2;
 	}
 
 	public String payWithRegistredCard(CreditCardModel card, String customer) throws AuthenticationException,
 			InvalidRequestException, APIConnectionException, CardException, APIException {
-		String idTest = "Un problème s'est produit lors du paiement";
-
+		String idTest = errorCard;
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 3);
 		params.put("email", customer);
@@ -226,5 +223,25 @@ public class StripeClient {
 		}
 
 		return idTest;
+	}
+
+	/* SHARED => create-parameter-for-customer */
+	public Map<String, Object> createParameter(CustomerData customerData) {
+		String date = customerData.getExpiryDate();
+		System.out.println(date);
+		String[] dateParts = date.split(" / ");
+		String month = dateParts[0];
+		String year = "20" + dateParts[1];
+		System.out.println(customerData);
+		System.out.println(month + "/" + year);
+
+		Map<String, Object> card = new HashMap<>();
+		card.put("number", customerData.getCardNumber());
+		card.put("exp_month", month);
+		card.put("exp_year", year);
+		card.put("cvc", customerData.getCvc());
+		Map<String, Object> params2 = new HashMap<>();
+		params2.put("card", card);
+		return params2;
 	}
 }

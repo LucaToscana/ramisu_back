@@ -50,7 +50,10 @@ public class EmailSenderImplement implements EmailSenderService {
 
 		messageHelper.setTo(mail.getTo());
 		messageHelper.setFrom(mail.getFrom());
+		System.out.println(mail.getFrom());
 		messageHelper.setSubject(mail.getSubject());
+		System.out.println(mail.getSubject());
+
 		messageHelper.setText(html, true);
 
 		emailSender.send(message);

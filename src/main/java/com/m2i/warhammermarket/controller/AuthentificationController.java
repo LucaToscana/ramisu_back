@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.m2i.warhammermarket.entity.DTO.AuthentificationResponseDTO;
 import com.m2i.warhammermarket.entity.DTO.UserSecurityDTO;
 import com.m2i.warhammermarket.security.JwtUtil;
+import com.m2i.warhammermarket.service.NotificationService;
 import com.m2i.warhammermarket.service.implement.JwtUserDetailService;
 
 
@@ -35,6 +36,9 @@ public class AuthentificationController {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	
+	
+
 
 	/**
 	 * Request REST: {POST /login} Permet de se connecter, si on reçoit des
@@ -80,6 +84,9 @@ public class AuthentificationController {
 		// username de l'utilisateur
 		// Toutes requetes sécurisé en back aura donc besoin de ce JWT pour être
 		// effectué
+		
+		
+		
 		return ResponseEntity.ok(new AuthentificationResponseDTO(jwt, userDetails.getUsername(),null));
 
 	}

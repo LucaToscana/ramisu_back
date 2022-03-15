@@ -5,6 +5,7 @@ import com.m2i.warhammermarket.entity.DTO.OrderDTO;
 import com.m2i.warhammermarket.entity.wrapper.ProductOrderWrapper;
 import com.m2i.warhammermarket.model.RequestAddOrderWithAddress;
 import com.m2i.warhammermarket.model.ResponseOrderDetails;
+import com.m2i.warhammermarket.model.UpdateStatusOrder;
 import com.m2i.warhammermarket.service.OrderService;
 import com.m2i.warhammermarket.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,13 @@ public class OrderController {
 	public ResponseEntity<Boolean> createOrder(@RequestBody RequestAddOrderWithAddress order) {
 		List<ProductOrderWrapper> productsFilter = order.getProductsOrder().stream().filter(c -> c.getQuantite() > 0)
 				.collect(Collectors.toList());
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+		System.out.println( orderService.checkStock(productsFilter));
+
 		if (productsFilter.size() > 0 && orderService.checkStock(productsFilter)) {
 			try {
 				orderService.createOrder(productsFilter,
@@ -42,8 +50,7 @@ public class OrderController {
 			} catch (Exception e) {
 				System.out.println("Exception dans createOrder");
 				return ResponseEntity.ok(false);
-			}
-		}
+			}	}
 		return ResponseEntity.ok(false);
 	}
 
@@ -75,4 +82,30 @@ public class OrderController {
 
 		return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("/all-orders")
+	public ResponseEntity<List<OrderDTO>> getAllOrders() {
+
+
+			List<OrderDTO> ordersDTO = orderService.findAll();
+
+			return ResponseEntity.ok(ordersDTO);
+		
+	}
+	
+	@PutMapping("/orders/update-status")
+	public ResponseEntity<OrderDTO> updateStatusOrder(@RequestBody UpdateStatusOrder updateStatus) {
+
+
+		OrderDTO ordersDTO = orderService.updateOrderStatus(updateStatus);
+
+			return ResponseEntity.ok(ordersDTO);
+		
+	}
+
+	
+	
+	
+	
+
 }

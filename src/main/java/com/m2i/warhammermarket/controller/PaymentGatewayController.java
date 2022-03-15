@@ -1,8 +1,8 @@
 package com.m2i.warhammermarket.controller;
-import com.m2i.warhammermarket.configuration.StripeClient;
 import com.m2i.warhammermarket.model.CreditCardModel;
 import com.m2i.warhammermarket.model.CustomerData;
 import com.m2i.warhammermarket.model.ResponseCreditCardsDetails;
+import com.m2i.warhammermarket.service.StripeClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
