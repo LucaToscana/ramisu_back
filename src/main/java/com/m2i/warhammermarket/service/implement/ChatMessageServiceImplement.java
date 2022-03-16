@@ -2,7 +2,7 @@ package com.m2i.warhammermarket.service.implement;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,12 +27,11 @@ import com.m2i.warhammermarket.repository.UserInformationRepository;
 import com.m2i.warhammermarket.repository.UserRepository;
 import com.m2i.warhammermarket.service.ChatMessageService;
 
-
 @Service
 @Transactional
 
 public class ChatMessageServiceImplement implements ChatMessageService {
-	
+
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
 	@Autowired
@@ -50,7 +49,7 @@ public class ChatMessageServiceImplement implements ChatMessageService {
 	public ChatMessageDAO saveChatMessage(Message message) {
 
 		String client = message.getReceiverName();
-		
+
 		UserDAO user = userRepository.findByMail(message.getSenderName());
 
 		UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
@@ -65,10 +64,10 @@ public class ChatMessageServiceImplement implements ChatMessageService {
 			newChat = chatTopicRepository.findByUserCustomers(userInfoReceiver).get(0);
 
 		} catch (Exception e) {
-		
+
 			ChatsDAO newChatSave = new ChatsDAO(userInfo);
 			newChat = chatTopicRepository.save(newChatSave);
-			
+
 		}
 		ChatMessageDAO messageDao = new ChatMessageDAO(
 				new ChatMessageId(userInfo.getId(), userInfoReceiver.getId(), message.getDate()), userInfo,
@@ -84,7 +83,7 @@ public class ChatMessageServiceImplement implements ChatMessageService {
 		List<ChatMessageDAO> list = chatRepository.findAll();
 
 		for (ChatMessageDAO c : list) {
-			if (c.getChat().getUserCustomers().getUser().getMail().equals(mail) ) {
+			if (c.getChat().getUserCustomers().getUser().getMail().equals(mail)) {
 				Message message = new Message();
 				message.setReceiverName(c.getUsers_receiver().getUser().getMail());
 				message.setSenderName(c.getUser().getUser().getMail());
@@ -97,7 +96,7 @@ public class ChatMessageServiceImplement implements ChatMessageService {
 
 			}
 		}
-		
+
 	}
 
 	public void sendAllChats(String mail) {
@@ -112,10 +111,27 @@ public class ChatMessageServiceImplement implements ChatMessageService {
 			message.setMessage(c.getMessage());
 			message.setDate(c.getId().getDate());
 			message.setChat(c.getChat().getUserCustomers().getUser().getMail());
-			messagingTemplate.convertAndSendToUser(mail, "/private", message);
+		//	messagingTemplate.convertAndSendToUser(mail, "/private", message);
 
 		}
 
+	}
+
+	public List<Message> sendAllChatsList() {
+		List<ChatMessageDAO> list = chatRepository.findAll();
+		List<Message> listMessage = new ArrayList<Message>();
+
+		for (ChatMessageDAO c : list) {
+			Message message = new Message();
+			message.setReceiverName(c.getUsers_receiver().getUser().getMail());
+			message.setSenderName(c.getUser().getUser().getMail());
+			message.setStatus(TypeMessage.MESSAGE);
+			message.setMessage(c.getMessage());
+			message.setDate(c.getId().getDate());
+			message.setChat(c.getChat().getUserCustomers().getUser().getMail());
+			listMessage.add(message);
+		}
+		return listMessage;
 	}
 
 	public Date parseDate(String date) {
@@ -129,6 +145,5 @@ public class ChatMessageServiceImplement implements ChatMessageService {
 		System.out.println(temp);
 		return temp;
 	}
-
 
 }

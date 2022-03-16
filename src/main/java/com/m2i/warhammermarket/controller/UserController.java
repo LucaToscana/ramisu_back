@@ -273,13 +273,13 @@ public class UserController {
 					.getPrincipal();
 			notificationService.sendAllUserNotifications(userDetails.getUsername());
 			
-			
+			/*
 			if (userDetails != null && userDetails.getAuthorities().stream()
 				      .anyMatch(a -> a.getAuthority().equals("commercial"))) {
 			
 			chatService.sendAllChats(userDetails.getUsername());}else {
 
-			chatService.sendAllUserChats(userDetails.getUsername());}
+			chatService.sendAllUserChats(userDetails.getUsername());}*/
 			return ResponseEntity.ok(HttpStatus.OK);
 		} catch (Exception ex) {
 			return ResponseEntity.ok(HttpStatus.FORBIDDEN);
