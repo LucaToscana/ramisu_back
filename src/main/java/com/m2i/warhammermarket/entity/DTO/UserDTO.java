@@ -6,6 +6,7 @@ import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import lombok.*;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class UserDTO implements Serializable {
     private Date tokenExpiryDate;
     @JsonIgnore
     private Set<AuthorityDAO> authorities;
-  
+
 
     public UserDTO(UserDAO user) {
 
@@ -39,6 +40,10 @@ public class UserDTO implements Serializable {
         this.tokenExpiryDate = user.getTokenExpiryDate();
     }
 
+    public String getDateDDMMYYYY()
+    {
+        return new SimpleDateFormat("dd-MM-YYYY HH:mm:ss").format(dateOfCreation);
+    }
     
     public String getRoles()
     {
