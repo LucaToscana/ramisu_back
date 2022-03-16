@@ -38,29 +38,7 @@ public class AdminController {
 	@Autowired
 	private UserService userService;
 
-	/**
-	 * Simpl controlleur sécurisé, pour tester le token JWT
-	 *
-	 * @return
-	 */
 
-//    @Secured({AuthorityConstant.ROLE_USER, AuthorityConstant.ROLE_ADMIN})
-	@GetMapping("/hello-user")
-	public String helloAdmin() {
-		return "Hello user";
-	}
-
-	@GetMapping("/hello-saileman")
-	public String helloSailman() {
-		return "Hello user";
-	}
-
-//    @Secured(AuthorityConstant.ROLE_ADMIN)
-	@GetMapping("/hello-admin")
-	public String helloUser() {
-		return "Hello admin";
-	}
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
 
 	@GetMapping("/users")
 	public ResponseEntity<Page<UserDTO>> getAllUsers(Pageable pageable) {
