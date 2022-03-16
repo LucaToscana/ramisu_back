@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Entity
 @Table(name = "Users")
 public class UserDAO {
@@ -50,14 +50,22 @@ public class UserDAO {
     private Set<AuthorityDAO> authorities = new HashSet<>();
 
 
-	@JsonIgnore
+	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "favorites",
 			joinColumns = { @JoinColumn(name = "id_user", referencedColumnName = "id") },
 			inverseJoinColumns = { @JoinColumn(name = "id_product", referencedColumnName = "id") }
 	)
+	@JsonIgnore
 	private Set<ProductDAO> favorites = new HashSet<>();
+
+
+	@Override
+	public String toString() {
+		return "UserDAO [id=" + id + ", mail=" + mail + ", password=" + password + ", dateOfCreation=" + dateOfCreation
+				+ ", active=" + active + "]";
+	}
 
 
 

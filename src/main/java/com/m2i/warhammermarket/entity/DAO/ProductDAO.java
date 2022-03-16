@@ -72,7 +72,7 @@ public class ProductDAO implements Serializable {
 	public String toString() {
 		return "ProductDAO [id=" + id + ", ean13=" + ean13 + ", label=" + label + ", price=" + price + ", description="
 				+ description + ", promotion=" + promotion + ", stock=" + stock + ", picture=" + picture
-				+ ", yearOfProduction=" + yearOfProduction + ", universe=" + universe + ", categorie=" + categorie
+				+ ", yearOfProduction=" + yearOfProduction 
 				+ "]";
 	}
     

@@ -1,5 +1,8 @@
 package com.m2i.warhammermarket.service.implement;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -9,6 +12,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import com.m2i.warhammermarket.controller.exception.NotificationAlreadyExistsException;
 import com.m2i.warhammermarket.controller.exception.NotificationNotFoundException;
+import com.m2i.warhammermarket.entity.DAO.AuthorityDAO;
+import com.m2i.warhammermarket.entity.DAO.ChatMessageDAO;
 import com.m2i.warhammermarket.entity.DAO.NotificationDAO;
 import com.m2i.warhammermarket.entity.DAO.NotificationId;
 import com.m2i.warhammermarket.entity.DAO.OrderDAO;
@@ -16,10 +21,13 @@ import com.m2i.warhammermarket.entity.DAO.UserDAO;
 import com.m2i.warhammermarket.entity.DAO.UsersInformationDAO;
 import com.m2i.warhammermarket.entity.enumeration.TypeMessage;
 import com.m2i.warhammermarket.model.Message;
+import com.m2i.warhammermarket.repository.AuthorityRepository;
 import com.m2i.warhammermarket.repository.NotificationRepository;
 import com.m2i.warhammermarket.repository.OrderRepository;
 import com.m2i.warhammermarket.repository.UserInformationRepository;
 import com.m2i.warhammermarket.repository.UserRepository;
+import com.m2i.warhammermarket.security.AuthorityConstant;
+import com.m2i.warhammermarket.service.ChatMessageService;
 import com.m2i.warhammermarket.service.NotificationService;
 import com.m2i.warhammermarket.service.UserService;
 import com.m2i.warhammermarket.service.mapper.UserInformationMapper;
@@ -28,7 +36,10 @@ import com.m2i.warhammermarket.service.mapper.UserInformationMapper;
 @Transactional
 
 public class NotificationServiceImplement implements NotificationService {
-
+	@Autowired
+	private AuthorityRepository authorityRepository;
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
 	@Autowired
@@ -39,6 +50,9 @@ public class NotificationServiceImplement implements NotificationService {
 	private OrderRepository orderRepository;
 	@Autowired
 	private NotificationRepository notificationRepository;
+
+	@Autowired
+	private ChatMessageService chatMessageService;
 
 	public void sendGlobalNotification(String messageNotification) {
 		Message message = new Message();
@@ -59,14 +73,14 @@ public class NotificationServiceImplement implements NotificationService {
 		return message;
 	}
 
-	public void sendPrivateNotificationForNewMessange(String email, String emailSender) {
+	public Message sendPrivateNotificationForNewMessange(String email, String emailSender) {
 		Message message = new Message();
 		message.setReceiverName(email);
 		message.setSenderName(emailSender);
 		message.setStatus(TypeMessage.NOTIFICATION);
 		message.setMessage(emailSender + "   vous a envoyé un nouveau message");
 		messagingTemplate.convertAndSendToUser(email, "/notifications/private-messages", message);
-
+		return message;
 	}
 
 	public void sendOrderStatusNotification(long idOrder, String email, String messageOrder) {
@@ -94,7 +108,7 @@ public class NotificationServiceImplement implements NotificationService {
 		notificationRepository.save(notification);
 	}
 
-	public void saveNotification(String email, String date, String message) {
+	public NotificationDAO saveNotification(String email, String date, String message) {
 		UserDAO user = userRepository.findByMail(email);
 		UsersInformationDAO userInfo = userInfoRepository.findByUser(user);
 		NotificationDAO notification = new NotificationDAO(new NotificationId(userInfo.getId(), date), userInfo, null,
@@ -103,7 +117,7 @@ public class NotificationServiceImplement implements NotificationService {
 		if (notificationRepository.existsById(notification.getId())) {
 			throw new NotificationAlreadyExistsException();
 		}
-		notificationRepository.save(notification);
+		return notificationRepository.save(notification);
 	}
 
 	public void deleteNotification(String date, String mail) {
@@ -135,7 +149,7 @@ public class NotificationServiceImplement implements NotificationService {
 			for (NotificationDAO n : userNotifications) {
 				Message message = new Message();
 				message.setReceiverName(mail);
-				message.setSenderName("warhammermarket");
+				message.setSenderName("WARHAMMERMARKET");
 				message.setStatus(TypeMessage.NOTIFICATION);
 				message.setMessage(n.getMessage());
 				message.setDate(n.getId().getDate());
@@ -150,4 +164,60 @@ public class NotificationServiceImplement implements NotificationService {
 		}
 	}
 
+	@Override
+	public void sendMessage(Message message) {
+		simpMessagingTemplate.convertAndSendToUser(message.getSenderName(), "/private", message);
+
+		if (message.getReceiverName().equals("WARHAMMERMARKET")) {
+			Message m = sendMessageToRole(message, AuthorityConstant.ROLE_COMM);
+		} else {
+			sendMessageToUser(message, message.getReceiverName());
+		}
+
+	}
+
+	public Message sendMessageToRole(Message message, String role) {
+		String mRec = message.getReceiverName();
+		System.out.println(mRec);
+		List<UserDAO> admins = userRepository.findByAuthorities_Name(role);
+		System.out.println(mRec);
+
+		System.out.println(admins);
+		for (UserDAO a : admins) {
+			System.out.println(mRec);
+
+			if (a.getMail().equals(message.getSenderName()) == false) {
+				simpMessagingTemplate.convertAndSendToUser(a.getMail(), "/private", message);
+				Message m = sendPrivateNotificationForNewMessange(a.getMail(), message.getSenderName());
+				message.setReceiverName(a.getMail());
+				NotificationDAO not = saveNotification(a.getMail(), message.getDate(), m.getMessage());
+			}
+			System.out.println(mRec);
+
+		}
+		System.out.println(mRec);
+
+		message.setReceiverName(message.getSenderName());
+		chatMessageService.saveChatMessage(message);
+
+		return message;
+
+	}
+
+	public Message sendMessageToUser(Message message, String receiver) {
+		String mRec = message.getReceiverName();
+
+		simpMessagingTemplate.convertAndSendToUser(mRec, "/private", message);
+		Message m = sendPrivateNotificationForNewMessange(mRec, message.getSenderName());
+		message.setReceiverName(mRec);
+		NotificationDAO not = saveNotification(mRec, message.getDate(), m.getMessage());
+
+		//message.setReceiverName(message.getSenderName());
+		ChatMessageDAO chatt = chatMessageService.saveChatMessage(message);
+		
+	
+
+		return message;
+
+	}
 }
