@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +55,11 @@ public class ProfileWrapper {
         city = address.getCity();
         country = address.getCountry();
     }
-    
+
+    public String getBirthdateDDMMYYYY()
+    {
+        return new SimpleDateFormat("dd-MM-YYYY").format(birthdate);
+    }
 
 
     public UsersInformationDAO getUserInformations()
