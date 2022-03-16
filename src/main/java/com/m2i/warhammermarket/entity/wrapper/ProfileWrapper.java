@@ -58,7 +58,13 @@ public class ProfileWrapper {
 
     public String getBirthdateDDMMYYYY()
     {
-        return new SimpleDateFormat("dd-MM-YYYY").format(birthdate);
+        try {
+            return new SimpleDateFormat("dd-MM-YYYY").format(birthdate);
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+            return "";
+        }
     }
 
 
