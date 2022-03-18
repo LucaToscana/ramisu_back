@@ -1,15 +1,16 @@
 package com.m2i.warhammermarket.service;
 
+import com.m2i.warhammermarket.entity.DAO.NotificationDAO;
 import com.m2i.warhammermarket.model.Message;
 
 public interface NotificationService {
 
-
+/*NOTIFICATIONS*/
     void sendOrderStatusNotification(long idOrder,  String email,String messageOrder);
 
 	void sendAllUserNotifications(String mail);
 
-	void sendPrivateNotificationForNewMessange(String receiverName, String senderName);
+	Message sendPrivateNotificationForNewMessange(String receiverName, String senderName);
 
 	Message sendCustomPrivateNotification(String email, String message);
 
@@ -17,7 +18,9 @@ public interface NotificationService {
 	
 	void deleteNotification(String date, String mail);
 
-	void saveNotification(String email, String date, String message);
+	NotificationDAO saveNotification(String email, String date, String message);
+
+	void sendMessage(Message message);
 
 
 }

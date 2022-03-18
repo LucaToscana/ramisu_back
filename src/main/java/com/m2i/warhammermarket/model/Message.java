@@ -19,6 +19,8 @@ public class Message {
 	private String date = now();
 	private TypeMessage status;
 	private long idorder=0L;
+	private String chat;
+
 
 	public static final String DATE_FORMAT_NOW = "dd-MM-yyyy HH:mm:ss.SSS";
 
@@ -36,6 +38,8 @@ public class Message {
 		this.status = status;
 		this.date =  now();
 		this.idorder=0L;
+		this.chat="";
+
 	}
 
 	

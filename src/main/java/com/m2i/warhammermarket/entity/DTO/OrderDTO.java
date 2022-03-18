@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Getter
@@ -25,8 +26,12 @@ public class OrderDTO implements Serializable {
     private UsersInformationDAO usersInformation;
     private StatusDAO status;
     private AddressDAO livraisonAddress;
-    
-    
+
+
+    public String getDateDDMMYYYY()
+    {
+        return new SimpleDateFormat("dd-MM-YYYY").format(date);
+    }
     
     public OrderDTO(OrderDAO orderDAO) {
         this.id = orderDAO.getId();
