@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mapping.Alias.ofNullable;
+
 @Service
 @Transactional
 public class UniverseServiceImplement implements UniverseService {
@@ -37,14 +39,9 @@ public class UniverseServiceImplement implements UniverseService {
     }
 
     @Override
-    public Optional<UniverseDTO> findOne(Long id) {
+    public UniverseDTO findOne(Long id) {
         // return Optional.ofNullable(this.modelMapper.universeToUniverseDTO(this.universeRepository.findById(id).orElse(null)));
-        return Optional.ofNullable(modelMapper.map(this.universeRepository.findById(id).orElse(null), UniverseDTO.class));
-    }
-
-    @Override
-    public void delete(Long id) {
-
+        return modelMapper.map(this.universeRepository.findById(id).orElse(null), UniverseDTO.class);
     }
 
     /**
@@ -63,5 +60,18 @@ public class UniverseServiceImplement implements UniverseService {
         UniverseDTO universeResult = universeMapper.universeDAOToUniverseDTO(universeSave);
         // Return the result
         return universeResult;
+    }
+
+    /**
+     * @param id object
+     *  This method is used to delete a universe from the administrator
+     * @author Brice
+     */
+    @Override
+    public void deleteUniverseDTO(Long id) {
+        // get id
+        // UniverseDAO universeDAO = universeRepository.findById(universeDTO);
+        // delete by id
+        // update universes
     }
 }
