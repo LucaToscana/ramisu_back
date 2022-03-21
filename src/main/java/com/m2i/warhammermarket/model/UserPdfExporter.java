@@ -52,12 +52,6 @@ public class UserPdfExporter {
 
         cell.setPhrase(new Phrase("first_name", font));
         table.addCell(cell);
-
-        /*cell.setPhrase(new Phrase("Roles", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Enabled", font));
-        table.addCell(cell);*/
     }
 
     private void writeTableData(PdfPTable table) {
@@ -65,8 +59,6 @@ public class UserPdfExporter {
             table.addCell(String.valueOf(usersinfo.getId()));
             table.addCell(usersinfo.getLastName());
             table.addCell(usersinfo.getFirstName());
-            /*table.addCell(user.getRoles().toString());
-            table.addCell(String.valueOf(user.isEnabled()));*/
         }
         for(UserDAO user: listUsers) {
             table.addCell(user.getMail());
