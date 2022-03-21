@@ -28,7 +28,7 @@ public class CategoryController {
      * @author Brice Bayard
      * Add a new category in table
      */
-    @RequestMapping(value = "/admin/addCategory", method = RequestMethod.POST)
+    @RequestMapping(value = "/commercial/addCategory", method = RequestMethod.POST)
     public ResponseEntity<CategoryDTO> createLabelCategory(@RequestBody CategoryDTO categoryDTO) {
         try {
             CategoryDTO category = categoryService.saveCategoryDTO(categoryDTO);

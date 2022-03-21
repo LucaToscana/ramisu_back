@@ -24,8 +24,8 @@ public class ProductDTO implements Serializable {
     private int stock;
     private String picture;
     private String yearOfProduction;
-    private UniverseDAO universe;
-    private CategoryDAO categorie;
+    private UniverseDAO universe; // TODO change to DTO
+    private CategoryDAO categorie; // TODO change to DTO
 
     @Override
     public String toString() {

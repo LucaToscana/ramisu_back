@@ -31,8 +31,7 @@ public class UniverseDAO implements Serializable {
     @Column (name ="label", nullable = false)
     private String label;
 
-
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER , mappedBy="universes")
-    private Set<UniverseDAO> universes;
+    @OneToMany(fetch = FetchType.EAGER , mappedBy="universe")
+    private Set<ProductDAO> products;
 }

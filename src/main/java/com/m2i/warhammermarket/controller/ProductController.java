@@ -76,10 +76,13 @@ public class ProductController {
 	@GetMapping("/public/products/random/{field}/{numberOfResult}")
 	public ResponseEntity<List<ProductDTO>> getRandomProducts(@PathVariable String field,
 			@PathVariable int numberOfResult) {
+		System.out.println("BLOP-1");
 		Page<ProductDTO> page = this.productService.findRandomProducts(field, numberOfResult);
 		if (page == null) {
+			System.out.println("BLOP-2");
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
+		System.out.println("BLOP-3");
 		return ResponseEntity.ok().body(page.getContent());
 	}
 

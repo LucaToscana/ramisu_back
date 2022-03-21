@@ -51,6 +51,7 @@ public class ProductDAO implements Serializable {
 
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn (name = "id_universes")
     private UniverseDAO universe;
 

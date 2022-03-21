@@ -4,6 +4,7 @@ import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 import com.m2i.warhammermarket.service.UniverseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class UniverseController {
      * @author Brice Bayard
      * Add a new universe in table
      */
-    @RequestMapping(value = "/admin/addUniverse", method = RequestMethod.POST)
+    @RequestMapping(value = "/commercial/addUniverse", method = RequestMethod.POST)
     public ResponseEntity<UniverseDTO> createLabelUniverse(@RequestBody UniverseDTO universeDTO) {
         try {
             UniverseDTO universe = universeService.saveUniverseDTO(universeDTO);

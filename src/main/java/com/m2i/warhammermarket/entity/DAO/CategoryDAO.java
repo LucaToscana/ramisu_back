@@ -41,7 +41,6 @@ public class CategoryDAO implements Serializable {
     @Column (name ="label", nullable = false)
     private String label;
 
-
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER , mappedBy="categorie")
     private Set<ProductDAO> products;
