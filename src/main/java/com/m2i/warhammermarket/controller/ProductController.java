@@ -25,7 +25,9 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
 
-public class ProductController {
+public class
+
+ProductController {
 
 	@Autowired
 	private ProductService productService;
