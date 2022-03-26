@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -68,9 +69,15 @@ public class RegistrationProfile extends ProfileWrapper {
 	
 	boolean rxFieldValidity(String rx, String value)
 	{
-		Pattern pattern= Pattern.compile(rx);
-		Matcher matcher  = pattern.matcher(value);
+		try {
+			Pattern pattern= Pattern.compile(rx);
+			Matcher matcher  = pattern.matcher(value);
 
-		return matcher.find();
+			return matcher.find();
+		}catch (PatternSyntaxException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
 	}
 }
