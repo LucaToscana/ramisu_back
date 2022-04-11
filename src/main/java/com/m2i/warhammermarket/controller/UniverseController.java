@@ -3,8 +3,8 @@ package com.m2i.warhammermarket.controller;
 import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 import com.m2i.warhammermarket.service.UniverseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,5 +42,24 @@ public class UniverseController {
             System.out.println("Exception dans createLabelUniverse");
             return ResponseEntity.ok().body(null);
         }
+    }
+
+    /**
+     * @author Brice Bayard
+     * Delete a universe in table
+     */
+    @DeleteMapping(value = "/commercial/deleteUniverse/{id}")
+    public ResponseEntity<Long> deleteLabelUniverse(@PathVariable Long id) {
+        System.out.println("Delete command sent");
+        //try {
+            universeService.delete(id);
+            System.out.println("Universe Deleted");
+            return ResponseEntity.ok().body(id);
+        /*} catch (Exception e) {
+            System.out.println("Universe ERRORSSSSSSSSSSSSSSSS");
+            // method of Java's throwable class which prints the throwable along with other details like the line number and class name
+            e.printStackTrace();
+            return ResponseEntity.ok().body(null);
+        }*/
     }
 }

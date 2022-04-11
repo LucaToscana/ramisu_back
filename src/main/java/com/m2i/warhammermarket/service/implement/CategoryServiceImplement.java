@@ -60,7 +60,7 @@ public class CategoryServiceImplement implements CategoryService {
         CategoryDAO category = categoryMapper.categoryDTOToCategoryDAO(categoryDTO);
         // Use Hibernate.SQL to prepare insert into table
         CategoryDAO categorySave = categoryRepository.save(category);
-        //
+        // Recover saved information ready to transfer
         CategoryDTO categoryResult = categoryMapper.categoryDAOToCategoryDTO(categorySave);
         // Return the result
         return categoryResult;

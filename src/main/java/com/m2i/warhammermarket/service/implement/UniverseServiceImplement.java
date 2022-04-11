@@ -1,5 +1,6 @@
 package com.m2i.warhammermarket.service.implement;
 
+import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 import com.m2i.warhammermarket.repository.UniverseRepository;
@@ -56,22 +57,20 @@ public class UniverseServiceImplement implements UniverseService {
         UniverseDAO universe = universeMapper.universeDTOToUniverseDAO(universeDTO);
         // Use Hibernate.SQL to prepare insert into table
         UniverseDAO universeSave = universeRepository.save(universe);
-        //
+        // Recover saved information ready to transfer
         UniverseDTO universeResult = universeMapper.universeDAOToUniverseDTO(universeSave);
         // Return the result
         return universeResult;
     }
 
-    /**
-     * @param id object
-     *  This method is used to delete a universe from the administrator
-     * @author Brice
-     */
     @Override
-    public void deleteUniverseDTO(Long id) {
-        // get id
-        // UniverseDAO universeDAO = universeRepository.findById(universeDTO);
-        // delete by id
-        // update universes
+    public void delete(Long id) {
+        System.out.println("Getting ID of element to DELETE");
+        // Find by id
+        UniverseDAO u = universeRepository.getById(id);
+        System.out.println(u + " is found");
+        // Delete by id
+        universeRepository.delete(u);
+        System.out.println(u + " is delete");
     }
 }

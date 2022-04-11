@@ -10,7 +10,7 @@ public interface UniverseService {
 
     UniverseDTO findOne(Long id);
 
-    void deleteUniverseDTO(Long id);
+    void delete(Long id);
 
     UniverseDTO saveUniverseDTO(UniverseDTO universeDTO);
 }
