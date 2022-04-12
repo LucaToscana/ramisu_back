@@ -102,6 +102,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/admin/**").hasAuthority(AuthorityConstant.ROLE_ADMIN)
                 .antMatchers("/api/commercial/**").hasAuthority(AuthorityConstant.ROLE_COMM)
                 .antMatchers("/api/orders/**").hasAuthority(AuthorityConstant.ROLE_USER)
+                .antMatchers("/index.html").permitAll()
+                .antMatchers("/js/**").permitAll()
+                .antMatchers("/css/**").permitAll()
 //On créer des routes publiques (on peut également avoir des regex globaux tel que "/public/**")
                 .anyRequest().authenticated() //on définie que toutes les routes ne correspondant pas aux routes du dessus sont sécurisé par authentification
                 .and()
