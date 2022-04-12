@@ -43,14 +43,9 @@ public class CategoryServiceImplement implements CategoryService {
         return Optional.ofNullable(modelMapper.map(this.categoryRepository.findById(id).orElse(null), CategoryDTO.class));
     }
 
-    @Override
-    public void delete(Long id) {
-
-    }
-
     /**
      * @param categoryDTO object
-     *  This method is used to create a new universe from the administrator
+     *  This method is used to create a new universe from the commercial
      *  @return category
      * @author Brice
      */
@@ -64,5 +59,20 @@ public class CategoryServiceImplement implements CategoryService {
         CategoryDTO categoryResult = categoryMapper.categoryDAOToCategoryDTO(categorySave);
         // Return the result
         return categoryResult;
+    }
+
+    /**
+     *  This method is used to delete an category from the commercial
+     * @author Brice
+     */
+    @Override
+    public void delete(Long id) {
+        System.out.println("Getting ID of element to DELETE");
+        // Find by id
+        CategoryDAO c = categoryRepository.getById(id);
+        System.out.println(c + " is found");
+        // Delete by id
+        categoryRepository.delete(c);
+        System.out.println(c + " is delete");
     }
 }

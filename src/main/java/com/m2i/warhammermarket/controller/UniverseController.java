@@ -51,15 +51,8 @@ public class UniverseController {
     @DeleteMapping(value = "/commercial/deleteUniverse/{id}")
     public ResponseEntity<Long> deleteLabelUniverse(@PathVariable Long id) {
         System.out.println("Delete command sent");
-        //try {
-            universeService.delete(id);
-            System.out.println("Universe Deleted");
-            return ResponseEntity.ok().body(id);
-        /*} catch (Exception e) {
-            System.out.println("Universe ERRORSSSSSSSSSSSSSSSS");
-            // method of Java's throwable class which prints the throwable along with other details like the line number and class name
-            e.printStackTrace();
-            return ResponseEntity.ok().body(null);
-        }*/
+        universeService.delete(id);
+        System.out.println("Universe Deleted");
+        return ResponseEntity.ok().body(id);
     }
 }

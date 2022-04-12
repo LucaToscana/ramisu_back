@@ -1,6 +1,5 @@
 package com.m2i.warhammermarket.service.implement;
 
-import com.m2i.warhammermarket.entity.DAO.ProductDAO;
 import com.m2i.warhammermarket.entity.DAO.UniverseDAO;
 import com.m2i.warhammermarket.entity.DTO.UniverseDTO;
 import com.m2i.warhammermarket.repository.UniverseRepository;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mapping.Alias.ofNullable;
@@ -47,7 +45,7 @@ public class UniverseServiceImplement implements UniverseService {
 
     /**
      * @param universeDTO object
-     *  This method is used to create a new universe from the administrator
+     *  This method is used to create a new universe from the commercial
      *  @return universe
      * @author Brice
      */
@@ -63,6 +61,10 @@ public class UniverseServiceImplement implements UniverseService {
         return universeResult;
     }
 
+    /**
+     *  This method is used to delete an universe from the commercial
+     * @author Brice
+     */
     @Override
     public void delete(Long id) {
         System.out.println("Getting ID of element to DELETE");

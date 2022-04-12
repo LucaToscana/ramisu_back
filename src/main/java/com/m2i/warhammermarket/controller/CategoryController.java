@@ -20,8 +20,13 @@ public class CategoryController {
 
     @GetMapping("/public/categories")
     public ResponseEntity<List<CategoryDTO>> getAllCategories(String field, String type) {
-        List<CategoryDTO> list = this.categoryService.findAll();
-        return ResponseEntity.ok().body(list);
+        try {
+            List<CategoryDTO> list = this.categoryService.findAll();
+            return ResponseEntity.ok().body(list);
+        } catch (Exception e) {
+            System.out.println("Exception dans getAllCategories");
+            return ResponseEntity.ok().body(null);
+        }
     }
 
     /**
@@ -37,5 +42,17 @@ public class CategoryController {
             System.out.println("Exception dans createLabelCategory");
             return ResponseEntity.ok().body(null);
         }
+    }
+
+    /**
+     * @author Brice Bayard
+     * Delete a category in table
+     */
+    @DeleteMapping(value = "/commercial/deleteCategory/{id}")
+    public ResponseEntity<Long> deleteLabelCategory(@PathVariable Long id) {
+        System.out.println("Delete command sent");
+        categoryService.delete(id);
+        System.out.println("Universe Deleted");
+        return ResponseEntity.ok().body(id);
     }
 }
