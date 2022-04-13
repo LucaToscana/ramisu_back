@@ -63,12 +63,12 @@ public class UserPdfExporter {
         for(UserDAO user: listUsers) {
             table.addCell(user.getMail());
         }
-        /*for(LineOfOrderDAO line: listOrders){
+        for(LineOfOrderDAO line: listOrders){
             table.addCell(line.getOrder());
             table.addCell(line.getProduct());
             table.addCell((line.getQuantity()));
 
-        }*/
+        }
     }
 
     public void export(HttpServletResponse response) throws DocumentException, IOException {
