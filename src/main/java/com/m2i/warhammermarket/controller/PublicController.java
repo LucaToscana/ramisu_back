@@ -175,7 +175,7 @@ public class PublicController {
 	public ResponseEntity<Long> inscription(@RequestBody RegistrationProfile userProfile) {
 
 		Long idSaved = 0L;
-		if (validator.validateCaptcha(userProfile.getCaptchaToken())) {
+		if (userProfile.isValid() && validator.validateCaptcha(userProfile.getCaptchaToken())) {
 
 			UserDTO userDTO = userService.findOneByUserMail(userProfile.getMail());
             if (userDTO != null) return ResponseEntity.ok(-1L);//return -1 UserMailAlreadyExist in database
